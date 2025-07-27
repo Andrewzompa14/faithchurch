@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sermons | Faith Church</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles & Color Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        'battleship-gray': '#7b8a83',
+                        'lion': '#b99769',
+                        'alabaster': '#f5f1e9',
+                        'jet': '#2f2f2f',
+                        'delft-blue': '#40476d',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Basic body styling */
+        body {
+            background-color: #f5f1e9; /* Alabaster */
+            color: #2f2f2f; /* Jet */
+            font-family: 'Montserrat', sans-serif;
+        }
+        .text-shadow {
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+        /* Aspect ratio for video embeds */
+        .aspect-w-16 { position: relative; padding-bottom: 56.25%; }
+        .aspect-h-9 { height: 0; }
+        .aspect-w-16 > * { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+    </style>
+</head>
+<body class="bg-alabaster">
+
+    <!-- Header & Navigation -->
+    <header class="bg-alabaster/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="./index.html" class="flex items-center gap-3">
+                <img src="IMG_8426.png" alt="Faith Church Logo" class="w-10 h-10">
+                <span class="text-2xl font-extrabold text-jet tracking-tight">
+                    FAITH CHURCH
+                </span>
+            </a>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="./about.html" class="text-jet hover:text-lion transition-colors duration-300 font-medium">About Us</a>
+                <a href="./ministries.html" class="text-jet hover:text-lion transition-colors duration-300 font-medium">Ministries</a>
+                <a href="./sermons.html" class="text-lion font-bold transition-colors duration-300">Sermons</a>
+                <a href="./events.html" class="text-jet hover:text-lion transition-colors duration-300 font-medium">Events</a>
+                <a href="./visit.html" class="bg-lion text-white font-bold py-2 px-5 rounded-lg hover:bg-opacity-90 transition-all duration-300 shadow">
+                    Plan Your Visit
+                </a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-jet focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+            <a href="./about.html" class="block py-2 text-jet hover:text-lion">About Us</a>
+            <a href="./ministries.html" class="block py-2 text-jet hover:text-lion">Ministries</a>
+            <a href="./sermons.html" class="block py-2 text-lion font-bold">Sermons</a>
+            <a href="./events.html" class="block py-2 text-jet hover:text-lion">Events</a>
+            <a href="./visit.html" class="block mt-2 bg-lion text-white font-bold py-2 px-5 rounded-lg hover:bg-opacity-90 text-center">Plan Your Visit</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Page Header Section -->
+        <section class="relative h-64 bg-cover bg-center text-white flex items-center justify-center" style="background-image: url('https://placehold.co/1600x400/7b8a83/ffffff?text=Sermons');">
+            <div class="absolute inset-0 bg-jet opacity-50"></div>
+            <div class="relative z-10 text-center px-4">
+                <h1 class="text-5xl md:text-6xl font-extrabold text-shadow uppercase tracking-wider">Sermons</h1>
+            </div>
+        </section>
+
+        <!-- Latest Sermon Section -->
+        <section class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-jet text-center mb-12">Latest Message</h2>
+                <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+                    <div id="latest-sermon-embed" class="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden shadow-xl">
+                        <div class="bg-gray-200 flex items-center justify-center"><p class="text-battleship-gray">Loading Video...</p></div>
+                    </div>
+                    <div>
+                        <h3 id="latest-sermon-title" class="mt-1 text-3xl font-extrabold text-jet">Loading...</h3>
+                        <p id="latest-sermon-date" class="mt-2 text-lg text-battleship-gray">Fetching date...</p>
+                        <p id="latest-sermon-description" class="mt-4 text-battleship-gray leading-relaxed">
+                            Fetching the latest sermon from YouTube.
+                        </p>
+                        <div class="mt-6 flex flex-wrap gap-4">
+                             <a id="latest-sermon-youtube-link" href="#" target="_blank" class="bg-lion text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition-all duration-300 shadow">
+                                Watch on YouTube
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Past Sermons Grid -->
+        <section class="py-16 md:py-24 bg-alabaster">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-jet text-center mb-12">Browse Past Sermons</h2>
+                <div id="past-sermons-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Sermon cards will be dynamically inserted here -->
+                     <p class="text-battleship-gray col-span-full text-center">Loading past sermons...</p>
+                </div>
+                <div id="view-more-container" class="text-center mt-12 hidden">
+                    <button id="view-more-button" class="bg-lion text-white font-bold py-3 px-8 rounded-lg hover:bg-opacity-90 transition-all duration-300 shadow-lg">
+                        View More
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-jet text-alabaster">
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+                <!-- Column 1: Church Info -->
+                <div>
+                    <h4 class="text-xl font-extrabold tracking-tight">FAITH CHURCH</h4>
+                    <p class="mt-2 text-battleship-gray">765 Commonwealth Ave, Warwick, RI 02886</p>
+                    <p class="text-battleship-gray">(401) 738-7664</p>
+                    <p class="text-battleship-gray">contact@faithchurch.com</p>
+                </div>
+                <!-- Column 2: Quick Links -->
+                <div>
+                    <h4 class="text-lg font-bold">Quick Links</h4>
+                    <ul class="mt-2 space-y-1">
+                        <li><a href="./about.html" class="text-battleship-gray hover:text-lion">About Us</a></li>
+                        <li><a href="./sermons.html" class="text-battleship-gray hover:text-lion">Sermons</a></li>
+                        <li><a href="#" class="text-battleship-gray hover:text-lion">Give</a></li>
+                    </ul>
+                </div>
+                <!-- Column 3: Connect -->
+                <div>
+                    <h4 class="text-lg font-bold">Connect With Us</h4>
+                     <div class="flex justify-center md:justify-start space-x-4 mt-4">
+                        <a href="#" class="text-battleship-gray hover:text-lion"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd" /></svg></a>
+                        <a href="#" class="text-battleship-gray hover:text-lion"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.71v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" /></svg></a>
+                        <a href="#" class="text-battleship-gray hover:text-lion"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.013-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.345 2.525c.636-.247 1.363-.416 2.427.465C9.793 2.013 10.148 2 12.315 2zm-1.002 3.705a.75.75 0 10-1.5 0 .75.75 0 001.5 0zm1.002 1.815a5.002 5.002 0 100 10.004 5.002 5.002 0 000-10.004zm-7.002 5.002a7.002 7.002 0 1114.004 0 7.002 7.002 0 01-14.004 0z" clip-rule="evenodd" /></svg></a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 border-t border-battleship-gray/30 pt-6 text-center text-battleship-gray"><p>&copy; 2024 Faith Church. All Rights Reserved.</p></div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Mobile Menu Toggle ---
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
+
+        // --- YouTube Sermon Fetcher ---
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- CONFIGURATION ---
+            const apiKey = 'AIzaSyC2qVFq--Rf6PYbucOt4Q3Z69GpCtG8aqs'; 
+            const channelHandle = '@faithbaptistri';
+            const initialVideosToFetch = 50; // Fetch a larger batch to ensure we get enough long-form videos
+            const minDurationSeconds = 600; // 10 minutes
+            const initialPastSermons = 3;
+            const loadMoreCount = 6;
+
+            // --- STATE ---
+            let allLongFormVideos = [];
+            let currentlyDisplayedPastCount = 0;
+
+            // --- HTML Element Targets ---
+            const embedElement = document.getElementById('latest-sermon-embed');
+            const titleElement = document.getElementById('latest-sermon-title');
+            const dateElement = document.getElementById('latest-sermon-date');
+            const descriptionElement = document.getElementById('latest-sermon-description');
+            const youtubeLinkElement = document.getElementById('latest-sermon-youtube-link');
+            const pastSermonsGrid = document.getElementById('past-sermons-grid');
+            const viewMoreContainer = document.getElementById('view-more-container');
+            const viewMoreButton = document.getElementById('view-more-button');
+
+            // --- Helper to parse ISO 8601 duration ---
+            function parseISO8601Duration(duration) {
+                const regex = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/;
+                const matches = duration.match(regex);
+                if (!matches) return 0;
+                const hours = parseInt(matches[1] || 0);
+                const minutes = parseInt(matches[2] || 0);
+                const seconds = parseInt(matches[3] || 0);
+                return (hours * 3600) + (minutes * 60) + seconds;
+            }
+
+            // --- Main function to fetch all sermons ---
+            async function fetchAllSermons() {
+                try {
+                    const channelResponse = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forHandle=${channelHandle}&key=${apiKey}`);
+                    const channelData = await channelResponse.json();
+                    if (!channelData.items || channelData.items.length === 0) throw new Error('Could not find YouTube channel.');
+                    
+                    const uploadsPlaylistId = channelData.items[0].contentDetails.relatedPlaylists.uploads;
+
+                    const playlistResponse = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=${initialVideosToFetch}&key=${apiKey}`);
+                    const playlistData = await playlistResponse.json();
+                    if (!playlistData.items || playlistData.items.length === 0) throw new Error('No videos found in playlist.');
+
+                    const videoIds = playlistData.items.map(item => item.snippet.resourceId.videoId).join(',');
+
+                    const videosResponse = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoIds}&key=${apiKey}`);
+                    const videosData = await videosResponse.json();
+                    if (!videosData.items) throw new Error('Could not fetch video details.');
+                    
+                    allLongFormVideos = videosData.items.filter(video => {
+                        const duration = video.contentDetails.duration;
+                        return parseISO8601Duration(duration) > minDurationSeconds;
+                    });
+                    
+                    if (allLongFormVideos.length === 0) throw new Error('No recent long-form videos found.');
+
+                    // Once all videos are fetched and filtered, display them
+                    displaySermons();
+
+                } catch (error) {
+                    console.error('Error fetching sermons:', error);
+                    titleElement.textContent = 'Error Loading Sermons';
+                    descriptionElement.textContent = 'Could not fetch sermons at this time.';
+                    pastSermonsGrid.innerHTML = `<p class="text-battleship-gray col-span-full text-center">Could not load past sermons.</p>`;
+                }
+            }
+
+            // --- Function to display sermons on the page ---
+            function displaySermons() {
+                // 1. Display Latest Sermon
+                const latestVideo = allLongFormVideos[0];
+                populateLatestSermon(latestVideo);
+
+                // 2. Display initial set of past sermons
+                pastSermonsGrid.innerHTML = ''; // Clear loading message
+                appendPastSermons(initialPastSermons);
+            }
+            
+            // --- Function to append a number of past sermons to the grid ---
+            function appendPastSermons(count) {
+                const startIndex = 1 + currentlyDisplayedPastCount; // 1 to skip latest
+                const endIndex = startIndex + count;
+                const videosToDisplay = allLongFormVideos.slice(startIndex, endIndex);
+
+                if (videosToDisplay.length === 0 && currentlyDisplayedPastCount === 0) {
+                    pastSermonsGrid.innerHTML = `<p class="text-battleship-gray col-span-full text-center">No other recent sermons found.</p>`;
+                    viewMoreContainer.classList.add('hidden');
+                    return;
+                }
+                
+                let gridHtml = '';
+                videosToDisplay.forEach(video => {
+                    gridHtml += createSermonCard(video);
+                });
+                pastSermonsGrid.innerHTML += gridHtml;
+
+                currentlyDisplayedPastCount += videosToDisplay.length;
+
+                // Check if there are more videos to load
+                if (allLongFormVideos.length > 1 + currentlyDisplayedPastCount) {
+                    viewMoreContainer.classList.remove('hidden');
+                } else {
+                    viewMoreContainer.classList.add('hidden');
+                }
+            }
+
+            // --- Helper function for the latest sermon ---
+            function populateLatestSermon(video) {
+                const videoId = video.id;
+                const snippet = video.snippet;
+                const publishedDate = new Date(snippet.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+                embedElement.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                titleElement.textContent = snippet.title;
+                dateElement.textContent = `Published on ${publishedDate}`;
+                descriptionElement.textContent = snippet.description.substring(0, 200) + (snippet.description.length > 200 ? '...' : '');
+                youtubeLinkElement.href = `https://www.youtube.com/watch?v=${videoId}`;
+            }
+
+            // --- Helper function to create a single past sermon card ---
+            function createSermonCard(video) {
+                const videoId = video.id;
+                const snippet = video.snippet;
+                const thumbnailUrl = snippet.thumbnails.high?.url || snippet.thumbnails.default.url;
+                const publishedDate = new Date(snippet.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+                return `
+                    <div class="bg-white rounded-lg shadow-xl overflow-hidden flex flex-col group">
+                        <div class="relative">
+                            <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank">
+                                <img src="${thumbnailUrl}" alt="${snippet.title}" class="w-full h-48 object-cover">
+                                <div class="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center">
+                                    <div class="bg-lion text-white font-bold py-2 px-5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">Watch</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="p-6 flex-grow">
+                            <h3 class="text-xl font-bold text-jet">${snippet.title}</h3>
+                            <p class="mt-1 text-battleship-gray">${publishedDate}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // --- Event Listener for the "View More" button ---
+            viewMoreButton.addEventListener('click', () => {
+                appendPastSermons(loadMoreCount);
+            });
+
+            // --- Initial Call ---
+            fetchAllSermons();
+        });
+    </script>
+
+</body>
+</html>

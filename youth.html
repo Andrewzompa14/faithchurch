@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAITH.YTH | Faith Church</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.comcom/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles & Color Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        'battleship-gray': '#7b8a83',
+                        'lion': '#b99769',
+                        'alabaster': '#f5f1e9',
+                        'jet': '#2f2f2f',
+                        'delft-blue': '#40476d',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Basic body styling */
+        body {
+            background-color: #f5f1e9; /* Alabaster */
+            color: #2f2f2f; /* Jet */
+            font-family: 'Montserrat', sans-serif;
+        }
+        .text-shadow {
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+    </style>
+</head>
+<body class="bg-jet">
+
+    <!-- Header & Navigation -->
+    <header class="bg-alabaster/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="./index.html" class="flex items-center gap-3">
+                <img src="IMG_8426.png" alt="Faith Church Logo" class="w-10 h-10">
+                <span class="text-2xl font-extrabold text-jet tracking-tight">
+                    FAITH CHURCH
+                </span>
+            </a>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="./about.html" class="text-jet hover:text-lion transition-colors duration-300 font-medium">About Us</a>
+                <a href="./ministries.html" class="text-lion font-bold transition-colors duration-300">Ministries</a>
+                <a href="./sermons.html" class="text-jet hover:text-lion transition-colors duration-300 font-medium">Sermons</a>
+                <a href="./events.html" class="text-jet hover:text-lion transition-colors duration-300 font-medium">Events</a>
+                <a href="./visit.html" class="bg-lion text-white font-bold py-2 px-5 rounded-lg hover:bg-opacity-90 transition-all duration-300 shadow">
+                    Plan Your Visit
+                </a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-jet focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+            <a href="./about.html" class="block py-2 text-jet hover:text-lion">About Us</a>
+            <a href="./ministries.html" class="block py-2 text-lion font-bold">Ministries</a>
+            <a href="./sermons.html" class="block py-2 text-jet hover:text-lion">Sermons</a>
+            <a href="./events.html" class="block py-2 text-jet hover:text-lion">Events</a>
+            <a href="./visit.html" class="block mt-2 bg-lion text-white font-bold py-2 px-5 rounded-lg hover:bg-opacity-90 text-center">Plan Your Visit</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Page Header Section -->
+        <section class="relative h-[70vh] bg-jet text-white flex items-center justify-center">
+            <div class="absolute inset-0 bg-cover bg-center opacity-30" style="background-image: url('https://placehold.co/1600x900/40476d/ffffff?text=YTH+NIGHT');"></div>
+            <div class="relative z-10 text-center px-4">
+                <h1 class="text-6xl md:text-8xl font-extrabold tracking-tighter uppercase">FAITH.YTH</h1>
+                <p class="mt-2 text-xl md:text-2xl font-light text-alabaster tracking-wide">Find Your Place. Find Your Purpose.</p>
+            </div>
+        </section>
+
+        <!-- Who We Are Section -->
+        <section class="py-16 md:py-24 bg-alabaster">
+            <div class="container mx-auto px-6 text-center max-w-3xl">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-jet">WE ARE FOR THE NEXT GENERATION</h2>
+                <p class="mt-4 text-lg text-battleship-gray leading-relaxed">
+                    FAITH.YTH is the student ministry of Faith Church for all students in 6th-12th grade. We exist to see students saved, healed, set free, discipled, equipped, empowered, and serving. We are a community that is passionate about Jesus and having a ton of fun along the way.
+                </p>
+            </div>
+        </section>
+
+        <!-- What We Do Section -->
+        <section class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-jet text-center mb-12">WHAT WE DO</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Wednesday Nights -->
+                    <div class="bg-alabaster p-8 rounded-lg shadow-lg text-center">
+                        <h3 class="text-2xl font-bold text-delft-blue">YTH NIGHTS</h3>
+                        <p class="mt-4 text-battleship-gray">Every Wednesday is a party! Join us for live worship, a relevant message, and time to hang out with friends. It's the best night of the week.</p>
+                    </div>
+                    <!-- Small Groups -->
+                    <div class="bg-alabaster p-8 rounded-lg shadow-lg text-center">
+                        <h3 class="text-2xl font-bold text-delft-blue">SMALL GROUPS</h3>
+                        <p class="mt-4 text-battleship-gray">On Sunday mornings, we break into small groups to build relationships, ask tough questions, and dive deeper into God's Word together.</p>
+                    </div>
+                    <!-- Events -->
+                    <div class="bg-alabaster p-8 rounded-lg shadow-lg text-center">
+                        <h3 class="text-2xl font-bold text-delft-blue">EVENTS</h3>
+                        <p class="mt-4 text-battleship-gray">From summer camp and retreats to game nights and service projects, we always have something exciting happening. Check the calendar for what's next!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Join Us Section -->
+        <section class="py-20 md:py-32 bg-delft-blue text-white">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl md:text-5xl font-extrabold">JOIN US WEDNESDAY</h2>
+                <p class="mt-4 text-2xl font-light">Doors open at 6:30 PM | Service starts at 7:00 PM</p>
+                <p class="mt-2 text-lg text-battleship-gray">765 Commonwealth Ave, Warwick, RI 02886</p>
+            </div>
+        </section>
+        
+        <!-- Social Media Section -->
+        <section class="py-16 bg-lion">
+            <div class="container mx-auto px-6 text-center">
+                <h3 class="text-3xl font-extrabold text-white">FOLLOW US ON INSTAGRAM</h3>
+                <a href="#" class="mt-2 text-2xl text-alabaster hover:underline">@FAITH.YTH</a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-jet text-alabaster">
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+                <!-- Column 1: Church Info -->
+                <div>
+                    <h4 class="text-xl font-extrabold tracking-tight">FAITH CHURCH</h4>
+                    <p class="mt-2 text-battleship-gray">765 Commonwealth Ave, Warwick, RI 02886</p>
+                    <p class="text-battleship-gray">(401) 738-7664</p>
+                    <p class="text-battleship-gray">contact@faithchurch.com</p>
+                </div>
+                <!-- Column 2: Quick Links -->
+                <div>
+                    <h4 class="text-lg font-bold">Quick Links</h4>
+                    <ul class="mt-2 space-y-1">
+                        <li><a href="./about.html" class="text-battleship-gray hover:text-lion">About Us</a></li>
+                        <li><a href="./sermons.html" class="text-battleship-gray hover:text-lion">Sermons</a></li>
+                        <li><a href="#" class="text-battleship-gray hover:text-lion">Give</a></li>
+                    </ul>
+                </div>
+                <!-- Column 3: Connect -->
+                <div>
+                    <h4 class="text-lg font-bold">Connect With Us</h4>
+                     <div class="flex justify-center md:justify-start space-x-4 mt-4">
+                        <a href="#" class="text-battleship-gray hover:text-lion"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd" /></svg></a>
+                        <a href="#" class="text-battleship-gray hover:text-lion"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.71v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" /></svg></a>
+                        <a href="#" class="text-battleship-gray hover:text-lion"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.013-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.345 2.525c.636-.247 1.363-.416 2.427.465C9.793 2.013 10.148 2 12.315 2zm-1.002 3.705a.75.75 0 10-1.5 0 .75.75 0 001.5 0zm1.002 1.815a5.002 5.002 0 100 10.004 5.002 5.002 0 000-10.004zm-7.002 5.002a7.002 7.002 0 1114.004 0 7.002 7.002 0 01-14.004 0z" clip-rule="evenodd" /></svg></a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 border-t border-battleship-gray/30 pt-6 text-center text-battleship-gray"><p>&copy; 2024 Faith Church. All Rights Reserved.</p></div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
+    </script>
+
+</body>
+</html>
