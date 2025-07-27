@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Faith Church | Welcome Home</title>
-    
+    <link rel="icon" href="IMG_8426.png" type="image/png">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -66,6 +67,7 @@
 </head>
 <body class="bg-alabaster">
 
+    <!-- Header Placeholder -->
     <div id="header-placeholder"></div>
 
     <main>
@@ -119,10 +121,26 @@
                 <h2 class="text-3xl md:text-4xl font-extrabold text-jet">A Place for Everyone to Belong</h2>
                 <p class="mt-2 mb-12 max-w-2xl mx-auto text-battleship-gray">Find your place to connect, grow, and serve within our church family.</p>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <div class="bg-alabaster p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300"><h3 class="text-xl font-bold text-delft-blue">KIDS</h3><p class="mt-2 text-jet">Fun, safe, and engaging environments for children to learn about Jesus.</p></div>
-                    <div class="bg-alabaster p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300"><h3 class="text-xl font-bold text-delft-blue">YOUTH</h3><p class="mt-2 text-jet">A dynamic ministry for students to grow in their faith and build friendships.</p></div>
-                    <div class="bg-alabaster p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300"><h3 class="text-xl font-bold text-delft-blue">ADULTS</h3><p class="mt-2 text-jet">Community groups and Bible studies for every stage of adult life.</p></div>
-                    <div class="bg-alabaster p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300"><h3 class="text-xl font-bold text-delft-blue">MISSIONS</h3><p class="mt-2 text-jet">Sharing the love of Christ in our community and around the world.</p></div>
+                    <!-- Ministry Card: Kids -->
+                    <a href="./kids.html" class="block bg-alabaster p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left">
+                        <h3 class="text-xl font-bold text-delft-blue">KIDS</h3>
+                        <p class="mt-2 text-jet">Fun, safe, and engaging environments for children to learn about Jesus.</p>
+                    </a>
+                    <!-- Ministry Card: Youth -->
+                    <a href="./youth.html" class="block bg-alabaster p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left">
+                        <h3 class="text-xl font-bold text-delft-blue">FAITH.YTH</h3>
+                        <p class="mt-2 text-jet">A dynamic ministry for students to grow in their faith and build friendships.</p>
+                    </a>
+                    <!-- Ministry Card: Adults -->
+                    <a href="./adults.html" class="block bg-alabaster p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left">
+                        <h3 class="text-xl font-bold text-delft-blue">ADULTS</h3>
+                        <p class="mt-2 text-jet">Community groups and Bible studies for every stage of adult life.</p>
+                    </a>
+                    <!-- Ministry Card: Missions -->
+                    <a href="./missions.html" class="block bg-alabaster p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left">
+                        <h3 class="text-xl font-bold text-delft-blue">MISSIONS</h3>
+                        <p class="mt-2 text-jet">Sharing the love of Christ in our community and around the world.</p>
+                    </a>
                 </div>
                  <a href="./ministries.html" class="mt-12 inline-block bg-lion text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition-all duration-300 shadow">Explore All Ministries</a>
             </div>
@@ -180,7 +198,7 @@
                     <ul class="mt-2 space-y-1">
                         <li><a href="./about.html" class="text-battleship-gray hover:text-lion">About Us</a></li>
                         <li><a href="./sermons.html" class="text-battleship-gray hover:text-lion">Sermons</a></li>
-                        <li><a href="#" class="text-battleship-gray hover:text-lion">Give</a></li>
+                        <li><a href="./give.html" class="text-battleship-gray hover:text-lion">Give</a></li>
                     </ul>
                 </div>
                 <div>
@@ -192,17 +210,28 @@
                     </div>
                 </div>
             </div>
-            <div class="mt-12 border-t border-battleship-gray/30 pt-6 text-center text-battleship-gray"><p>&copy; 2025 Faith Church. All Rights Reserved.</p></div>
+            <div class="mt-12 border-t border-battleship-gray/30 pt-6 text-center text-battleship-gray"><p>&copy; 2024 Faith Church. All Rights Reserved.</p></div>
         </div>
     </footer>
 
     <script>
-        // --- Mobile Menu Toggle ---
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        mobileMenuButton.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
+        // --- Reusable Header Loader ---
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch("header.html")
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("header-placeholder").innerHTML = data;
+                    const mobileMenuButton = document.getElementById('mobile-menu-button');
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    if (mobileMenuButton && mobileMenu) {
+                        mobileMenuButton.addEventListener('click', () => {
+                            mobileMenu.classList.toggle('hidden');
+                        });
+                    }
+                });
+        });
 
-        // --- Run API Fetchers on Page Load ---
+        // --- API Fetchers on Page Load ---
         document.addEventListener('DOMContentLoaded', function() {
             const apiKey = 'AIzaSyC2qVFq--Rf6PYbucOt4Q3Z69GpCtG8aqs'; 
             
@@ -291,25 +320,6 @@
             // --- Run Both Fetchers ---
             getLatestSermon();
             getCalendarEvents();
-        });
-    </script>
-
-    <script>
-        // --- Reusable Header Loader ---
-        document.addEventListener("DOMContentLoaded", function() {
-            fetch("header.html")
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById("header-placeholder").innerHTML = data;
-                    // Re-initialize mobile menu functionality after header is loaded
-                    const mobileMenuButton = document.getElementById('mobile-menu-button');
-                    const mobileMenu = document.getElementById('mobile-menu');
-                    if (mobileMenuButton && mobileMenu) {
-                        mobileMenuButton.addEventListener('click', () => {
-                            mobileMenu.classList.toggle('hidden');
-                        });
-                    }
-                });
         });
     </script>
 
