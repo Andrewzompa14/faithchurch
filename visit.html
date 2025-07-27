@@ -51,45 +51,8 @@
 </head>
 <body class="bg-alabaster">
 
-    <!-- Header & Navigation -->
-    <header class="bg-alabaster/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <!-- Logo -->
-            <a href="./index.html" class="flex items-center gap-3">
-                <!-- User's Logo Image -->
-                <img src="IMG_8426.png" alt="Faith Church Logo" class="w-10 h-10">
-                <span class="text-2xl font-extrabold text-jet tracking-tight">
-                    FAITH CHURCH
-                </span>
-            </a>
-            
-            <!-- Desktop Navigation -->
-            <div class="hidden md:flex items-center space-x-8">
-                <a href="./about.html" class="text-jet hover:text-lion transition-colors duration-300 font-medium">About Us</a>
-                <a href="./ministries.html" class="text-jet hover:text-lion transition-colors duration-300 font-medium">Ministries</a>
-                <a href="./sermons.html" class="text-jet hover:text-lion transition-colors duration-300 font-medium">Sermons</a>
-                <a href="./events.html" class="text-jet hover:text-lion transition-colors duration-300 font-medium">Events</a>
-                <a href="./visit.html" class="bg-lion text-white font-bold py-2 px-5 rounded-lg hover:bg-opacity-90 transition-all duration-300 shadow">
-                    Plan Your Visit
-                </a>
-            </div>
-
-            <!-- Mobile Menu Button -->
-            <div class="md:hidden">
-                <button id="mobile-menu-button" class="text-jet focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-                </button>
-            </div>
-        </nav>
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
-            <a href="./about.html" class="block py-2 text-jet hover:text-lion">About Us</a>
-            <a href="./ministries.html" class="block py-2 text-jet hover:text-lion">Ministries</a>
-            <a href="./sermons.html" class="block py-2 text-jet hover:text-lion">Sermons</a>
-            <a href="./events.html" class="block py-2 text-jet hover:text-lion">Events</a>
-            <a href="./visit.html" class="block mt-2 bg-lion text-white font-bold py-2 px-5 rounded-lg hover:bg-opacity-90 text-center">Plan Your Visit</a>
-        </div>
-    </header>
+    <!-- Header Placeholder -->
+    <div id="header-placeholder"></div>
 
     <main>
         <!-- Page Header Section -->
@@ -210,27 +173,34 @@
                 </div>
             </div>
             <div class="mt-12 border-t border-battleship-gray/30 pt-6 text-center text-battleship-gray">
-                <p>&copy; 2024 Faith Church. All Rights Reserved.</p>
+                <p>&copy; 2025 Faith Church. All Rights Reserved.</p>
             </div>
         </div>
     </footer>
 
     <script>
-        // Mobile menu toggle
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-
-        // Close mobile menu when a link is clicked
-        const mobileMenuLinks = mobileMenu.getElementsByTagName('a');
-        for (let link of mobileMenuLinks) {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
+        // Load header content
+        fetch('header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+                
+                // Re-initialize mobile menu functionality after loading header
+                const mobileMenuButton = document.getElementById('mobile-menu-button');
+                const mobileMenu = document.getElementById('mobile-menu');
+                
+                mobileMenuButton.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+                
+                // Close mobile menu when a link is clicked
+                const mobileMenuLinks = mobileMenu.getElementsByTagName('a');
+                for (let link of mobileMenuLinks) {
+                    link.addEventListener('click', () => {
+                        mobileMenu.classList.add('hidden');
+                    });
+                }
             });
-        }
     </script>
 
 </body>
