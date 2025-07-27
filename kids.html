@@ -159,23 +159,55 @@
     </script>
 
     <script>
-        // --- Reusable Header Loader ---
-        document.addEventListener("DOMContentLoaded", function() {
-            fetch("header.html")
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById("header-placeholder").innerHTML = data;
-                    // Re-initialize mobile menu functionality after header is loaded
-                    const mobileMenuButton = document.getElementById('mobile-menu-button');
-                    const mobileMenu = document.getElementById('mobile-menu');
-                    if (mobileMenuButton && mobileMenu) {
-                        mobileMenuButton.addEventListener('click', () => {
-                            mobileMenu.classList.toggle('hidden');
-                        });
+    // --- Universal Reusable Header Loader ---
+    document.addEventListener("DOMContentLoaded", function() {
+        fetch("header.html")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.text();
+            })
+            .then(data => {
+                document.getElementById("header-placeholder").innerHTML = data;
+                
+                // --- Initialize ALL header functionality AFTER it has been loaded into the page ---
+
+                // 1. Mobile Menu Toggle
+                const mobileMenuButton = document.getElementById('mobile-menu-button');
+                const mobileMenu = document.getElementById('mobile-menu');
+                if (mobileMenuButton && mobileMenu) {
+                    mobileMenuButton.addEventListener('click', () => {
+                        mobileMenu.classList.toggle('hidden');
+                    });
+                }
+
+                // 2. Desktop "More" Dropdown Toggle
+                const moreButton = document.getElementById('more-dropdown-button');
+                const moreMenu = document.getElementById('more-dropdown-menu');
+                const moreContainer = document.getElementById('more-dropdown-container');
+
+                if (moreButton && moreMenu && moreContainer) {
+                    moreButton.addEventListener('click', (event) => {
+                        event.stopPropagation(); // Prevents the document click from firing immediately
+                        moreMenu.classList.toggle('hidden');
+                    });
+                }
+                
+                // Close dropdown when clicking anywhere else on the page
+                document.addEventListener('click', (event) => {
+                    if (moreContainer && !moreContainer.contains(event.target) && moreMenu && !moreMenu.classList.contains('hidden')) {
+                        moreMenu.classList.add('hidden');
                     }
                 });
-        });
-    </script>
+            })
+            .catch(error => {
+                console.error('Error fetching header:', error);
+                document.getElementById("header-placeholder").innerHTML = "<p class='text-center text-red-500'>Error loading navigation.</p>";
+            });
+    });
+</script>
+
 
 </body>
 </html>

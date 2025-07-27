@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adult Ministries | Faith Church</title>
+    <title>Contact Us | Faith Church</title>
+    
+    <!-- Favicon -->
     <link rel="icon" href="IMG_8426.png" type="image/png">
 
     <!-- Tailwind CSS -->
@@ -44,86 +46,91 @@
         .text-shadow {
             text-shadow: 0 2px 4px rgba(0,0,0,0.4);
         }
+        /* Aspect ratio for map embeds */
+        .aspect-w-16 { position: relative; padding-bottom: 56.25%; }
+        .aspect-h-9 { height: 0; }
+        .aspect-w-16 > iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
     </style>
 </head>
 <body class="bg-alabaster">
 
+    <!-- Header Placeholder -->
     <div id="header-placeholder"></div>
 
     <main>
         <!-- Page Header Section -->
-        <section class="relative h-64 bg-cover bg-center text-white flex items-center justify-center" style="background-image: url('https://placehold.co/1600x400/7b8a83/ffffff?text=Adult+Ministries');">
+        <section class="relative h-64 bg-cover bg-center text-white flex items-center justify-center" style="background-image: url('https://placehold.co/1600x400/b99769/ffffff?text=Contact+Us');">
             <div class="absolute inset-0 bg-jet opacity-50"></div>
             <div class="relative z-10 text-center px-4">
-                <h1 class="text-5xl md:text-6xl font-extrabold text-shadow uppercase tracking-wider">Adult Ministries</h1>
+                <h1 class="text-5xl md:text-6xl font-extrabold text-shadow uppercase tracking-wider">Contact Us</h1>
             </div>
         </section>
 
-        <!-- Welcome Section -->
+        <!-- Contact Form and Info Section -->
         <section class="py-16 md:py-24 bg-white">
-            <div class="container mx-auto px-6 text-center max-w-3xl">
-                <h2 class="text-3xl md:text-4xl font-extrabold text-jet">Life is Better Together</h2>
-                <p class="mt-4 text-lg text-battleship-gray leading-relaxed">
-                    At Faith Church, we believe you can't do life alone. We are designed for community, and our adult ministries are created to help you build Christ-centered relationships. Whether you're looking for a small group, a Bible study, or just a place to connect, there's a place for you here.
-                </p>
+            <div class="container mx-auto px-6 max-w-5xl">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-jet">Get In Touch</h2>
+                    <p class="mt-4 text-lg text-battleship-gray leading-relaxed">
+                        We'd love to hear from you! Whether you have a question, a prayer request, or just want to say hello, feel free to reach out to us using the form below or by contacting us directly.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <!-- Contact Form -->
+                    <div>
+                        <form action="#" method="POST" class="space-y-6">
+                            <div>
+                                <label for="name" class="block text-sm font-bold text-jet">Full Name</label>
+                                <input type="text" name="name" id="name" class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-lion focus:ring focus:ring-lion focus:ring-opacity-50" placeholder="John Doe">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-bold text-jet">Email Address</label>
+                                <input type="email" name="email" id="email" class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-lion focus:ring focus:ring-lion focus:ring-opacity-50" placeholder="you@example.com">
+                            </div>
+                            <div>
+                                <label for="message" class="block text-sm font-bold text-jet">Message</label>
+                                <textarea id="message" name="message" rows="5" class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-lion focus:ring focus:ring-lion focus:ring-opacity-50" placeholder="Your message here..."></textarea>
+                            </div>
+                            <div>
+                                <button type="submit" class="w-full bg-delft-blue text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition-all duration-300 shadow">
+                                    Send Message
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Contact Info -->
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 text-lion flex-shrink-0 mt-1"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-full h-full"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 0115 0z" /></svg></div>
+                            <div>
+                                <h3 class="text-xl font-bold text-jet">Address</h3>
+                                <p class="text-lg text-battleship-gray">765 Commonwealth Ave, Warwick, RI 02886</p>
+                            </div>
+                        </div>
+                         <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 text-lion flex-shrink-0 mt-1"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-full h-full"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg></div>
+                            <div>
+                                <h3 class="text-xl font-bold text-jet">Phone</h3>
+                                <p class="text-lg text-battleship-gray">(401) 738-7664</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 text-lion flex-shrink-0 mt-1"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-full h-full"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg></div>
+                            <div>
+                                <h3 class="text-xl font-bold text-jet">Email</h3>
+                                <p class="text-lg text-battleship-gray">contact@faithchurch.com</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- Ministry Focus Areas -->
-        <section class="py-16 md:py-24 bg-alabaster">
-            <div class="container mx-auto px-6 space-y-16">
-                <!-- Community Groups -->
-                <div class="flex flex-col md:flex-row items-center gap-12">
-                    <div class="md:w-1/2">
-                        <img src="https://placehold.co/600x400/40476d/ffffff?text=Community" alt="A group of adults in discussion" class="rounded-lg shadow-xl">
-                    </div>
-                    <div class="md:w-1/2">
-                        <h3 class="text-3xl font-extrabold text-delft-blue">Community Groups</h3>
-                        <p class="mt-4 text-lg text-battleship-gray leading-relaxed">
-                            Community Groups are the heart of our ministry. These are small groups of adults who meet regularly in homes to study the Bible, pray for one another, and live out the Christian life together. It's the best way to get connected at Faith Church.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Men's Ministry -->
-                <div class="flex flex-col md:flex-row-reverse items-center gap-12">
-                    <div class="md:w-1/2">
-                        <img src="https://placehold.co/600x400/40476d/ffffff?text=Men's+Ministry" alt="A group of men studying together" class="rounded-lg shadow-xl">
-                    </div>
-                    <div class="md:w-1/2">
-                        <h3 class="text-3xl font-extrabold text-delft-blue">Men's Ministry</h3>
-                        <p class="mt-4 text-lg text-battleship-gray leading-relaxed">
-                            Our Men's Ministry is focused on equipping men to be spiritual leaders in their homes, at work, and in the community. We gather for Bible studies, breakfasts, and retreats to sharpen one another and grow in our walk with Christ.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Women's Ministry -->
-                <div class="flex flex-col md:flex-row items-center gap-12">
-                    <div class="md:w-1/2">
-                        <img src="https://placehold.co/600x400/40476d/ffffff?text=Women's+Ministry" alt="A group of women laughing together" class="rounded-lg shadow-xl">
-                    </div>
-                    <div class="md:w-1/2">
-                        <h3 class="text-3xl font-extrabold text-delft-blue">Women's Ministry</h3>
-                        <p class="mt-4 text-lg text-battleship-gray leading-relaxed">
-                            Our Women's Ministry provides opportunities for women of all ages and stages of life to connect, grow in their faith, and encourage one another. Join us for Bible studies, fellowship events, and our annual women's conference.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Call to Action -->
-        <section class="py-20 md:py-24 bg-delft-blue">
-            <div class="container mx-auto px-6 text-center text-white">
-                <h2 class="text-4xl font-extrabold">Ready to Get Connected?</h2>
-                <p class="mt-4 text-lg max-w-2xl mx-auto text-alabaster/80">
-                    The best way to see what's available is to visit our group finder. Browse different groups and studies to find the perfect fit for you.
-                </p>
-                <a href="#" class="mt-8 inline-block bg-lion text-white font-bold text-lg py-3 px-8 rounded-lg hover:scale-105 transition-transform duration-300 shadow-lg">
-                    Find a Group
-                </a>
-            </div>
+        <!-- Map Section -->
+        <section class="aspect-w-16 aspect-h-9 md:aspect-h-5">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2979.436398363749!2d-71.4300348845651!3d41.7107409792356!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89e44f0b0a5a5a5b%3A0x5b3e3b3e3b3e3b3e!2s765%20Commonwealth%20Ave%2C%20Warwick%2C%20RI%2002886%2C%20USA!5e0!3m2!1sen!2sus!4v1678886400000!5m2!1sen!2sus" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </section>
 
     </main>
@@ -145,7 +152,7 @@
                     <ul class="mt-2 space-y-1">
                         <li><a href="./about.html" class="text-battleship-gray hover:text-lion">About Us</a></li>
                         <li><a href="./sermons.html" class="text-battleship-gray hover:text-lion">Sermons</a></li>
-                        <li><a href="#" class="text-battleship-gray hover:text-lion">Give</a></li>
+                        <li><a href="./give.html" class="text-battleship-gray hover:text-lion">Give</a></li>
                     </ul>
                 </div>
                 <!-- Column 3: Connect -->
@@ -158,16 +165,9 @@
                     </div>
                 </div>
             </div>
-            <div class="mt-12 border-t border-battleship-gray/30 pt-6 text-center text-battleship-gray"><p>&copy; 2025 Faith Church. All Rights Reserved.</p></div>
+            <div class="mt-12 border-t border-battleship-gray/30 pt-6 text-center text-battleship-gray"><p>&copy; 2024 Faith Church. All Rights Reserved.</p></div>
         </div>
     </footer>
-
-    <script>
-        // Mobile menu toggle
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        mobileMenuButton.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
-    </script>
 
     <script>
     // --- Universal Reusable Header Loader ---
