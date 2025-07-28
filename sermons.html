@@ -50,6 +50,11 @@
         .aspect-w-16 { position: relative; padding-bottom: 56.25%; }
         .aspect-h-9 { height: 0; }
         .aspect-w-16 > * { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        /* Style for active filter buttons */
+        .filter-btn.active {
+            background-color: #40476d; /* delft-blue */
+            color: white;
+        }
     </style>
 </head>
 <body class="bg-alabaster">
@@ -81,7 +86,6 @@
             <div class="container mx-auto px-6">
                 <h2 id="latest-message-heading" class="text-3xl md:text-4xl font-extrabold text-jet text-center mb-12">Latest Message</h2>
                 <div id="latest-sermon-card" class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center bg-alabaster p-6 rounded-lg shadow-lg">
-                    <!-- Content will be dynamically generated here -->
                     <p class="text-center text-battleship-gray md:col-span-2">Loading latest sermon...</p>
                 </div>
             </div>
@@ -90,7 +94,20 @@
         <!-- Past Sermons Grid -->
         <section class="py-16 md:py-24 bg-alabaster">
             <div class="container mx-auto px-6">
-                <h2 class="text-3xl md:text-4xl font-extrabold text-jet text-center mb-12">Browse Past Sermons</h2>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-jet text-center mb-8">Browse Past Sermons</h2>
+                
+                <!-- Filter Section -->
+                <div id="filter-container" class="max-w-5xl mx-auto mb-12">
+                     <div id="series-filters" class="mb-4">
+                        <h3 class="font-bold text-delft-blue mb-2">Filter by Series:</h3>
+                        <div id="series-buttons" class="flex flex-wrap gap-2"><p class="text-sm text-battleship-gray">Loading filters...</p></div>
+                    </div>
+                    <div id="speaker-filters">
+                        <h3 class="font-bold text-delft-blue mb-2">Filter by Speaker:</h3>
+                        <div id="speaker-buttons" class="flex flex-wrap gap-2"></div>
+                    </div>
+                </div>
+
                 <div id="past-sermons-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                      <p class="text-battleship-gray col-span-full text-center">Loading past sermons...</p>
                 </div>
@@ -139,17 +156,19 @@
     </footer>
 
     <script>
-        // --- Universal Reusable Header Loader ---
+        // --- Combined Script for Header Loading and Page Functionality ---
         document.addEventListener("DOMContentLoaded", function() {
+            
+            // --- 1. Load Header ---
             fetch("header.html")
                 .then(response => {
-                    if (!response.ok) throw new Error("Network response was not ok");
+                    if (!response.ok) throw new Error("Header not found");
                     return response.text();
                 })
                 .then(data => {
                     document.getElementById("header-placeholder").innerHTML = data;
                     
-                    // Initialize header functionality
+                    // --- 2. Initialize Header Functionality ---
                     const mobileMenuButton = document.getElementById('mobile-menu-button');
                     const mobileMenu = document.getElementById('mobile-menu');
                     if (mobileMenuButton && mobileMenu) {
@@ -174,197 +193,253 @@
                             moreMenu.classList.add('hidden');
                         }
                     });
+
+                    // --- 3. Run Page-Specific Functionality AFTER Header is Ready ---
+                    initializeSermonsPage();
                 })
                 .catch(error => {
                     console.error('Error fetching header:', error);
                     document.getElementById("header-placeholder").innerHTML = "<p class='text-center text-red-500'>Error loading navigation.</p>";
                 });
-        });
 
-        // --- YouTube Sermon Fetcher ---
-        document.addEventListener('DOMContentLoaded', function() {
-            // --- CONFIGURATION ---
-            const apiKey = 'AIzaSyC2qVFq--Rf6PYbucOt4Q3Z69GpCtG8aqs'; 
-            const channelHandle = '@faithbaptistri';
-            const initialVideosToFetch = 50; 
-            const minDurationSeconds = 600; // 10 minutes
-            const initialPastSermons = 3;
-            const loadMoreCount = 6;
+            // --- YouTube Sermon Fetcher Logic ---
+            function initializeSermonsPage() {
+                // --- CONFIGURATION ---
+                const apiKey = 'AIzaSyC2qVFq--Rf6PYbucOt4Q3Z69GpCtG8aqs'; 
+                const channelHandle = '@faithbaptistri';
+                const initialLoadCount = 9;
+                const loadMoreCount = 9;
+                const knownSpeakers = ["Matt Vandeleest", "Tom Bartlett", "Brian Sharp"];
+                const knownSeries = ["Matthew", "Psalms", "Romans", "1 Timothy", "David", "Revelation", "Easter", "Good Friday", "Fulfilled Promises"];
 
-            // --- STATE ---
-            let allLongFormVideos = [];
-            let currentlyDisplayedPastCount = 0;
-            let channelId = '';
+                // --- STATE ---
+                let allSermonSnippets = [];
+                let filteredSermons = [];
+                let currentlyDisplayedCount = 0;
 
-            // --- HTML Element Targets ---
-            const liveStreamSection = document.getElementById('live-stream-section');
-            const liveVideoEmbed = document.getElementById('live-video-embed');
-            const latestMessageHeading = document.getElementById('latest-message-heading');
-            const latestSermonCard = document.getElementById('latest-sermon-card');
-            const pastSermonsGrid = document.getElementById('past-sermons-grid');
-            const viewMoreContainer = document.getElementById('view-more-container');
-            const viewMoreButton = document.getElementById('view-more-button');
+                // --- HTML Element Targets ---
+                const liveStreamSection = document.getElementById('live-stream-section');
+                const liveVideoEmbed = document.getElementById('live-video-embed');
+                const latestMessageHeading = document.getElementById('latest-message-heading');
+                const latestSermonCard = document.getElementById('latest-sermon-card');
+                const pastSermonsGrid = document.getElementById('past-sermons-grid');
+                const viewMoreContainer = document.getElementById('view-more-container');
+                const viewMoreButton = document.getElementById('view-more-button');
+                const seriesButtonsContainer = document.getElementById('series-buttons');
+                const speakerButtonsContainer = document.getElementById('speaker-buttons');
 
-            // --- Helper to parse ISO 8601 duration ---
-            function parseISO8601Duration(duration) {
-                const regex = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/;
-                const matches = duration.match(regex);
-                if (!matches) return 0;
-                const hours = parseInt(matches[1] || 0);
-                const minutes = parseInt(matches[2] || 0);
-                const seconds = parseInt(matches[3] || 0);
-                return (hours * 3600) + (minutes * 60) + seconds;
-            }
+                // --- DATA FETCHING & PROCESSING ---
+                async function fetchAllContent() {
+                    try {
+                        const channelResponse = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=${channelHandle}&key=${apiKey}`);
+                        if (channelResponse.status === 403) throw new Error('API Key is invalid or has restrictions.');
+                        const channelData = await channelResponse.json();
+                        if (!channelData.items || channelData.items.length === 0) throw new Error('Could not find YouTube channel.');
+                        const channelId = channelData.items[0].id;
 
-            // --- Main function to fetch all content ---
-            async function fetchAllContent() {
-                try {
-                    // 1. Get Channel ID
-                    const channelResponse = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails,id&forHandle=${channelHandle}&key=${apiKey}`);
-                    const channelData = await channelResponse.json();
-                    if (!channelData.items || channelData.items.length === 0) throw new Error('Could not find YouTube channel.');
-                    
-                    channelId = channelData.items[0].id;
-                    const uploadsPlaylistId = channelData.items[0].contentDetails.relatedPlaylists.uploads;
+                        const liveResponse = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&eventType=live&type=video&key=${apiKey}`);
+                        const liveData = await liveResponse.json();
+                        const isLive = liveData.items && liveData.items.length > 0;
 
-                    // 2. Check for a live stream
-                    const liveResponse = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&eventType=live&type=video&key=${apiKey}`);
-                    const liveData = await liveResponse.json();
-                    
-                    const isLive = liveData.items && liveData.items.length > 0;
+                        // PHASE 1: Fast, efficient search for all long-form videos (snippets only)
+                        const mediumVideosPromise = fetchYouTubeSearch(channelId, 'medium');
+                        const longVideosPromise = fetchYouTubeSearch(channelId, 'long');
+                        const [mediumVideos, longVideos] = await Promise.all([mediumVideosPromise, longVideosPromise]);
+                        
+                        allSermonSnippets = [...mediumVideos, ...longVideos]
+                            .sort((a, b) => new Date(b.snippet.publishedAt) - new Date(a.snippet.publishedAt))
+                            .map(video => ({
+                                id: video.id.videoId,
+                                snippet: video.snippet,
+                                series: extractSeries(video.snippet.title),
+                                speaker: extractSpeaker(video.snippet.description)
+                            }));
 
-                    // 3. Fetch recent videos
-                    const playlistResponse = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=${initialVideosToFetch}&key=${apiKey}`);
-                    const playlistData = await playlistResponse.json();
-                    if (!playlistData.items || playlistData.items.length === 0) throw new Error('No videos found in playlist.');
+                        if (allSermonSnippets.length === 0) throw new Error('No long-form videos found.');
+                        
+                        setupFilters();
 
-                    const videoIds = playlistData.items.map(item => item.snippet.resourceId.videoId).join(',');
-                    const videosResponse = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoIds}&key=${apiKey}`);
-                    const videosData = await videosResponse.json();
-                    if (!videosData.items) throw new Error('Could not fetch video details.');
-                    
-                    allLongFormVideos = videosData.items.filter(video => {
-                        const duration = video.contentDetails.duration;
-                        return parseISO8601Duration(duration) > minDurationSeconds;
-                    });
-                    
-                    if (allLongFormVideos.length === 0) throw new Error('No recent long-form videos found.');
-
-                    // 4. Display content based on live status
-                    if (isLive) {
-                        const liveVideo = liveData.items[0];
-                        displayLiveStream(liveVideo);
-                        displaySermons(true); // isLive = true
-                    } else {
-                        displaySermons(false); // isLive = false
+                        if (isLive) {
+                            displayLiveStream(liveData.items[0]);
+                            displayContent(true);
+                        } else {
+                            displayContent(false);
+                        }
+                    } catch (error) {
+                        console.error('Error fetching content:', error);
+                        let errorMessage = 'Could not load sermons at this time.';
+                        if (error.message.includes('API Key')) {
+                            errorMessage = 'Could not load sermons. Please check your YouTube API Key settings in the Google Cloud Console and ensure the "YouTube Data API v3" is enabled and has no restrictions.';
+                        }
+                        latestSermonCard.innerHTML = `<p class="text-center text-red-600 md:col-span-2">${errorMessage}</p>`;
+                        pastSermonsGrid.innerHTML = '';
                     }
-
-                } catch (error) {
-                    console.error('Error fetching content:', error);
-                    latestSermonCard.innerHTML = `<p class="text-center text-red-600 md:col-span-2">Could not load sermons at this time.</p>`;
-                    pastSermonsGrid.innerHTML = '';
-                }
-            }
-
-            function displayLiveStream(liveVideo) {
-                const liveVideoId = liveVideo.id.videoId;
-                liveStreamSection.classList.remove('hidden');
-                liveVideoEmbed.innerHTML = `<iframe src="https://www.youtube.com/embed/${liveVideoId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-                latestMessageHeading.textContent = "Previous Message";
-            }
-
-            function displaySermons(isLive) {
-                const sermonIndex = isLive ? 1 : 0;
-                const latestSermon = allLongFormVideos[sermonIndex];
-                if (!latestSermon) {
-                    latestSermonCard.innerHTML = `<p class="text-center text-battleship-gray md:col-span-2">No recent completed sermon found.</p>`;
-                    return;
-                }
-                populateLatestSermon(latestSermon);
-
-                const pastSermonsStartIndex = sermonIndex + 1;
-                pastSermonsGrid.innerHTML = ''; 
-                appendPastSermons(initialPastSermons, pastSermonsStartIndex);
-            }
-            
-            function appendPastSermons(count, startIndexOffset = 0) {
-                const startIndex = startIndexOffset + currentlyDisplayedPastCount;
-                const endIndex = startIndex + count;
-                const videosToDisplay = allLongFormVideos.slice(startIndex, endIndex);
-
-                if (videosToDisplay.length === 0 && currentlyDisplayedPastCount === 0) {
-                    pastSermonsGrid.innerHTML = `<p class="text-battleship-gray col-span-full text-center">No other recent sermons found.</p>`;
-                    viewMoreContainer.classList.add('hidden');
-                    return;
                 }
                 
-                let gridHtml = '';
-                videosToDisplay.forEach(video => {
-                    gridHtml += createSermonCard(video);
-                });
-                pastSermonsGrid.innerHTML += gridHtml;
-
-                currentlyDisplayedPastCount += videosToDisplay.length;
-
-                if (allLongFormVideos.length > startIndexOffset + currentlyDisplayedPastCount) {
-                    viewMoreContainer.classList.remove('hidden');
-                } else {
-                    viewMoreContainer.classList.add('hidden');
+                async function fetchYouTubeSearch(channelId, duration) {
+                    let allItems = [];
+                    let nextPageToken = null;
+                    do {
+                        const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&type=video&videoDuration=${duration}&order=date&maxResults=50${nextPageToken ? `&pageToken=${nextPageToken}` : ''}&key=${apiKey}`);
+                        if (response.status === 403) throw new Error('API Key is invalid or has restrictions.');
+                        const data = await response.json();
+                        if(!data.items) throw new Error('Invalid response from YouTube Search API.');
+                        allItems = allItems.concat(data.items);
+                        nextPageToken = data.nextPageToken;
+                    } while (nextPageToken);
+                    return allItems;
                 }
-            }
 
-            function populateLatestSermon(video) {
-                const videoId = video.id;
-                const snippet = video.snippet;
-                const publishedDate = new Date(snippet.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-                const thumbnailUrl = snippet.thumbnails.maxres?.url || snippet.thumbnails.high.url;
+                function extractSeries(title) {
+                    for (const series of knownSeries) {
+                        if (title.toLowerCase().startsWith(series.toLowerCase())) return series;
+                    }
+                    return "Standalone Message";
+                }
 
-                latestSermonCard.innerHTML = `
-                    <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" class="relative block w-full group rounded-lg overflow-hidden shadow-md">
-                        <img src="${thumbnailUrl}" alt="${snippet.title}" class="w-full h-auto">
-                        <div class="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center">
-                            <div class="bg-lion text-white font-bold py-2 px-5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">Watch</div>
+                function extractSpeaker(description) {
+                    for (const speaker of knownSpeakers) {
+                        if (description.toLowerCase().includes(speaker.toLowerCase())) return speaker;
+                    }
+                    return "Guest Speaker";
+                }
+
+                // --- UI RENDERING ---
+                function displayLiveStream(liveVideo) {
+                    const liveVideoId = liveVideo.id.videoId;
+                    liveStreamSection.classList.remove('hidden');
+                    liveVideoEmbed.innerHTML = `<iframe src="https://www.youtube.com/embed/${liveVideoId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                    latestMessageHeading.textContent = "Previous Message";
+                }
+
+                function displayContent(isLive) {
+                    const sermonIndex = isLive ? 1 : 0;
+                    const latestSermon = allSermonSnippets[sermonIndex];
+                    if (latestSermon) {
+                        populateLatestSermon(latestSermon);
+                    } else {
+                        latestSermonCard.innerHTML = `<p class="text-center text-battleship-gray md:col-span-2">No recent completed sermon found.</p>`;
+                    }
+                    
+                    filteredVideos = allSermonSnippets.slice(sermonIndex + 1);
+                    renderPastSermons();
+                }
+
+                function renderPastSermons() {
+                    pastSermonsGrid.innerHTML = '';
+                    currentlyDisplayedCount = 0;
+                    appendPastSermons(initialLoadCount);
+                }
+                
+                function appendPastSermons(count) {
+                    const videosToDisplay = filteredVideos.slice(currentlyDisplayedCount, currentlyDisplayedCount + count);
+
+                    if (videosToDisplay.length === 0 && currentlyDisplayedCount === 0) {
+                        pastSermonsGrid.innerHTML = `<p class="text-battleship-gray col-span-full text-center">No sermons found for this filter.</p>`;
+                        viewMoreContainer.classList.add('hidden');
+                        return;
+                    }
+                    
+                    let gridHtml = '';
+                    videosToDisplay.forEach(video => { gridHtml += createSermonCard(video); });
+                    pastSermonsGrid.innerHTML += gridHtml;
+                    currentlyDisplayedCount += videosToDisplay.length;
+
+                    if (currentlyDisplayedCount < filteredVideos.length) {
+                        viewMoreContainer.classList.remove('hidden');
+                    } else {
+                        viewMoreContainer.classList.add('hidden');
+                    }
+                }
+
+                function populateLatestSermon(video) {
+                    const snippet = video.snippet;
+                    const publishedDate = new Date(snippet.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                    const thumbnailUrl = snippet.thumbnails.high.url;
+
+                    latestSermonCard.innerHTML = `
+                        <a href="https://www.youtube.com/watch?v=${video.id}" target="_blank" class="relative block w-full group rounded-lg overflow-hidden shadow-md">
+                            <img src="${thumbnailUrl}" alt="${snippet.title}" class="w-full h-auto">
+                            <div class="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center">
+                                <div class="bg-lion text-white font-bold py-2 px-5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">Watch</div>
+                            </div>
+                        </a>
+                        <div>
+                            <h3 class="mt-1 text-3xl font-extrabold text-jet">${snippet.title}</h3>
+                            <p class="mt-2 text-lg text-battleship-gray">Published on ${publishedDate}</p>
+                            <p class="mt-4 text-battleship-gray leading-relaxed">${snippet.description.substring(0, 150) + '...'}</p>
                         </div>
-                    </a>
-                    <div>
-                        <h3 class="mt-1 text-3xl font-extrabold text-jet">${snippet.title}</h3>
-                        <p class="mt-2 text-lg text-battleship-gray">Published on ${publishedDate}</p>
-                        <p class="mt-4 text-battleship-gray leading-relaxed">${snippet.description.substring(0, 150) + '...'}</p>
-                    </div>
-                `;
-            }
+                    `;
+                }
 
-            function createSermonCard(video) {
-                const videoId = video.id;
-                const snippet = video.snippet;
-                const thumbnailUrl = snippet.thumbnails.high?.url || snippet.thumbnails.default.url;
-                const publishedDate = new Date(snippet.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                function createSermonCard(video) {
+                    const snippet = video.snippet;
+                    const thumbnailUrl = snippet.thumbnails.high.url;
+                    const publishedDate = new Date(snippet.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
-                return `
-                    <div class="bg-white rounded-lg shadow-xl overflow-hidden flex flex-col group">
-                        <div class="relative">
-                            <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank">
-                                <img src="${thumbnailUrl}" alt="${snippet.title}" class="w-full h-48 object-cover">
-                                <div class="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center">
-                                    <div class="bg-lion text-white font-bold py-2 px-5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">Watch</div>
-                                </div>
-                            </a>
+                    return `
+                        <div class="bg-white rounded-lg shadow-xl overflow-hidden flex flex-col group">
+                            <div class="relative">
+                                <a href="https://www.youtube.com/watch?v=${video.id}" target="_blank">
+                                    <img src="${thumbnailUrl}" alt="${snippet.title}" class="w-full h-48 object-cover">
+                                    <div class="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center">
+                                        <div class="bg-lion text-white font-bold py-2 px-5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">Watch</div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="p-6 flex-grow">
+                                <h3 class="text-xl font-bold text-jet">${snippet.title}</h3>
+                                <p class="mt-1 text-battleship-gray">${publishedDate}</p>
+                            </div>
                         </div>
-                        <div class="p-6 flex-grow">
-                            <h3 class="text-xl font-bold text-jet">${snippet.title}</h3>
-                            <p class="mt-1 text-battleship-gray">${publishedDate}</p>
-                        </div>
-                    </div>
-                `;
+                    `;
+                }
+
+                // --- FILTERING LOGIC ---
+                function setupFilters() {
+                    const seriesSet = new Set(allSermonSnippets.map(v => v.series).filter(s => s !== "Standalone Message"));
+                    const speakerSet = new Set(allSermonSnippets.map(v => v.speaker).filter(s => s !== "Guest Speaker"));
+
+                    renderFilterButtons(Array.from(seriesSet), seriesButtonsContainer, 'series');
+                    renderFilterButtons(Array.from(speakerSet), speakerButtonsContainer, 'speaker');
+                }
+
+                function renderFilterButtons(items, container, type) {
+                    container.innerHTML = `<button class="filter-btn active px-4 py-2 text-sm font-semibold text-jet bg-gray-200 rounded-full hover:bg-gray-300" data-type="${type}" data-value="all">All ${type.charAt(0).toUpperCase() + type.slice(1)}</button>`;
+                    items.forEach(item => {
+                        container.innerHTML += `<button class="filter-btn px-4 py-2 text-sm font-semibold text-jet bg-gray-200 rounded-full hover:bg-gray-300" data-type="${type}" data-value="${item}">${item}</button>`;
+                    });
+                }
+                
+                document.getElementById('filter-container').addEventListener('click', (e) => {
+                    if (e.target.classList.contains('filter-btn')) {
+                        const type = e.target.dataset.type;
+                        const value = e.target.dataset.value;
+
+                        document.querySelectorAll(`.filter-btn[data-type="${type}"]`).forEach(btn => btn.classList.remove('active'));
+                        e.target.classList.add('active');
+
+                        applyFilter(type, value);
+                    }
+                });
+
+                function applyFilter(type, value) {
+                    const sermonIndex = liveStreamSection.classList.contains('hidden') ? 0 : 1;
+                    const baseSermonList = allSermonSnippets.slice(sermonIndex + 1);
+
+                    if (value === 'all') {
+                        filteredVideos = baseSermonList;
+                    } else {
+                        filteredVideos = baseSermonList.filter(video => video[type] === value);
+                    }
+                    renderPastSermons();
+                }
+
+                viewMoreButton.addEventListener('click', () => appendPastSermons(loadMoreCount));
+
+                // --- Initial Call ---
+                fetchAllContent();
             }
-
-            viewMoreButton.addEventListener('click', () => {
-                const sermonIndex = liveStreamSection.classList.contains('hidden') ? 0 : 1;
-                appendPastSermons(loadMoreCount, sermonIndex + 1);
-            });
-
-            // --- Initial Call ---
-            fetchAllContent();
         });
     </script>
 

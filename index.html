@@ -192,6 +192,18 @@
         </section>
     </main>
 
+    <!-- Welcome Modal -->
+    <div id="welcome-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-60 px-4">
+        <div class="bg-alabaster rounded-lg shadow-xl p-8 max-w-md w-full relative text-center">
+            <button id="close-modal-button" class="absolute -top-2 -right-2 text-white bg-jet rounded-full h-8 w-8 flex items-center justify-center text-2xl font-bold">&times;</button>
+            <h2 class="text-3xl font-extrabold text-jet">New Here?</h2>
+            <p class="mt-2 text-battleship-gray">We're so glad you're checking us out! We know visiting a new church can be intimidating, and we want to make your first experience a great one.</p>
+            <a href="./visit.html" id="modal-visit-button" class="mt-6 inline-block w-full text-center bg-lion text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition-colors">
+                Plan Your Visit
+            </a>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="bg-jet text-alabaster">
         <div class="container mx-auto px-6 py-12">
@@ -266,7 +278,7 @@
                 });
         });
 
-        // --- API Fetchers on Page Load ---
+        // --- API Fetchers and Modal Logic on Page Load ---
         document.addEventListener('DOMContentLoaded', function() {
             const apiKey = 'AIzaSyC2qVFq--Rf6PYbucOt4Q3Z69GpCtG8aqs'; 
             
@@ -277,6 +289,17 @@
             const sermonThumbnail = document.getElementById('latest-sermon-thumbnail');
             const sermonThumbnailLink = document.getElementById('latest-sermon-thumbnail-link');
             const sermonLink = document.getElementById('latest-sermon-link');
+            const minDurationSeconds = 600; // 10 minutes
+
+            function parseISO8601Duration(duration) {
+                const regex = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/;
+                const matches = duration.match(regex);
+                if (!matches) return 0;
+                const hours = parseInt(matches[1] || 0);
+                const minutes = parseInt(matches[2] || 0);
+                const seconds = parseInt(matches[3] || 0);
+                return (hours * 3600) + (minutes * 60) + seconds;
+            }
 
             async function getLatestSermon() {
                 try {
@@ -286,12 +309,25 @@
                     
                     const uploadsPlaylistId = channelData.items[0].contentDetails.relatedPlaylists.uploads;
 
-                    const videoResponse = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=1&key=${apiKey}`);
-                    const videoData = await videoResponse.json();
-                    if (!videoData.items || videoData.items.length === 0) throw new Error('No videos in playlist.');
+                    const playlistResponse = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=25&key=${apiKey}`);
+                    const playlistData = await playlistResponse.json();
+                    if (!playlistData.items || playlistData.items.length === 0) throw new Error('No videos in playlist.');
 
-                    const latestVideo = videoData.items[0].snippet;
-                    const videoId = latestVideo.resourceId.videoId;
+                    const videoIds = playlistData.items.map(item => item.snippet.resourceId.videoId).join(',');
+
+                    const videosResponse = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoIds}&key=${apiKey}`);
+                    const videosData = await videosResponse.json();
+                    if (!videosData.items) throw new Error('Could not fetch video details.');
+                    
+                    const longFormVideos = videosData.items.filter(video => {
+                        const duration = video.contentDetails.duration;
+                        return parseISO8601Duration(duration) > minDurationSeconds;
+                    });
+                    
+                    if (longFormVideos.length === 0) throw new Error('No recent long-form sermons found.');
+
+                    const latestVideo = longFormVideos[0].snippet;
+                    const videoId = longFormVideos[0].id;
                     const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
 
                     sermonTitle.textContent = latestVideo.title;
@@ -300,7 +336,6 @@
                     sermonLink.href = videoUrl;
                     sermonLink.target = '_blank';
                     sermonThumbnailLink.href = videoUrl;
-
 
                 } catch (error) {
                     console.error('Error fetching latest sermon:', error);
@@ -355,7 +390,38 @@
                 `;
             }
 
-            // --- Run Both Fetchers ---
+            // --- Welcome Modal Logic ---
+            const welcomeModal = document.getElementById('welcome-modal');
+            const closeModalButton = document.getElementById('close-modal-button');
+            const modalVisitButton = document.getElementById('modal-visit-button');
+
+            function showModal() {
+                if (welcomeModal) {
+                    welcomeModal.classList.remove('hidden');
+                    welcomeModal.classList.add('flex');
+                }
+            }
+
+            function hideModal() {
+                if (welcomeModal) {
+                    welcomeModal.classList.add('hidden');
+                    welcomeModal.classList.remove('flex');
+                    const d = new Date();
+                    d.setTime(d.getTime() + (30 * 24 * 60 * 60 * 1000)); // Expires in 30 days
+                    let expires = "expires="+d.toUTCString();
+                    document.cookie = "faithChurchVisitor=true;" + expires + ";path=/";
+                }
+            }
+
+            if (!document.cookie.split(';').some((item) => item.trim().startsWith('faithChurchVisitor='))) {
+                setTimeout(showModal, 2000); // Show modal after 2 seconds
+            }
+
+            if(closeModalButton) closeModalButton.addEventListener('click', hideModal);
+            if(modalVisitButton) modalVisitButton.addEventListener('click', hideModal);
+
+
+            // --- Run API Fetchers ---
             getLatestSermon();
             getCalendarEvents();
         });

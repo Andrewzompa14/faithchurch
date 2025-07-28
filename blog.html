@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Night to Shine | Faith Church</title>
+    <title>Blog | Faith Church</title>
     
     <!-- Favicon -->
     <link rel="icon" href="IMG_8426.png" type="image/png">
@@ -46,10 +46,22 @@
         .text-shadow {
             text-shadow: 0 2px 4px rgba(0,0,0,0.4);
         }
-        /* Aspect ratio for video embeds */
-        .aspect-w-16 { position: relative; padding-bottom: 56.25%; }
-        .aspect-h-9 { height: 0; }
-        .aspect-w-16 > * { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        /* Styles for blog post content */
+        .post-content h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .post-content p {
+            margin-bottom: 1rem;
+            line-height: 1.75;
+        }
+        .post-content ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 <body class="bg-alabaster">
@@ -59,91 +71,22 @@
 
     <main>
         <!-- Page Header Section -->
-        <section class="relative h-64 bg-cover bg-center text-white flex items-center justify-center" style="background-image: url('https://storage2.snappages.site/57FB62/assets/images/12324877_3840x2160_500.jpeg');">
+        <section class="relative h-64 bg-cover bg-center text-white flex items-center justify-center" style="background-image: url('https://placehold.co/1600x400/7b8a83/ffffff?text=Our+Blog');">
             <div class="absolute inset-0 bg-jet opacity-50"></div>
             <div class="relative z-10 text-center px-4">
-                <h1 class="text-5xl md:text-6xl font-extrabold text-shadow uppercase tracking-wider">Night to Shine</h1>
+                <h1 class="text-5xl md:text-6xl font-extrabold text-shadow uppercase tracking-wider">Faith Church Blog</h1>
             </div>
         </section>
 
-        <!-- What is Night to Shine? Section -->
+        <!-- Blog Posts Section -->
         <section class="py-16 md:py-24 bg-white">
-            <div class="container mx-auto px-6 max-w-4xl">
-                <h2 class="text-3xl md:text-4xl font-extrabold text-jet text-center">What is Night to Shine?</h2>
-                <p class="mt-4 text-lg text-battleship-gray leading-relaxed">
-                    Night to Shine is a complimentary event for people with special needs hosted by local churches around the world, sponsored by the Tim Tebow Foundation. The event is open to anyone living with disabilities, ages 14 and older. 
-                </p>
-                <p class="mt-4 text-lg text-battleship-gray leading-relaxed">
-                    Each event is unique to its location, but some cornerstone activities include a red carpet entrance with paparazzi, hair and makeup stations, shoeshines, limousine rides, karaoke, gifts, a catered dinner, a Sensory Room, a Respite Room for parents and caregivers, dancing, and a crowning ceremony where every guest is honored as a King or a Queen - the way God sees them each and every day.
-                </p>
-                <div class="mt-6 bg-alabaster p-4 rounded-lg text-center">
-                    <p class="text-delft-blue font-semibold">Information for Night to Shine 2026 will be coming in the fall.</p>
+            <div class="container mx-auto px-6 max-w-3xl">
+                <div id="posts-container" class="space-y-12">
+                    <!-- Blog posts will be loaded here by JavaScript -->
+                    <p class="text-center text-battleship-gray">Loading posts...</p>
                 </div>
             </div>
         </section>
-
-        <!-- How to Support Section -->
-        <section class="py-16 md:py-24 bg-alabaster">
-            <div class="container mx-auto px-6 text-center">
-                <h2 class="text-3xl md:text-4xl font-extrabold text-jet">How You Can Support Night to Shine</h2>
-                <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <!-- Give -->
-                    <div class="bg-white p-8 rounded-lg shadow-lg">
-                        <h3 class="text-2xl font-bold text-delft-blue">Give</h3>
-                        <p class="mt-4 text-battleship-gray">The event is free, but it costs approximately $65 per guest. Please consider sponsoring a guest, but gifts of any size are welcome. All donations are tax-deductible.</p>
-                        <a href="./give.html" class="mt-6 inline-block bg-lion text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition-all duration-300 shadow">Give to Night to Shine</a>
-                    </div>
-                    <!-- Volunteer -->
-                    <div class="bg-white p-8 rounded-lg shadow-lg">
-                        <h3 class="text-2xl font-bold text-delft-blue">Volunteer</h3>
-                        <p class="mt-4 text-battleship-gray">We are always looking for volunteers to help during the event. Volunteers must attend training and have a valid background check. Click below to apply.</p>
-                        <a href="#" class="mt-6 inline-block bg-lion text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition-all duration-300 shadow">Volunteer Application</a>
-                    </div>
-                    <!-- Donate Goods/Services -->
-                    <div class="bg-white p-8 rounded-lg shadow-lg">
-                        <h3 class="text-2xl font-bold text-delft-blue">Donate Goods</h3>
-                        <p class="mt-4 text-battleship-gray">Many businesses donate goods and services, from gift cards to limousines. If you or your business would like to contribute, please contact us.</p>
-                        <a href="./contact.html" class="mt-6 inline-block bg-lion text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition-all duration-300 shadow">Contact Us</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Highlight Videos Section -->
-        <section class="py-16 md:py-24 bg-white">
-            <div class="container mx-auto px-6">
-                <h2 class="text-3xl md:text-4xl font-extrabold text-jet text-center mb-12">Highlight Videos</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-                    <div>
-                        <h3 class="text-2xl font-bold text-delft-blue text-center mb-4">Night to Shine RI 2025</h3>
-                        <div class="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden shadow-xl">
-                            <iframe src="https://www.youtube.com/embed/NL7kCmz24Ds" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                    <div>
-                        <h3 class="text-2xl font-bold text-delft-blue text-center mb-4">Night to Shine RI 2024</h3>
-                        <div class="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden shadow-xl">
-                            <iframe src="https://www.youtube.com/embed/2DTZiRtD3XE" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Thank You Section -->
-        <section class="py-16 md:py-24 bg-delft-blue text-white">
-            <div class="container mx-auto px-6 text-center">
-                <h2 class="text-3xl md:text-4xl font-extrabold">Thank You!</h2>
-                <p class="mt-4 text-lg text-alabaster/80">This event would not be possible without the generous support of our volunteers, business partners, and partner churches.</p>
-                <div class="mt-8 text-lg text-alabaster">
-                    <p>Faith Baptist Church</p>
-                    <p>Hope Church</p>
-                    <p>Ocean Pointe Christian Church</p>
-                    <p>Praise Tabernacle</p>
-                </div>
-            </div>
-        </section>
-
     </main>
 
     <!-- Footer -->
@@ -180,12 +123,17 @@
         </div>
     </footer>
 
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <!-- Add SDKs for Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+
     <script>
         // --- Universal Reusable Header Loader ---
         document.addEventListener("DOMContentLoaded", function() {
             fetch("header.html")
                 .then(response => {
-                    if (!response.ok) throw new Error("Network response was not ok");
+                    if (!response.ok) throw new Error("Header not found");
                     return response.text();
                 })
                 .then(data => {
@@ -216,12 +164,76 @@
                             moreMenu.classList.add('hidden');
                         }
                     });
+
+                    // Run Page-Specific Functionality AFTER Header is Ready
+                    initializeBlogPage();
                 })
                 .catch(error => {
                     console.error('Error fetching header:', error);
                     document.getElementById("header-placeholder").innerHTML = "<p class='text-center text-red-500'>Error loading navigation.</p>";
                 });
         });
+
+        // --- Blog Page Functionality ---
+        function initializeBlogPage() {
+            // Your web app's Firebase configuration
+            const firebaseConfig = {
+                apiKey: "AIzaSyBomHYAHPdSq4K2YrngzOnPRv71r-Otvcw",
+                authDomain: "faith-church-website-fdbdf.firebaseapp.com",
+                projectId: "faith-church-website-fdbdf",
+                storageBucket: "faith-church-website-fdbdf.appspot.com",
+                messagingSenderId: "303139000318",
+                appId: "1:303139000318:web:68efb84508d6be04a5baaf",
+                measurementId: "G-CVRKCE2EJZ"
+            };
+
+            // Initialize Firebase
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            const db = firebase.firestore();
+            const postsContainer = document.getElementById('posts-container');
+
+            async function fetchPosts() {
+                try {
+                    const snapshot = await db.collection("posts").orderBy("date", "desc").get();
+                    
+                    if (snapshot.empty) {
+                        postsContainer.innerHTML = '<p class="text-center text-battleship-gray">No blog posts found. Check back soon!</p>';
+                        return;
+                    }
+
+                    postsContainer.innerHTML = ''; // Clear loading message
+                    snapshot.forEach(doc => {
+                        const post = doc.data();
+                        const postElement = document.createElement('article');
+                        
+                        const postDate = post.date.toDate().toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        });
+
+                        postElement.innerHTML = `
+                            <div class="border-b-2 border-delft-blue pb-4">
+                                <h2 class="text-3xl md:text-4xl font-extrabold text-jet">${post.title}</h2>
+                                <p class="text-sm text-battleship-gray mt-2">By ${post.author} on ${postDate}</p>
+                            </div>
+                            <div class="mt-6 text-lg text-jet leading-relaxed post-content">
+                                ${post.content}
+                            </div>
+                        `;
+                        postsContainer.appendChild(postElement);
+                    });
+
+                } catch (error) {
+                    console.error("Error fetching posts: ", error);
+                    postsContainer.innerHTML = '<p class="text-center text-red-600">Could not load posts at this time. Please check the Firebase configuration.</p>';
+                }
+            }
+
+            fetchPosts();
+        }
     </script>
 
 </body>
