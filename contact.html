@@ -105,6 +105,13 @@
                                 </div>
                             </div>
                         </form>
+                        <!-- Success and Error Message Placeholders -->
+                        <div id="form-success" class="hidden mt-4 p-4 rounded-md bg-green-100 text-green-800 text-center">
+                            Thank you for your message! We'll get back to you soon.
+                        </div>
+                        <div id="form-error" class="hidden mt-4 p-4 rounded-md bg-red-100 text-red-800 text-center">
+                            Oops! Something went wrong. Please try again.
+                        </div>
                     </div>
 
                     <!-- Contact Info -->
@@ -181,17 +188,13 @@
         document.addEventListener("DOMContentLoaded", function() {
             fetch("header.html")
                 .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Network response was not ok");
-                    }
+                    if (!response.ok) throw new Error("Network response was not ok");
                     return response.text();
                 })
                 .then(data => {
                     document.getElementById("header-placeholder").innerHTML = data;
                     
-                    // --- Initialize ALL header functionality AFTER it has been loaded into the page ---
-
-                    // 1. Mobile Menu Toggle
+                    // Initialize header functionality
                     const mobileMenuButton = document.getElementById('mobile-menu-button');
                     const mobileMenu = document.getElementById('mobile-menu');
                     if (mobileMenuButton && mobileMenu) {
@@ -200,19 +203,17 @@
                         });
                     }
 
-                    // 2. Desktop "More" Dropdown Toggle
                     const moreButton = document.getElementById('more-dropdown-button');
                     const moreMenu = document.getElementById('more-dropdown-menu');
                     const moreContainer = document.getElementById('more-dropdown-container');
 
                     if (moreButton && moreMenu && moreContainer) {
                         moreButton.addEventListener('click', (event) => {
-                            event.stopPropagation(); // Prevents the document click from firing immediately
+                            event.stopPropagation();
                             moreMenu.classList.toggle('hidden');
                         });
                     }
                     
-                    // Close dropdown when clicking anywhere else on the page
                     document.addEventListener('click', (event) => {
                         if (moreContainer && !moreContainer.contains(event.target) && moreMenu && !moreMenu.classList.contains('hidden')) {
                             moreMenu.classList.add('hidden');
@@ -223,6 +224,37 @@
                     console.error('Error fetching header:', error);
                     document.getElementById("header-placeholder").innerHTML = "<p class='text-center text-red-500'>Error loading navigation.</p>";
                 });
+        });
+
+        // --- Netlify AJAX Form Submission ---
+        const contactForm = document.querySelector('form[name="contact"]');
+        const successMessage = document.getElementById('form-success');
+        const errorMessage = document.getElementById('form-error');
+
+        contactForm.addEventListener("submit", event => {
+            event.preventDefault();
+            
+            const myForm = event.target;
+            const formData = new FormData(myForm);
+
+            fetch("/", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams(formData).toString(),
+            })
+            .then(() => {
+                successMessage.classList.remove('hidden');
+                myForm.reset();
+                setTimeout(() => {
+                    successMessage.classList.add('hidden');
+                }, 5000); // Hide after 5 seconds
+            })
+            .catch(error => {
+                errorMessage.classList.remove('hidden');
+                 setTimeout(() => {
+                    errorMessage.classList.add('hidden');
+                }, 5000); // Hide after 5 seconds
+            });
         });
     </script>
 
