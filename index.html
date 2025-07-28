@@ -123,15 +123,15 @@
                 <h2 class="text-3xl md:text-4xl font-extrabold">Find Your Next Step</h2>
                 <p class="mt-2 mb-12 max-w-2xl mx-auto text-alabaster/80">Whether you're new to faith or a long-time believer, there's always a next step to take.</p>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <a href="./visit.html" class="block bg-white/10 p-8 rounded-lg hover:bg-white/20 transition-colors duration-300">
+                    <a href="./visit.html" class="block bg-white/10 p-8 rounded-lg hover:bg-white/20 transition-colors duration-300 border border-white/20">
                         <h3 class="text-2xl font-bold">Plan a Visit</h3>
                         <p class="mt-2 text-alabaster/80">Let us know you're coming! We'd love to meet you and make your first visit a great one.</p>
                     </a>
-                    <a href="./sermons.html" class="block bg-white/10 p-8 rounded-lg hover:bg-white/20 transition-colors duration-300">
+                    <a href="./sermons.html" class="block bg-white/10 p-8 rounded-lg hover:bg-white/20 transition-colors duration-300 border border-white/20">
                         <h3 class="text-2xl font-bold">Watch a Sermon</h3>
                         <p class="mt-2 text-alabaster/80">Explore our recent messages to get a feel for our teaching and worship style.</p>
                     </a>
-                    <a href="./adults.html" class="block bg-white/10 p-8 rounded-lg hover:bg-white/20 transition-colors duration-300">
+                    <a href="./adults.html" class="block bg-white/10 p-8 rounded-lg hover:bg-white/20 transition-colors duration-300 border border-white/20">
                         <h3 class="text-2xl font-bold">Find a Group</h3>
                         <p class="mt-2 text-alabaster/80">Life is better together. Find a community group to connect and grow with.</p>
                     </a>
@@ -160,9 +160,11 @@
                      <h2 class="text-3xl md:text-4xl font-extrabold text-jet">Latest Sermon</h2>
                      <p class="mt-2 max-w-2xl mx-auto text-battleship-gray">Engage with God's Word through our weekly teaching.</p>
                 </div>
-                <div id="latest-sermon-container" class="bg-white rounded-lg shadow-xl overflow-hidden flex flex-col md:flex-row items-center max-w-4xl mx-auto">
-                    <div class="w-full md:w-1/2"><img id="latest-sermon-thumbnail" src="https://placehold.co/600x400/40476d/ffffff?text=Loading+Sermon..." alt="Sermon series graphic" class="w-full h-auto"></div>
-                    <div class="p-8 md:p-12">
+                <div id="latest-sermon-container" class="bg-white rounded-lg shadow-xl p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 md:gap-8 max-w-4xl mx-auto">
+                    <a id="latest-sermon-thumbnail-link" href="#" target="_blank" class="w-full md:w-1/2 block rounded-lg overflow-hidden shadow-md">
+                        <img id="latest-sermon-thumbnail" src="https://placehold.co/600x400/40476d/ffffff?text=Loading+Sermon..." alt="Sermon series graphic" class="w-full h-auto">
+                    </a>
+                    <div class="md:w-1/2 text-center md:text-left">
                         <h3 id="latest-sermon-title" class="text-2xl font-bold text-jet">Loading...</h3>
                         <p id="latest-sermon-description" class="mt-4 text-battleship-gray">Fetching the latest sermon from YouTube.</p>
                         <a id="latest-sermon-link" href="./sermons.html" class="mt-6 inline-block bg-lion text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition-all duration-300 shadow">Watch Now</a>
@@ -222,18 +224,17 @@
     </footer>
 
     <script>
-        // --- Combined Loader and API Script for Homepage ---
+        // --- Universal Reusable Header Loader ---
         document.addEventListener("DOMContentLoaded", function() {
-            // --- 1. Load the Reusable Header ---
             fetch("header.html")
                 .then(response => {
-                    if (!response.ok) throw new Error("Header not found");
+                    if (!response.ok) throw new Error("Network response was not ok");
                     return response.text();
                 })
                 .then(data => {
                     document.getElementById("header-placeholder").innerHTML = data;
                     
-                    // --- 2. Initialize Header Functionality ---
+                    // Initialize header functionality
                     const mobileMenuButton = document.getElementById('mobile-menu-button');
                     const mobileMenu = document.getElementById('mobile-menu');
                     if (mobileMenuButton && mobileMenu) {
@@ -263,15 +264,18 @@
                     console.error('Error fetching header:', error);
                     document.getElementById("header-placeholder").innerHTML = "<p class='text-center text-red-500'>Error loading navigation.</p>";
                 });
+        });
 
-            // --- 3. Run API Fetchers for Homepage Content ---
+        // --- API Fetchers on Page Load ---
+        document.addEventListener('DOMContentLoaded', function() {
             const apiKey = 'AIzaSyC2qVFq--Rf6PYbucOt4Q3Z69GpCtG8aqs'; 
             
-            // YouTube Fetcher
+            // --- YouTube Latest Sermon Fetcher ---
             const youtubeChannelHandle = '@faithbaptistri';
             const sermonTitle = document.getElementById('latest-sermon-title');
             const sermonDescription = document.getElementById('latest-sermon-description');
             const sermonThumbnail = document.getElementById('latest-sermon-thumbnail');
+            const sermonThumbnailLink = document.getElementById('latest-sermon-thumbnail-link');
             const sermonLink = document.getElementById('latest-sermon-link');
 
             async function getLatestSermon() {
@@ -288,12 +292,15 @@
 
                     const latestVideo = videoData.items[0].snippet;
                     const videoId = latestVideo.resourceId.videoId;
+                    const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
 
                     sermonTitle.textContent = latestVideo.title;
                     sermonDescription.textContent = latestVideo.description.substring(0, 150) + '...';
                     sermonThumbnail.src = latestVideo.thumbnails.maxres?.url || latestVideo.thumbnails.high.url;
-                    sermonLink.href = `https://www.youtube.com/watch?v=${videoId}`;
+                    sermonLink.href = videoUrl;
                     sermonLink.target = '_blank';
+                    sermonThumbnailLink.href = videoUrl;
+
 
                 } catch (error) {
                     console.error('Error fetching latest sermon:', error);
@@ -302,7 +309,7 @@
                 }
             }
 
-            // Google Calendar Fetcher
+            // --- Google Calendar Events Fetcher ---
             const calendarId = 'events@faithbaptistri.org';
             const eventsContainer = document.getElementById('upcoming-events-container');
 
@@ -338,17 +345,17 @@
                 const dateStr = startDate.toLocaleDateString('en-US', dateOptions).toUpperCase();
 
                 return `
-                    <div class="bg-alabaster p-6 rounded-lg flex items-center justify-between gap-4 shadow-sm">
+                    <a href="./events.html" class="block bg-alabaster p-6 rounded-lg flex items-center justify-between gap-4 shadow-sm hover:shadow-md transition-shadow">
                         <div>
                             <p class="font-bold text-delft-blue">${dateStr}</p>
                             <h3 class="text-xl font-bold text-jet">${title}</h3>
                         </div>
-                        <a href="./events.html" class="text-lion font-bold hover:underline">Details &rarr;</a>
-                    </div>
+                        <span class="text-lion font-bold">Details &rarr;</span>
+                    </a>
                 `;
             }
 
-            // --- Run API Fetchers ---
+            // --- Run Both Fetchers ---
             getLatestSermon();
             getCalendarEvents();
         });

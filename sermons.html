@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sermons | Faith Church</title>
+    
+    <!-- Favicon -->
     <link rel="icon" href="IMG_8426.png" type="image/png">
 
     <!-- Tailwind CSS -->
@@ -52,6 +54,7 @@
 </head>
 <body class="bg-alabaster">
 
+    <!-- Header Placeholder -->
     <div id="header-placeholder"></div>
 
     <main>
@@ -62,27 +65,24 @@
                 <h1 class="text-5xl md:text-6xl font-extrabold text-shadow uppercase tracking-wider">Sermons</h1>
             </div>
         </section>
+        
+        <!-- Live Stream Section (Hidden by default) -->
+        <section id="live-stream-section" class="hidden py-16 md:py-24 bg-red-700 text-white">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-center mb-8">We Are Live Now!</h2>
+                <div id="live-video-embed" class="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden shadow-xl max-w-4xl mx-auto">
+                    <!-- Live video embed will be placed here -->
+                </div>
+            </div>
+        </section>
 
         <!-- Latest Sermon Section -->
         <section class="py-16 md:py-24 bg-white">
             <div class="container mx-auto px-6">
-                <h2 class="text-3xl md:text-4xl font-extrabold text-jet text-center mb-12">Latest Message</h2>
-                <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-                    <div id="latest-sermon-embed" class="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden shadow-xl">
-                        <div class="bg-gray-200 flex items-center justify-center"><p class="text-battleship-gray">Loading Video...</p></div>
-                    </div>
-                    <div>
-                        <h3 id="latest-sermon-title" class="mt-1 text-3xl font-extrabold text-jet">Loading...</h3>
-                        <p id="latest-sermon-date" class="mt-2 text-lg text-battleship-gray">Fetching date...</p>
-                        <p id="latest-sermon-description" class="mt-4 text-battleship-gray leading-relaxed">
-                            Fetching the latest sermon from YouTube.
-                        </p>
-                        <div class="mt-6 flex flex-wrap gap-4">
-                             <a id="latest-sermon-youtube-link" href="#" target="_blank" class="bg-lion text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition-all duration-300 shadow">
-                                Watch on YouTube
-                            </a>
-                        </div>
-                    </div>
+                <h2 id="latest-message-heading" class="text-3xl md:text-4xl font-extrabold text-jet text-center mb-12">Latest Message</h2>
+                <div id="latest-sermon-card" class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center bg-alabaster p-6 rounded-lg shadow-lg">
+                    <!-- Content will be dynamically generated here -->
+                    <p class="text-center text-battleship-gray md:col-span-2">Loading latest sermon...</p>
                 </div>
             </div>
         </section>
@@ -92,7 +92,6 @@
             <div class="container mx-auto px-6">
                 <h2 class="text-3xl md:text-4xl font-extrabold text-jet text-center mb-12">Browse Past Sermons</h2>
                 <div id="past-sermons-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Sermon cards will be dynamically inserted here -->
                      <p class="text-battleship-gray col-span-full text-center">Loading past sermons...</p>
                 </div>
                 <div id="view-more-container" class="text-center mt-12 hidden">
@@ -122,7 +121,7 @@
                     <ul class="mt-2 space-y-1">
                         <li><a href="./about.html" class="text-battleship-gray hover:text-lion">About Us</a></li>
                         <li><a href="./sermons.html" class="text-battleship-gray hover:text-lion">Sermons</a></li>
-                        <li><a href="#" class="text-battleship-gray hover:text-lion">Give</a></li>
+                        <li><a href="./give.html" class="text-battleship-gray hover:text-lion">Give</a></li>
                     </ul>
                 </div>
                 <!-- Column 3: Connect -->
@@ -140,17 +139,54 @@
     </footer>
 
     <script>
-        // --- Mobile Menu Toggle ---
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        mobileMenuButton.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
+        // --- Universal Reusable Header Loader ---
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch("header.html")
+                .then(response => {
+                    if (!response.ok) throw new Error("Network response was not ok");
+                    return response.text();
+                })
+                .then(data => {
+                    document.getElementById("header-placeholder").innerHTML = data;
+                    
+                    // Initialize header functionality
+                    const mobileMenuButton = document.getElementById('mobile-menu-button');
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    if (mobileMenuButton && mobileMenu) {
+                        mobileMenuButton.addEventListener('click', () => {
+                            mobileMenu.classList.toggle('hidden');
+                        });
+                    }
+
+                    const moreButton = document.getElementById('more-dropdown-button');
+                    const moreMenu = document.getElementById('more-dropdown-menu');
+                    const moreContainer = document.getElementById('more-dropdown-container');
+
+                    if (moreButton && moreMenu && moreContainer) {
+                        moreButton.addEventListener('click', (event) => {
+                            event.stopPropagation();
+                            moreMenu.classList.toggle('hidden');
+                        });
+                    }
+                    
+                    document.addEventListener('click', (event) => {
+                        if (moreContainer && !moreContainer.contains(event.target) && moreMenu && !moreMenu.classList.contains('hidden')) {
+                            moreMenu.classList.add('hidden');
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching header:', error);
+                    document.getElementById("header-placeholder").innerHTML = "<p class='text-center text-red-500'>Error loading navigation.</p>";
+                });
+        });
 
         // --- YouTube Sermon Fetcher ---
         document.addEventListener('DOMContentLoaded', function() {
             // --- CONFIGURATION ---
             const apiKey = 'AIzaSyC2qVFq--Rf6PYbucOt4Q3Z69GpCtG8aqs'; 
             const channelHandle = '@faithbaptistri';
-            const initialVideosToFetch = 50; // Fetch a larger batch to ensure we get enough long-form videos
+            const initialVideosToFetch = 50; 
             const minDurationSeconds = 600; // 10 minutes
             const initialPastSermons = 3;
             const loadMoreCount = 6;
@@ -158,13 +194,13 @@
             // --- STATE ---
             let allLongFormVideos = [];
             let currentlyDisplayedPastCount = 0;
+            let channelId = '';
 
             // --- HTML Element Targets ---
-            const embedElement = document.getElementById('latest-sermon-embed');
-            const titleElement = document.getElementById('latest-sermon-title');
-            const dateElement = document.getElementById('latest-sermon-date');
-            const descriptionElement = document.getElementById('latest-sermon-description');
-            const youtubeLinkElement = document.getElementById('latest-sermon-youtube-link');
+            const liveStreamSection = document.getElementById('live-stream-section');
+            const liveVideoEmbed = document.getElementById('live-video-embed');
+            const latestMessageHeading = document.getElementById('latest-message-heading');
+            const latestSermonCard = document.getElementById('latest-sermon-card');
             const pastSermonsGrid = document.getElementById('past-sermons-grid');
             const viewMoreContainer = document.getElementById('view-more-container');
             const viewMoreButton = document.getElementById('view-more-button');
@@ -180,21 +216,29 @@
                 return (hours * 3600) + (minutes * 60) + seconds;
             }
 
-            // --- Main function to fetch all sermons ---
-            async function fetchAllSermons() {
+            // --- Main function to fetch all content ---
+            async function fetchAllContent() {
                 try {
-                    const channelResponse = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forHandle=${channelHandle}&key=${apiKey}`);
+                    // 1. Get Channel ID
+                    const channelResponse = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails,id&forHandle=${channelHandle}&key=${apiKey}`);
                     const channelData = await channelResponse.json();
                     if (!channelData.items || channelData.items.length === 0) throw new Error('Could not find YouTube channel.');
                     
+                    channelId = channelData.items[0].id;
                     const uploadsPlaylistId = channelData.items[0].contentDetails.relatedPlaylists.uploads;
 
+                    // 2. Check for a live stream
+                    const liveResponse = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&eventType=live&type=video&key=${apiKey}`);
+                    const liveData = await liveResponse.json();
+                    
+                    const isLive = liveData.items && liveData.items.length > 0;
+
+                    // 3. Fetch recent videos
                     const playlistResponse = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=${initialVideosToFetch}&key=${apiKey}`);
                     const playlistData = await playlistResponse.json();
                     if (!playlistData.items || playlistData.items.length === 0) throw new Error('No videos found in playlist.');
 
                     const videoIds = playlistData.items.map(item => item.snippet.resourceId.videoId).join(',');
-
                     const videosResponse = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoIds}&key=${apiKey}`);
                     const videosData = await videosResponse.json();
                     if (!videosData.items) throw new Error('Could not fetch video details.');
@@ -206,31 +250,45 @@
                     
                     if (allLongFormVideos.length === 0) throw new Error('No recent long-form videos found.');
 
-                    // Once all videos are fetched and filtered, display them
-                    displaySermons();
+                    // 4. Display content based on live status
+                    if (isLive) {
+                        const liveVideo = liveData.items[0];
+                        displayLiveStream(liveVideo);
+                        displaySermons(true); // isLive = true
+                    } else {
+                        displaySermons(false); // isLive = false
+                    }
 
                 } catch (error) {
-                    console.error('Error fetching sermons:', error);
-                    titleElement.textContent = 'Error Loading Sermons';
-                    descriptionElement.textContent = 'Could not fetch sermons at this time.';
-                    pastSermonsGrid.innerHTML = `<p class="text-battleship-gray col-span-full text-center">Could not load past sermons.</p>`;
+                    console.error('Error fetching content:', error);
+                    latestSermonCard.innerHTML = `<p class="text-center text-red-600 md:col-span-2">Could not load sermons at this time.</p>`;
+                    pastSermonsGrid.innerHTML = '';
                 }
             }
 
-            // --- Function to display sermons on the page ---
-            function displaySermons() {
-                // 1. Display Latest Sermon
-                const latestVideo = allLongFormVideos[0];
-                populateLatestSermon(latestVideo);
+            function displayLiveStream(liveVideo) {
+                const liveVideoId = liveVideo.id.videoId;
+                liveStreamSection.classList.remove('hidden');
+                liveVideoEmbed.innerHTML = `<iframe src="https://www.youtube.com/embed/${liveVideoId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                latestMessageHeading.textContent = "Previous Message";
+            }
 
-                // 2. Display initial set of past sermons
-                pastSermonsGrid.innerHTML = ''; // Clear loading message
-                appendPastSermons(initialPastSermons);
+            function displaySermons(isLive) {
+                const sermonIndex = isLive ? 1 : 0;
+                const latestSermon = allLongFormVideos[sermonIndex];
+                if (!latestSermon) {
+                    latestSermonCard.innerHTML = `<p class="text-center text-battleship-gray md:col-span-2">No recent completed sermon found.</p>`;
+                    return;
+                }
+                populateLatestSermon(latestSermon);
+
+                const pastSermonsStartIndex = sermonIndex + 1;
+                pastSermonsGrid.innerHTML = ''; 
+                appendPastSermons(initialPastSermons, pastSermonsStartIndex);
             }
             
-            // --- Function to append a number of past sermons to the grid ---
-            function appendPastSermons(count) {
-                const startIndex = 1 + currentlyDisplayedPastCount; // 1 to skip latest
+            function appendPastSermons(count, startIndexOffset = 0) {
+                const startIndex = startIndexOffset + currentlyDisplayedPastCount;
                 const endIndex = startIndex + count;
                 const videosToDisplay = allLongFormVideos.slice(startIndex, endIndex);
 
@@ -248,28 +306,34 @@
 
                 currentlyDisplayedPastCount += videosToDisplay.length;
 
-                // Check if there are more videos to load
-                if (allLongFormVideos.length > 1 + currentlyDisplayedPastCount) {
+                if (allLongFormVideos.length > startIndexOffset + currentlyDisplayedPastCount) {
                     viewMoreContainer.classList.remove('hidden');
                 } else {
                     viewMoreContainer.classList.add('hidden');
                 }
             }
 
-            // --- Helper function for the latest sermon ---
             function populateLatestSermon(video) {
                 const videoId = video.id;
                 const snippet = video.snippet;
                 const publishedDate = new Date(snippet.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                const thumbnailUrl = snippet.thumbnails.maxres?.url || snippet.thumbnails.high.url;
 
-                embedElement.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-                titleElement.textContent = snippet.title;
-                dateElement.textContent = `Published on ${publishedDate}`;
-                descriptionElement.textContent = snippet.description.substring(0, 200) + (snippet.description.length > 200 ? '...' : '');
-                youtubeLinkElement.href = `https://www.youtube.com/watch?v=${videoId}`;
+                latestSermonCard.innerHTML = `
+                    <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" class="relative block w-full group rounded-lg overflow-hidden shadow-md">
+                        <img src="${thumbnailUrl}" alt="${snippet.title}" class="w-full h-auto">
+                        <div class="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center">
+                            <div class="bg-lion text-white font-bold py-2 px-5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">Watch</div>
+                        </div>
+                    </a>
+                    <div>
+                        <h3 class="mt-1 text-3xl font-extrabold text-jet">${snippet.title}</h3>
+                        <p class="mt-2 text-lg text-battleship-gray">Published on ${publishedDate}</p>
+                        <p class="mt-4 text-battleship-gray leading-relaxed">${snippet.description.substring(0, 150) + '...'}</p>
+                    </div>
+                `;
             }
 
-            // --- Helper function to create a single past sermon card ---
             function createSermonCard(video) {
                 const videoId = video.id;
                 const snippet = video.snippet;
@@ -294,66 +358,15 @@
                 `;
             }
 
-            // --- Event Listener for the "View More" button ---
             viewMoreButton.addEventListener('click', () => {
-                appendPastSermons(loadMoreCount);
+                const sermonIndex = liveStreamSection.classList.contains('hidden') ? 0 : 1;
+                appendPastSermons(loadMoreCount, sermonIndex + 1);
             });
 
             // --- Initial Call ---
-            fetchAllSermons();
+            fetchAllContent();
         });
     </script>
-
-    <script>
-    // --- Universal Reusable Header Loader ---
-    document.addEventListener("DOMContentLoaded", function() {
-        fetch("header.html")
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                return response.text();
-            })
-            .then(data => {
-                document.getElementById("header-placeholder").innerHTML = data;
-                
-                // --- Initialize ALL header functionality AFTER it has been loaded into the page ---
-
-                // 1. Mobile Menu Toggle
-                const mobileMenuButton = document.getElementById('mobile-menu-button');
-                const mobileMenu = document.getElementById('mobile-menu');
-                if (mobileMenuButton && mobileMenu) {
-                    mobileMenuButton.addEventListener('click', () => {
-                        mobileMenu.classList.toggle('hidden');
-                    });
-                }
-
-                // 2. Desktop "More" Dropdown Toggle
-                const moreButton = document.getElementById('more-dropdown-button');
-                const moreMenu = document.getElementById('more-dropdown-menu');
-                const moreContainer = document.getElementById('more-dropdown-container');
-
-                if (moreButton && moreMenu && moreContainer) {
-                    moreButton.addEventListener('click', (event) => {
-                        event.stopPropagation(); // Prevents the document click from firing immediately
-                        moreMenu.classList.toggle('hidden');
-                    });
-                }
-                
-                // Close dropdown when clicking anywhere else on the page
-                document.addEventListener('click', (event) => {
-                    if (moreContainer && !moreContainer.contains(event.target) && moreMenu && !moreMenu.classList.contains('hidden')) {
-                        moreMenu.classList.add('hidden');
-                    }
-                });
-            })
-            .catch(error => {
-                console.error('Error fetching header:', error);
-                document.getElementById("header-placeholder").innerHTML = "<p class='text-center text-red-500'>Error loading navigation.</p>";
-            });
-    });
-</script>
-
 
 </body>
 </html>
