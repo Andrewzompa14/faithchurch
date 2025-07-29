@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | Faith Church Blog</title>
+    <title>Admin Panel | Faith Church</title>
     
     <!-- Favicon -->
     <link rel="icon" href="IMG_8426.png" type="image/png">
 
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Google Fonts: Montserrat -->
@@ -19,15 +19,17 @@
     <!-- Quill Rich Text Editor CSS -->
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
-    <!-- Custom Styles & Color Configuration -->
+    <!-- Custom Styles & Color Configuration for Tailwind -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
+                        // 'sans' is overridden to use Montserrat as the primary font
                         'sans': ['Montserrat', 'sans-serif'],
                     },
                     colors: {
+                        // Custom color palette defined in the brand kit
                         'battleship-gray': '#7b8a83',
                         'lion': '#b99769',
                         'alabaster': '#f5f1e9',
@@ -40,36 +42,67 @@
     </script>
     
     <style>
-        body { background-color: #f5f1e9; font-family: 'Montserrat', sans-serif; }
-        .tab-btn.active { border-color: #40476d; background-color: #40476d; color: white; }
-        /* Prevent scrollbar from flashing during tab switching */
-        .tab-content { min-height: 50vh; }
-        /* Custom scrollbar for tabs on mobile */
-        .tabs-container::-webkit-scrollbar { display: none; }
-        .tabs-container { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Basic body styling to ensure consistent background and text color */
+        body { 
+            background-color: #f5f1e9; /* Alabaster */
+            color: #2f2f2f; /* Jet */
+            font-family: 'Montserrat', sans-serif; 
+        }
+
+        /* Styling for active tab button to make it visually distinct */
+        .tab-btn.active { 
+            border-color: #40476d; /* Delft Blue for active border */
+            background-color: #40476d; /* Delft Blue background for active tab */
+            color: white; /* White text for active tab */
+        }
+
+        /* Ensure tab content has a minimum height to prevent layout shifts */
+        .tab-content { 
+            min-height: 50vh; 
+        }
+
+        /* Hide scrollbar for tabs on mobile for a cleaner look */
+        .tabs-container::-webkit-scrollbar { 
+            display: none; 
+        }
+        .tabs-container { 
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+
+        /* Specific styling for forms and inputs for consistency and responsiveness */
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        textarea {
+            @apply w-full p-3 rounded-lg border border-battleship-gray shadow-sm focus:outline-none focus:ring-2 focus:ring-lion;
+        }
+        button {
+            @apply px-6 py-3 rounded-lg font-bold transition-all duration-300;
+        }
     </style>
 </head>
 <body class="bg-alabaster">
 
-    <!-- Auth Container -->
+    <!-- Auth Container: Centered login/signup form -->
     <div id="auth-container" class="min-h-screen flex items-center justify-center py-12 px-4">
         <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
             <div class="text-center mb-8">
                 <img src="IMG_8426.png" alt="Faith Church Logo" class="w-16 h-16 mx-auto">
-                <h1 class="text-3xl font-extrabold text-jet mt-4">Blog Admin Login</h1>
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-jet mt-4">Blog Admin Login</h1>
             </div>
             
             <!-- Login Form -->
             <form id="login-form" class="space-y-4">
                 <div>
                     <label for="login-email" class="block text-sm font-bold text-jet">Email</label>
-                    <input type="email" id="login-email" required class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-lion focus:ring focus:ring-lion focus:ring-opacity-50">
+                    <input type="email" id="login-email" required class="mt-1">
                 </div>
                 <div>
                     <label for="login-password" class="block text-sm font-bold text-jet">Password</label>
-                    <input type="password" id="login-password" required class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-lion focus:ring focus:ring-lion focus:ring-opacity-50">
+                    <input type="password" id="login-password" required class="mt-1">
                 </div>
-                <button type="submit" class="w-full bg-delft-blue text-white font-bold py-3 rounded-lg hover:bg-opacity-90">Log In</button>
+                <button type="submit" class="w-full bg-delft-blue text-white hover:bg-opacity-90">Log In</button>
             </form>
 
             <div class="mt-4 text-center">
@@ -80,21 +113,21 @@
             <form id="signup-form" class="hidden space-y-4 mt-4">
                  <div>
                     <label for="signup-name" class="block text-sm font-bold text-jet">Full Name</label>
-                    <input type="text" id="signup-name" required class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-lion focus:ring focus:ring-lion focus:ring-opacity-50">
+                    <input type="text" id="signup-name" required class="mt-1">
                 </div>
                 <div>
                     <label for="signup-email" class="block text-sm font-bold text-jet">Email</label>
-                    <input type="email" id="signup-email" required class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-lion focus:ring focus:ring-lion focus:ring-opacity-50">
+                    <input type="email" id="signup-email" required class="mt-1">
                 </div>
                 <div>
                     <label for="signup-password" class="block text-sm font-bold text-jet">Password (min. 6 characters)</label>
-                    <input type="password" id="signup-password" required class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-lion focus:ring focus:ring-lion focus:ring-opacity-50">
+                    <input type="password" id="signup-password" required class="mt-1">
                 </div>
                 <div>
                     <label for="admin-key" class="block text-sm font-bold text-jet">Admin Key</label>
-                    <input type="password" id="admin-key" required class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-lion focus:ring focus:ring-lion focus:ring-opacity-50" placeholder="Enter the secret key">
+                    <input type="password" id="admin-key" required class="mt-1" placeholder="Enter the secret key">
                 </div>
-                <button type="submit" class="w-full bg-lion text-white font-bold py-3 rounded-lg hover:bg-opacity-90">Create Account</button>
+                <button type="submit" class="w-full bg-lion text-white hover:bg-opacity-90">Create Account</button>
                  <p class="text-sm text-center text-battleship-gray">Already have an account? <a href="#" id="show-login" class="font-bold text-lion hover:underline">Log In</a></p>
             </form>
             <div id="auth-feedback" class="mt-4"></div>
@@ -105,9 +138,9 @@
     <div id="content-container" class="hidden">
         <header class="bg-white shadow-md">
             <div class="container mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row justify-between items-center">
-                <h1 class="text-2xl font-extrabold text-jet mb-2 sm:mb-0">Admin Panel</h1>
-                <div class="flex items-center">
-                    <span id="user-email" class="text-sm text-battleship-gray mr-4"></span>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-jet mb-2 sm:mb-0">Admin Panel</h1>
+                <div class="flex flex-col sm:flex-row items-center sm:space-x-4">
+                    <span id="user-email" class="text-sm text-battleship-gray mb-2 sm:mb-0"></span>
                     <button id="logout-button" class="bg-delft-blue text-white font-bold py-2 px-4 rounded-lg hover:bg-opacity-90">Log Out</button>
                 </div>
             </div>
@@ -126,33 +159,33 @@
             <!-- Tab Content -->
             <div id="blog-tab" class="tab-content">
                 <section class="bg-white p-6 md:p-8 rounded-lg shadow-lg mb-12">
-                    <h2 class="text-3xl font-extrabold text-jet mb-6">Create New Post</h2>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-jet mb-6">Create New Post</h2>
                     <form id="post-form">
                         <div class="mb-4">
-                            <label for="post-title" class="block text-lg font-bold text-jet mb-2">Post Title</label>
-                            <input type="text" id="post-title" required class="w-full px-4 py-2 rounded-md border-gray-300 shadow-sm">
+                            <label for="post-title" class="block text-base sm:text-lg font-bold text-jet mb-2">Post Title</label>
+                            <input type="text" id="post-title" required>
                         </div>
                         <div class="mb-6">
-                            <label class="block text-lg font-bold text-jet mb-2">Post Content</label>
+                            <label class="block text-base sm:text-lg font-bold text-jet mb-2">Post Content</label>
                             <div id="editor" class="bg-white"></div>
                         </div>
-                        <button type="submit" id="publish-button" class="bg-lion text-white font-bold py-3 px-8 rounded-lg hover:bg-opacity-90">Publish Post</button>
+                        <button type="submit" id="publish-button" class="bg-lion text-white hover:bg-opacity-90">Publish Post</button>
                     </form>
                     <div id="form-feedback" class="mt-4"></div>
                 </section>
                 <section>
-                    <h2 class="text-3xl font-extrabold text-jet mb-6">Manage Existing Posts</h2>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-jet mb-6">Manage Existing Posts</h2>
                     <div id="manage-posts-container" class="space-y-4"></div>
                 </section>
             </div>
 
             <div id="contact-tab" class="tab-content hidden">
-                <h2 class="text-3xl font-extrabold text-jet mb-6">Contact Form Submissions</h2>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-jet mb-6">Contact Form Submissions</h2>
                 <div id="contact-submissions-container" class="space-y-4"></div>
             </div>
 
             <div id="prayer-tab" class="tab-content hidden">
-                <h2 class="text-3xl font-extrabold text-jet mb-6">Prayer Requests</h2>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-jet mb-6">Prayer Requests</h2>
                 <div id="prayer-requests-container" class="space-y-4"></div>
             </div>
         </main>
