@@ -59,16 +59,6 @@
             </div>
         </section>
         
-        <!-- Live Stream Section (Hidden by default) -->
-        <section id="live-stream-section" class="hidden py-16 md:py-24 bg-red-700 text-white">
-            <div class="container mx-auto px-6">
-                <h2 class="text-3xl md:text-4xl font-extrabold text-center mb-8">We Are Live Now!</h2>
-                <div id="live-video-embed" class="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden shadow-xl max-w-4xl mx-auto">
-                    <!-- Live video embed will be placed here -->
-                </div>
-            </div>
-        </section>
-
         <!-- Latest Sermon Section -->
         <section class="py-16 md:py-24 bg-white">
             <div class="container mx-auto px-6">
@@ -115,6 +105,8 @@
     <script>
         // --- Combined Script for Header Loading and Page Functionality ---
         document.addEventListener("DOMContentLoaded", function() {
+            
+            // --- 1. Load Header and Footer ---
             Promise.all([
                 fetch("header.html").then(res => res.text()),
                 fetch("footer.html").then(res => res.text())
@@ -151,7 +143,7 @@
             }).catch(error => console.error('Error fetching header/footer:', error));
         });
 
-        // --- YouTube Sermon Fetcher Logic ---
+        // --- Sermon Page Logic (Reads from Firestore) ---
         function initializeSermonsPage() {
             // --- CONFIGURATION ---
             const firebaseConfig = {
@@ -189,7 +181,7 @@
                 try {
                     const snapshot = await db.collection("sermons").orderBy("publishedAt", "desc").get();
                     if (snapshot.empty) {
-                        throw new Error("No sermons found in the database.");
+                        throw new Error("No sermons found in the database. Run the sync action on GitHub.");
                     }
                     allSermons = snapshot.docs.map(doc => doc.data());
                     
@@ -197,7 +189,7 @@
                     setupFilters();
                 } catch (error) {
                     console.error("Error fetching sermons from Firestore: ", error);
-                    latestSermonCard.innerHTML = `<p class="text-center text-red-600">Could not load sermons. Please check back later.</p>`;
+                    latestSermonCard.innerHTML = `<p class="text-center text-red-600">${error.message}</p>`;
                     pastSermonsGrid.innerHTML = '';
                 }
             }
@@ -232,7 +224,7 @@
                 pastSermonsGrid.innerHTML += gridHtml;
                 currentlyDisplayedCount += videosToDisplay.length;
 
-                if (currentlyDisplayedCount < filteredVideos.length) {
+                if (currentlyDisplayedCount < filteredSermons.length) {
                     viewMoreContainer.classList.remove('hidden');
                 } else {
                     viewMoreContainer.classList.add('hidden');
