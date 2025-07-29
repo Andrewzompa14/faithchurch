@@ -108,8 +108,8 @@
             
             // --- 1. Load Header and Footer ---
             Promise.all([
-                fetch("header.html").then(res => res.text()),
-                fetch("footer.html").then(res => res.text())
+                fetch("header.html").then(res => res.ok ? res.text() : ''),
+                fetch("footer.html").then(res => res.ok ? res.text() : '')
             ]).then(([headerHtml, footerHtml]) => {
                 document.getElementById("header-placeholder").innerHTML = headerHtml;
                 document.getElementById("footer-placeholder").innerHTML = footerHtml;
@@ -201,8 +201,7 @@
                     populateLatestSermon(latestSermon);
                 }
                 
-                filteredSermons = allSermons.slice(1);
-                renderPastSermons();
+                applyFilter('series', 'all');
             }
 
             function renderPastSermons() {
@@ -232,7 +231,7 @@
             }
 
             function populateLatestSermon(video) {
-                const publishedDate = new Date(video.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                const publishedDate = video.publishedAt && video.publishedAt.seconds ? new Date(video.publishedAt.seconds * 1000).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : new Date(video.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
                 latestSermonCard.innerHTML = `
                     <a href="https://www.youtube.com/watch?v=${video.id}" target="_blank" class="w-full md:w-1/2 block rounded-lg overflow-hidden shadow-md group relative">
                         <img src="${video.thumbnailUrl}" alt="${video.title}" class="w-full h-auto aspect-[16/9] object-cover">
@@ -249,7 +248,7 @@
             }
 
             function createSermonCard(video) {
-                const publishedDate = new Date(video.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                const publishedDate = video.publishedAt && video.publishedAt.seconds ? new Date(video.publishedAt.seconds * 1000).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : new Date(video.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
                 return `
                     <div class="bg-white rounded-lg shadow-xl overflow-hidden flex flex-col group">
                         <div class="relative">
@@ -287,6 +286,7 @@
                     const value = e.target.dataset.value;
                     document.querySelectorAll(`.filter-btn[data-type="${type}"]`).forEach(btn => btn.classList.remove('active'));
                     e.target.classList.add('active');
+                    
                     applyFilter(type, value);
                 }
             });
@@ -294,9 +294,9 @@
             function applyFilter(type, value) {
                 const baseSermonList = allSermons.slice(1);
                 if (value === 'all') {
-                    filteredVideos = baseSermonList;
+                    filteredSermons = baseSermonList;
                 } else {
-                    filteredVideos = baseSermonList.filter(video => video[type] === value);
+                    filteredSermons = baseSermonList.filter(video => video[type] === value);
                 }
                 renderPastSermons();
             }
