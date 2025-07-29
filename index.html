@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faith Church | Welcome Home</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="IMG_8426.png" type="image/png">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles & Color Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        'battleship-gray': '#7b8a83',
+                        'lion': '#b99769',
+                        'alabaster': '#f5f1e9',
+                        'jet': '#2f2f2f',
+                        'delft-blue': '#40476d',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* For smoother scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        /* Basic body styling */
+        body {
+            background-color: #f5f1e9; /* Alabaster */
+            color: #2f2f2f; /* Jet */
+            font-family: 'Montserrat', sans-serif;
+        }
+        /* Custom styles for hero section text shadow for better readability */
+        .text-shadow {
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+        /* Styles for Parallax Hero Section */
+        #hero-section {
+            background-image: url('https://storage2.snappages.site/57FB62/assets/images/19727127_4000x2252_2500.jpg');
+            min-height: 80vh;
+            background-attachment: fixed; /* Creates the initial parallax effect */
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        @media (max-width: 768px) {
+            #hero-section {
+                background-attachment: scroll;
+            }
+        }
+    </style>
+</head>
+<body class="bg-alabaster">
+
+    <!-- Header Placeholder -->
+    <div id="header-placeholder"></div>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="hero-section" class="relative text-white flex items-center justify-center">
+            <div class="absolute inset-0 bg-jet opacity-40"></div>
+            <div class="relative z-10 text-center px-4">
+                <h1 class="text-5xl md:text-7xl font-extrabold text-shadow uppercase tracking-wider">A Place to Belong</h1>
+                <p class="mt-4 text-lg md:text-xl max-w-2xl mx-auto text-shadow font-light">Loving God. Loving People. Making a Difference.</p>
+                <a href="./visit.html" class="mt-8 inline-block bg-lion text-white font-bold text-lg py-3 px-8 rounded-lg hover:scale-105 transition-transform duration-300 shadow-lg">
+                    Join Us This Sunday
+                </a>
+            </div>
+        </section>
+
+        <!-- Service Times & Location Section -->
+        <section id="visit" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6 text-center">
+                 <h2 class="text-3xl md:text-4xl font-extrabold text-jet mb-2">Gather With Us</h2>
+                 <p class="text-battleship-gray max-w-2xl mx-auto mb-12">We would be honored to have you join us for worship. Here's what you need to know.</p>
+                <div class="flex flex-col md:flex-row justify-center items-center gap-8 md:gap-12">
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 text-lion"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-full h-full"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg></div>
+                        <h3 class="text-xl font-bold text-delft-blue">SUNDAY SERVICE</h3>
+                        <p class="text-lg text-jet">11:00 AM</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 text-lion"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-full h-full"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" /></svg></div>
+                        <h3 class="text-xl font-bold text-delft-blue">OUR LOCATION</h3>
+                        <p class="text-lg text-jet">765 Commonwealth Ave, Warwick, RI 02886</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- About Us Section -->
+        <section id="about" class="py-16 md:py-24 bg-alabaster">
+            <div class="container mx-auto px-6 flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2"><img src="https://placehold.co/600x400/b99769/ffffff?text=Photo+of+Your+Congregation" alt="Faith Church community" class="rounded-lg shadow-xl"></div>
+                <div class="md:w-1/2">
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-jet">Grounded in Scripture, Growing in Grace</h2>
+                    <p class="mt-4 text-lg text-battleship-gray leading-relaxed">Faith Church exists to glorify God by making disciples who love God, love one another, and love our world. We are a warm, welcoming family of believers committed to the clear teaching of the Bible and the life-transforming power of the gospel.</p>
+                    <a href="./about.html" class="mt-6 inline-block text-lion font-bold text-lg hover:underline">Learn More About Our Beliefs &rarr;</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Next Steps Section -->
+        <section class="py-16 md:py-24 bg-delft-blue text-white">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl md:text-4xl font-extrabold">Find Your Next Step</h2>
+                <p class="mt-2 mb-12 max-w-2xl mx-auto text-alabaster/80">Whether you're new to faith or a long-time believer, there's always a next step to take.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <a href="./visit.html" class="block bg-white/10 p-8 rounded-lg hover:bg-white/20 transition-colors duration-300 border border-white/20">
+                        <h3 class="text-2xl font-bold">Plan a Visit</h3>
+                        <p class="mt-2 text-alabaster/80">Let us know you're coming! We'd love to meet you and make your first visit a great one.</p>
+                    </a>
+                    <a href="./sermons.html" class="block bg-white/10 p-8 rounded-lg hover:bg-white/20 transition-colors duration-300 border border-white/20">
+                        <h3 class="text-2xl font-bold">Watch a Sermon</h3>
+                        <p class="mt-2 text-alabaster/80">Explore our recent messages to get a feel for our teaching and worship style.</p>
+                    </a>
+                    <a href="./adults.html" class="block bg-white/10 p-8 rounded-lg hover:bg-white/20 transition-colors duration-300 border border-white/20">
+                        <h3 class="text-2xl font-bold">Find a Group</h3>
+                        <p class="mt-2 text-alabaster/80">Life is better together. Find a community group to connect and grow with.</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ministries Section -->
+        <section id="ministries" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-jet">A Place for Everyone to Belong</h2>
+                <p class="mt-2 mb-12 max-w-2xl mx-auto text-battleship-gray">Find your place to connect, grow, and serve within our church family.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <a href="./kids.html" class="block bg-alabaster p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left"><h3 class="text-xl font-bold text-delft-blue">KIDS</h3><p class="mt-2 text-jet">Fun, safe, and engaging environments for children to learn about Jesus.</p></a>
+                    <a href="./youth.html" class="block bg-alabaster p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left"><h3 class="text-xl font-bold text-delft-blue">FAITH.YTH</h3><p class="mt-2 text-jet">A dynamic ministry for students to grow in their faith and build friendships.</p></a>
+                    <a href="./adults.html" class="block bg-alabaster p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left"><h3 class="text-xl font-bold text-delft-blue">ADULTS</h3><p class="mt-2 text-jet">Community groups and Bible studies for every stage of adult life.</p></a>
+                    <a href="./missions.html" class="block bg-alabaster p-8 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left"><h3 class="text-xl font-bold text-delft-blue">MISSIONS</h3><p class="mt-2 text-jet">Sharing the love of Christ in our community and around the world.</p></a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Sermons Section -->
+        <section id="sermons" class="py-16 md:py-24 bg-alabaster">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                     <h2 class="text-3xl md:text-4xl font-extrabold text-jet">Latest Sermon</h2>
+                     <p class="mt-2 max-w-2xl mx-auto text-battleship-gray">Engage with God's Word through our weekly teaching.</p>
+                </div>
+                <div id="latest-sermon-container" class="bg-white rounded-lg shadow-xl p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 md:gap-8 max-w-4xl mx-auto">
+                    <a id="latest-sermon-thumbnail-link" href="#" target="_blank" class="w-full md:w-1/2 block rounded-lg overflow-hidden shadow-md">
+                        <img id="latest-sermon-thumbnail" src="https://placehold.co/600x400/40476d/ffffff?text=Loading+Sermon..." alt="Sermon series graphic" class="w-full h-auto">
+                    </a>
+                    <div class="md:w-1/2 text-center md:text-left">
+                        <h3 id="latest-sermon-title" class="text-2xl font-bold text-jet">Loading...</h3>
+                        <p id="latest-sermon-description" class="mt-4 text-battleship-gray">Fetching the latest sermon from YouTube.</p>
+                        <a id="latest-sermon-link" href="./sermons.html" class="mt-6 inline-block bg-lion text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition-all duration-300 shadow">Watch Now</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Events Section -->
+        <section id="events" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                     <h2 class="text-3xl md:text-4xl font-extrabold text-jet">Upcoming Events</h2>
+                     <p class="mt-2 max-w-2xl mx-auto text-battleship-gray">See what's happening at Faith Church.</p>
+                </div>
+                <div id="upcoming-events-container" class="max-w-3xl mx-auto space-y-6">
+                    <p class="text-center text-battleship-gray">Loading upcoming events...</p>
+                </div>
+                 <div class="text-center">
+                    <a href="./events.html" class="mt-12 inline-block bg-lion text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition-all duration-300 shadow">
+                        View Full Calendar
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Welcome Modal -->
+    <div id="welcome-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-60 px-4">
+        <div class="bg-alabaster rounded-lg shadow-xl p-8 max-w-md w-full relative text-center">
+            <button id="close-modal-button" class="absolute -top-2 -right-2 text-white bg-jet rounded-full h-8 w-8 flex items-center justify-center text-2xl font-bold">&times;</button>
+            <h2 class="text-3xl font-extrabold text-jet">New Here?</h2>
+            <p class="mt-2 text-battleship-gray">We're so glad you're checking us out! We know visiting a new church can be intimidating, and we want to make your first experience a great one.</p>
+            <a href="./visit.html" id="modal-visit-button" class="mt-6 inline-block w-full text-center bg-lion text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition-colors">
+                Plan Your Visit
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-jet text-alabaster">
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+                <div>
+                    <h4 class="text-xl font-extrabold tracking-tight">FAITH CHURCH</h4>
+                    <p class="mt-2 text-battleship-gray">765 Commonwealth Ave, Warwick, RI 02886</p>
+                    <p class="text-battleship-gray">(401) 738-7664</p>
+                    <p class="text-battleship-gray">contact@faithchurch.com</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold">Quick Links</h4>
+                    <ul class="mt-2 space-y-1">
+                        <li><a href="./about.html" class="text-battleship-gray hover:text-lion">About Us</a></li>
+                        <li><a href="./sermons.html" class="text-battleship-gray hover:text-lion">Sermons</a></li>
+                        <li><a href="./give.html" class="text-battleship-gray hover:text-lion">Give</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold">Connect With Us</h4>
+                     <div class="flex justify-center md:justify-start space-x-4 mt-4">
+                        <a href="#" class="text-battleship-gray hover:text-lion"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd" /></svg></a>
+                        <a href="#" class="text-battleship-gray hover:text-lion"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.71v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" /></svg></a>
+                        <a href="#" class="text-battleship-gray hover:text-lion"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.013-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.345 2.525c.636-.247 1.363-.416 2.427.465C9.793 2.013 10.148 2 12.315 2zm-1.002 3.705a.75.75 0 10-1.5 0 .75.75 0 001.5 0zm1.002 1.815a5.002 5.002 0 100 10.004 5.002 5.002 0 000-10.004zm-7.002 5.002a7.002 7.002 0 1114.004 0 7.002 7.002 0 01-14.004 0z" clip-rule="evenodd" /></svg></a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 border-t border-battleship-gray/30 pt-6 text-center text-battleship-gray"><p>&copy; 2025 Faith Church. All Rights Reserved.</p></div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Universal Reusable Header Loader ---
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch("header.html")
+                .then(response => {
+                    if (!response.ok) throw new Error("Network response was not ok");
+                    return response.text();
+                })
+                .then(data => {
+                    document.getElementById("header-placeholder").innerHTML = data;
+                    
+                    // Initialize header functionality
+                    const mobileMenuButton = document.getElementById('mobile-menu-button');
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    if (mobileMenuButton && mobileMenu) {
+                        mobileMenuButton.addEventListener('click', () => {
+                            mobileMenu.classList.toggle('hidden');
+                        });
+                    }
+
+                    const moreButton = document.getElementById('more-dropdown-button');
+                    const moreMenu = document.getElementById('more-dropdown-menu');
+                    const moreContainer = document.getElementById('more-dropdown-container');
+
+                    if (moreButton && moreMenu && moreContainer) {
+                        moreButton.addEventListener('click', (event) => {
+                            event.stopPropagation();
+                            moreMenu.classList.toggle('hidden');
+                        });
+                    }
+                    
+                    document.addEventListener('click', (event) => {
+                        if (moreContainer && !moreContainer.contains(event.target) && moreMenu && !moreMenu.classList.contains('hidden')) {
+                            moreMenu.classList.add('hidden');
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching header:', error);
+                    document.getElementById("header-placeholder").innerHTML = "<p class='text-center text-red-500'>Error loading navigation.</p>";
+                });
+        });
+
+        // --- API Fetchers and Modal Logic on Page Load ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const apiKey = 'AIzaSyC2qVFq--Rf6PYbucOt4Q3Z69GpCtG8aqs'; 
+            
+            // --- YouTube Latest Sermon Fetcher ---
+            const youtubeChannelHandle = '@faithbaptistri';
+            const sermonTitle = document.getElementById('latest-sermon-title');
+            const sermonDescription = document.getElementById('latest-sermon-description');
+            const sermonThumbnail = document.getElementById('latest-sermon-thumbnail');
+            const sermonThumbnailLink = document.getElementById('latest-sermon-thumbnail-link');
+            const sermonLink = document.getElementById('latest-sermon-link');
+            const minDurationSeconds = 600; // 10 minutes
+
+            function parseISO8601Duration(duration) {
+                const regex = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/;
+                const matches = duration.match(regex);
+                if (!matches) return 0;
+                const hours = parseInt(matches[1] || 0);
+                const minutes = parseInt(matches[2] || 0);
+                const seconds = parseInt(matches[3] || 0);
+                return (hours * 3600) + (minutes * 60) + seconds;
+            }
+
+            async function getLatestSermon() {
+                try {
+                    const channelResponse = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forHandle=${youtubeChannelHandle}&key=${apiKey}`);
+                    const channelData = await channelResponse.json();
+                    if (!channelData.items || channelData.items.length === 0) throw new Error('Could not find YouTube channel.');
+                    
+                    const uploadsPlaylistId = channelData.items[0].contentDetails.relatedPlaylists.uploads;
+
+                    const playlistResponse = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=25&key=${apiKey}`);
+                    const playlistData = await playlistResponse.json();
+                    if (!playlistData.items || playlistData.items.length === 0) throw new Error('No videos in playlist.');
+
+                    const videoIds = playlistData.items.map(item => item.snippet.resourceId.videoId).join(',');
+
+                    const videosResponse = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoIds}&key=${apiKey}`);
+                    const videosData = await videosResponse.json();
+                    if (!videosData.items) throw new Error('Could not fetch video details.');
+                    
+                    const longFormVideos = videosData.items.filter(video => {
+                        const duration = video.contentDetails.duration;
+                        return parseISO8601Duration(duration) > minDurationSeconds;
+                    });
+                    
+                    if (longFormVideos.length === 0) throw new Error('No recent long-form sermons found.');
+
+                    const latestVideo = longFormVideos[0].snippet;
+                    const videoId = longFormVideos[0].id;
+                    const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
+
+                    sermonTitle.textContent = latestVideo.title;
+                    sermonDescription.textContent = latestVideo.description.substring(0, 150) + '...';
+                    sermonThumbnail.src = latestVideo.thumbnails.maxres?.url || latestVideo.thumbnails.high.url;
+                    sermonLink.href = videoUrl;
+                    sermonLink.target = '_blank';
+                    sermonThumbnailLink.href = videoUrl;
+
+                } catch (error) {
+                    console.error('Error fetching latest sermon:', error);
+                    sermonTitle.textContent = 'Error Loading Sermon';
+                    sermonDescription.textContent = 'Could not fetch the latest sermon at this time.';
+                }
+            }
+
+            // --- Google Calendar Events Fetcher ---
+            const calendarId = 'events@faithbaptistri.org';
+            const eventsContainer = document.getElementById('upcoming-events-container');
+
+            async function getCalendarEvents() {
+                const now = new Date().toISOString();
+                const apiUrl = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?key=${apiKey}&timeMin=${now}&orderBy=startTime&singleEvents=true&maxResults=3`;
+
+                try {
+                    const response = await fetch(apiUrl);
+                    if (!response.ok) throw new Error(`Google Calendar API error: ${response.statusText}`);
+                    const data = await response.json();
+
+                    if (!data.items || data.items.length === 0) {
+                        eventsContainer.innerHTML = '<p class="text-center text-battleship-gray">No upcoming events found.</p>';
+                        return;
+                    }
+
+                    eventsContainer.innerHTML = '';
+                    data.items.forEach(event => {
+                        eventsContainer.innerHTML += createHomepageEventCard(event);
+                    });
+
+                } catch (error) {
+                    console.error('Error fetching Google Calendar events:', error);
+                    eventsContainer.innerHTML = '<p class="text-center text-red-600">Could not load events at this time.</p>';
+                }
+            }
+            
+            function createHomepageEventCard(event) {
+                const title = event.summary || 'No Title';
+                const startDate = event.start.dateTime ? new Date(event.start.dateTime) : new Date(event.start.date);
+                const dateOptions = { month: 'short', day: 'numeric' };
+                const dateStr = startDate.toLocaleDateString('en-US', dateOptions).toUpperCase();
+
+                return `
+                    <a href="./events.html" class="block bg-alabaster p-6 rounded-lg flex items-center justify-between gap-4 shadow-sm hover:shadow-md transition-shadow">
+                        <div>
+                            <p class="font-bold text-delft-blue">${dateStr}</p>
+                            <h3 class="text-xl font-bold text-jet">${title}</h3>
+                        </div>
+                        <span class="text-lion font-bold">Details &rarr;</span>
+                    </a>
+                `;
+            }
+
+            // --- Welcome Modal Logic ---
+            const welcomeModal = document.getElementById('welcome-modal');
+            const closeModalButton = document.getElementById('close-modal-button');
+            const modalVisitButton = document.getElementById('modal-visit-button');
+
+            function showModal() {
+                if (welcomeModal) {
+                    welcomeModal.classList.remove('hidden');
+                    welcomeModal.classList.add('flex');
+                }
+            }
+
+            function hideModal() {
+                if (welcomeModal) {
+                    welcomeModal.classList.add('hidden');
+                    welcomeModal.classList.remove('flex');
+                    const d = new Date();
+                    d.setTime(d.getTime() + (30 * 24 * 60 * 60 * 1000)); // Expires in 30 days
+                    let expires = "expires="+d.toUTCString();
+                    document.cookie = "faithChurchVisitor=true;" + expires + ";path=/";
+                }
+            }
+
+            if (!document.cookie.split(';').some((item) => item.trim().startsWith('faithChurchVisitor='))) {
+                setTimeout(showModal, 2000); // Show modal after 2 seconds
+            }
+
+            if(closeModalButton) closeModalButton.addEventListener('click', hideModal);
+            if(modalVisitButton) modalVisitButton.addEventListener('click', hideModal);
+
+
+            // --- Run API Fetchers ---
+            getLatestSermon();
+            getCalendarEvents();
+        });
+    </script>
+
+</body>
+</html>

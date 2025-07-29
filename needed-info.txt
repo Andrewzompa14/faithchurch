@@ -1,0 +1,93 @@
+Website Content Checklist
+This document outlines all the placeholder content (images and text) that needs to be replaced with your church's actual information. Use this as a guide to gather everything needed to launch the website.
+
+1. Homepage (index.html)
+Photos Needed:
+[ ] About Us Section Image: An authentic photo of your church community. This could be a shot of the congregation worshiping, a group photo from a picnic, or people talking in the lobby.
+
+Text Content Needed:
+This page is mostly complete as it pulls from other sections, but review all text to ensure it matches your church's voice.
+
+2. About Us Page (about.html)
+Photos Needed:
+[ ] Header Banner: An inspiring, wide-format photo that represents the "About Us" theme.
+
+[ ] "What We Believe" Image: A photo that complements the topic of beliefs, such as an open Bible, a small group in study, or the sanctuary.
+
+[ ] Leadership Headshots (x3): Professional and friendly headshots for each pastor and elder listed.
+
+[ ] Headshot for John Doe (Senior Pastor)
+
+[ ] Headshot for Jane Smith (Associate Pastor)
+
+[ ] Headshot for Mark Johnson (Elder)
+
+Text Content Needed:
+[ ] Full Statement of Faith: The complete text for your church's statement of faith. This will be needed for a dedicated page linked from the "Read Our Full Statement of Faith" button.
+
+[ ] Leadership Biographies (x3): A short biography for each leader.
+
+[ ] Bio for John Doe
+
+[ ] Bio for Jane Smith
+
+[ ] Bio for Mark Johnson
+
+3. Ministries Page (ministries.html)
+Photos Needed:
+[ ] Header Banner: A wide-format photo that represents ministry and service.
+
+[ ] Faith Kids Image: A vibrant photo of kids participating in the children's ministry.
+
+[ ] FAITH.YTH Image: An energetic photo of students from your youth group.
+
+[ ] Adult Ministries Image: A photo of an adult small group or Bible study.
+
+[ ] Missions & Outreach Image: A photo of a missions trip or a local service project.
+
+Text Content Needed:
+This page is a high-level overview. The primary need is to ensure the subpages it links to are created and filled out.
+
+4. Faith Kids Page (kids.html)
+Photos Needed:
+[ ] Header Banner: A fun and welcoming wide-format photo of your kids' ministry area or children playing.
+
+[ ] "Your First Visit / Safety" Image: A photo of your secure check-in area or a volunteer welcoming a family.
+
+Text Content Needed:
+[ ] Detailed Age Group Info (Optional): If you want to expand on the curriculum or activities for the Nursery, Preschool, and Elementary groups, that text would be needed.
+
+5. FAITH.YTH Page (youth.html)
+Photos Needed:
+[ ] Header Banner: A high-energy, wide-format photo from a youth night or event.
+
+Text Content Needed:
+[ ] Instagram Link: The actual URL for your @FAITH.YTH Instagram profile.
+
+[ ] Ministry Details: More specific information about what happens at YTH Nights, what is studied in Small Groups, and details on any major upcoming events like camp or retreats.
+
+6. Adult Ministries Page (adults.html)
+Photos Needed:
+[ ] Header Banner: A wide-format photo showing adults in fellowship or study.
+
+[ ] Community Groups Image: A photo of a small group meeting in a home.
+
+[ ] Men's Ministry Image: A photo from a men's breakfast, study, or event.
+
+[ ] Women's Ministry Image: A photo from a women's event or Bible study.
+
+Text Content Needed:
+[ ] "Find a Group" Link: The URL to your church's group management software (like Planning Center Groups) or a contact email for someone who can help people find a group.
+
+7. Missions & Outreach Page (missions.html)
+Photos Needed:
+[ ] Header Banner: A compelling wide-format photo representing service (local or global).
+
+[ ] Local Outreach Image: A photo of your church serving in the Warwick community.
+
+[ ] Global Missions Image: A photo from a past mission trip or of the missionaries you support.
+
+Text Content Needed:
+[ ] "Find a Serving Opportunity" Link: A link to a sign-up form, a contact email, or a page with a list of current service opportunities.
+
+[ ] Specific Partner Details (Optional): You may want to add names of specific local organizations or global missionaries you partner with.

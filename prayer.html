@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prayer Requests | Faith Church</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="IMG_8426.png" type="image/png">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles & Color Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        'battleship-gray': '#7b8a83',
+                        'lion': '#b99769',
+                        'alabaster': '#f5f1e9',
+                        'jet': '#2f2f2f',
+                        'delft-blue': '#40476d',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { background-color: #f5f1e9; color: #2f2f2f; font-family: 'Montserrat', sans-serif; }
+        .text-shadow { text-shadow: 0 2px 4px rgba(0,0,0,0.4); }
+    </style>
+</head>
+<body class="bg-alabaster">
+
+    <!-- Header Placeholder -->
+    <div id="header-placeholder"></div>
+
+    <main>
+        <!-- Page Header Section -->
+        <section class="relative h-64 bg-cover bg-center text-white flex items-center justify-center" style="background-image: url('https://placehold.co/1600x400/40476d/ffffff?text=Prayer');">
+            <div class="absolute inset-0 bg-jet opacity-50"></div>
+            <div class="relative z-10 text-center px-4">
+                <h1 class="text-5xl md:text-6xl font-extrabold text-shadow uppercase tracking-wider">Prayer Requests</h1>
+            </div>
+        </section>
+
+        <!-- Welcome Section -->
+        <section class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6 text-center max-w-3xl">
+                <blockquote class="text-2xl italic text-delft-blue">
+                    "Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God."
+                    <span class="block text-lg font-semibold mt-2">- Philippians 4:6</span>
+                </blockquote>
+                <p class="mt-8 text-lg text-battleship-gray leading-relaxed">
+                    We believe in the power of prayer and consider it a privilege to pray for you. Whether you have a need, a praise report, or a burden on your heart, our pastoral team and prayer team are here to stand with you. Please share your request below.
+                </p>
+            </div>
+        </section>
+
+        <!-- Prayer Form Section -->
+        <section class="py-16 md:py-24 bg-alabaster">
+            <div class="container mx-auto px-6 max-w-2xl">
+                <form id="prayer-form" class="space-y-6 bg-white p-8 rounded-lg shadow-lg">
+                    <div>
+                        <label for="name" class="block text-sm font-bold text-jet">Your Name (Optional)</label>
+                        <input type="text" name="name" id="name" class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-lion focus:ring focus:ring-lion focus:ring-opacity-50" placeholder="John Doe">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-bold text-jet">Your Email (Optional)</label>
+                        <p class="text-xs text-battleship-gray">Only used if a pastor needs to follow up with you directly.</p>
+                        <input type="email" name="email" id="email" class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-lion focus:ring focus:ring-lion focus:ring-opacity-50" placeholder="you@example.com">
+                    </div>
+                    <div>
+                        <label for="request" class="block text-sm font-bold text-jet">Your Prayer Request</label>
+                        <textarea id="request" name="request" rows="6" required class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-lion focus:ring focus:ring-lion focus:ring-opacity-50" placeholder="Please share your request here..."></textarea>
+                    </div>
+                    <fieldset>
+                        <legend class="block text-sm font-bold text-jet">Privacy</legend>
+                        <div class="mt-2 space-y-2">
+                            <div class="flex items-center">
+                                <input id="confidential" name="privacy" type="radio" value="Confidential" checked class="h-4 w-4 text-delft-blue border-gray-300 focus:ring-lion">
+                                <label for="confidential" class="ml-3 block text-sm text-battleship-gray">Confidential (Pastors Only)</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="prayer-team" name="privacy" type="radio" value="Share with Prayer Team" class="h-4 w-4 text-delft-blue border-gray-300 focus:ring-lion">
+                                <label for="prayer-team" class="ml-3 block text-sm text-battleship-gray">Share with Prayer Team</label>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div>
+                        <button type="submit" id="submit-button" class="w-full bg-delft-blue text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition-all duration-300 shadow">
+                            Submit Request
+                        </button>
+                    </div>
+                </form>
+                <div id="form-feedback" class="mt-4"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-jet text-alabaster">
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+                <!-- Column 1: Church Info -->
+                <div>
+                    <h4 class="text-xl font-extrabold tracking-tight">FAITH CHURCH</h4>
+                    <p class="mt-2 text-battleship-gray">765 Commonwealth Ave, Warwick, RI 02886</p>
+                    <p class="text-battleship-gray">(401) 738-7664</p>
+                    <p class="text-battleship-gray">contact@faithchurch.com</p>
+                </div>
+                <!-- Column 2: Quick Links -->
+                <div>
+                    <h4 class="text-lg font-bold">Quick Links</h4>
+                    <ul class="mt-2 space-y-1">
+                        <li><a href="./about.html" class="text-battleship-gray hover:text-lion">About Us</a></li>
+                        <li><a href="./sermons.html" class="text-battleship-gray hover:text-lion">Sermons</a></li>
+                        <li><a href="./give.html" class="text-battleship-gray hover:text-lion">Give</a></li>
+                    </ul>
+                </div>
+                <!-- Column 3: Connect -->
+                <div>
+                    <h4 class="text-lg font-bold">Connect With Us</h4>
+                     <div class="flex justify-center md:justify-start space-x-4 mt-4">
+                        <a href="#" class="text-battleship-gray hover:text-lion"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd" /></svg></a>
+                        <a href="#" class="text-battleship-gray hover:text-lion"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.71v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" /></svg></a>
+                        <a href="#" class="text-battleship-gray hover:text-lion"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.013-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.345 2.525c.636-.247 1.363-.416 2.427.465C9.793 2.013 10.148 2 12.315 2zm-1.002 3.705a.75.75 0 10-1.5 0 .75.75 0 001.5 0zm1.002 1.815a5.002 5.002 0 100 10.004 5.002 5.002 0 000-10.004zm-7.002 5.002a7.002 7.002 0 1114.004 0 7.002 7.002 0 01-14.004 0z" clip-rule="evenodd" /></svg></a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 border-t border-battleship-gray/30 pt-6 text-center text-battleship-gray"><p>&copy; 2025 Faith Church. All Rights Reserved.</p></div>
+        </div>
+    </footer>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+
+    <script>
+        // --- Universal Reusable Header Loader ---
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch("header.html")
+                .then(response => {
+                    if (!response.ok) throw new Error("Header not found");
+                    return response.text();
+                })
+                .then(data => {
+                    document.getElementById("header-placeholder").innerHTML = data;
+                    
+                    // Initialize header functionality
+                    const mobileMenuButton = document.getElementById('mobile-menu-button');
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    if (mobileMenuButton && mobileMenu) {
+                        mobileMenuButton.addEventListener('click', () => {
+                            mobileMenu.classList.toggle('hidden');
+                        });
+                    }
+
+                    const moreButton = document.getElementById('more-dropdown-button');
+                    const moreMenu = document.getElementById('more-dropdown-menu');
+                    const moreContainer = document.getElementById('more-dropdown-container');
+
+                    if (moreButton && moreMenu && moreContainer) {
+                        moreButton.addEventListener('click', (event) => {
+                            event.stopPropagation();
+                            moreMenu.classList.toggle('hidden');
+                        });
+                    }
+                    
+                    document.addEventListener('click', (event) => {
+                        if (moreContainer && !moreContainer.contains(event.target) && moreMenu && !moreMenu.classList.contains('hidden')) {
+                            moreMenu.classList.add('hidden');
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching header:', error);
+                    document.getElementById("header-placeholder").innerHTML = "<p class='text-center text-red-500'>Error loading navigation.</p>";
+                });
+        });
+        
+        // --- Form Submission Logic ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyBomHYAHPdSq4K2YrngzOnPRv71r-Otvcw",
+            authDomain: "faith-church-website-fdbdf.firebaseapp.com",
+            projectId: "faith-church-website-fdbdf",
+            storageBucket: "faith-church-website-fdbdf.appspot.com",
+            messagingSenderId: "303139000318",
+            appId: "1:303139000318:web:68efb84508d6be04a5baaf",
+            measurementId: "G-CVRKCE2EJZ"
+        };
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const db = firebase.firestore();
+
+        const form = document.getElementById('prayer-form');
+        const submitButton = document.getElementById('submit-button');
+        const formFeedback = document.getElementById('form-feedback');
+
+        form.addEventListener("submit", e => {
+            e.preventDefault();
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            data.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+
+            db.collection("prayerRequests").add(data)
+                .then(() => {
+                    formFeedback.innerHTML = `<div class="p-4 rounded-md bg-green-100 text-green-800 text-center">Thank you! Your prayer request has been received.</div>`;
+                    form.reset();
+                })
+                .catch(error => {
+                    formFeedback.innerHTML = `<div class="p-4 rounded-md bg-red-100 text-red-800 text-center">Oops! Something went wrong.</div>`;
+                })
+                .finally(() => {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Submit Request';
+                    setTimeout(() => { formFeedback.innerHTML = ''; }, 6000);
+                });
+        });
+    </script>
+
+</body>
+</html>
