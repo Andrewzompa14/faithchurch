@@ -60,43 +60,46 @@
             </div>
             
             <!-- Login Form -->
-            <form id="login-form" class="space-y-4">
-                <div>
-                    <label for="login-email" class="block text-sm font-bold text-jet">Email</label>
-                    <input type="email" id="login-email" name="email" autocomplete="email" required class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-lion focus:ring focus:ring-lion focus:ring-opacity-50">
+            <div id="login-view">
+                <form id="login-form" class="space-y-4">
+                    <div>
+                        <label for="login-email" class="block text-sm font-bold text-jet">Email</label>
+                        <input type="email" id="login-email" name="email" autocomplete="email" required class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-lion focus:ring focus:ring-lion focus:ring-opacity-50">
+                    </div>
+                    <div>
+                        <label for="login-password" class="block text-sm font-bold text-jet">Password</label>
+                        <input type="password" id="login-password" name="password" autocomplete="current-password" required class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-lion focus:ring focus:ring-lion focus:ring-opacity-50">
+                    </div>
+                    <button type="submit" name="submit" class="w-full bg-delft-blue text-white font-bold py-3 rounded-lg hover:bg-opacity-90">Log In</button>
+                </form>
+                <div class="mt-4 text-center">
+                    <p class="text-sm text-battleship-gray">Don't have an account? <a href="#" id="show-signup" class="font-bold text-lion hover:underline">Sign Up</a></p>
                 </div>
-                <div>
-                    <label for="login-password" class="block text-sm font-bold text-jet">Password</label>
-                    <input type="password" id="login-password" name="password" autocomplete="current-password" required class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-lion focus:ring focus:ring-lion focus:ring-opacity-50">
-                </div>
-                <button type="submit" class="w-full bg-delft-blue text-white font-bold py-3 rounded-lg hover:bg-opacity-90">Log In</button>
-            </form>
-
-            <div class="mt-4 text-center">
-                <p class="text-sm text-battleship-gray">Don't have an account? <a href="#" id="show-signup" class="font-bold text-lion hover:underline">Sign Up</a></p>
             </div>
 
             <!-- Sign Up Form (hidden by default) -->
-            <form id="signup-form" class="hidden space-y-4 mt-4">
-                 <div>
-                    <label for="signup-name" class="block text-sm font-bold text-jet">Full Name</label>
-                    <input type="text" id="signup-name" name="name" autocomplete="name" required class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-lion focus:ring focus:ring-lion focus:ring-opacity-50">
-                </div>
-                <div>
-                    <label for="signup-email" class="block text-sm font-bold text-jet">Email</label>
-                    <input type="email" id="signup-email" name="email" autocomplete="email" required class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-lion focus:ring focus:ring-lion focus:ring-opacity-50">
-                </div>
-                <div>
-                    <label for="signup-password" class="block text-sm font-bold text-jet">Password (min. 6 characters)</label>
-                    <input type="password" id="signup-password" name="password" autocomplete="new-password" required class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-lion focus:ring focus:ring-lion focus:ring-opacity-50">
-                </div>
-                <div>
-                    <label for="admin-key" class="block text-sm font-bold text-jet">Admin Key</label>
-                    <input type="password" id="admin-key" required class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-lion focus:ring focus:ring-lion focus:ring-opacity-50" placeholder="Enter the secret key">
-                </div>
-                <button type="submit" class="w-full bg-lion text-white font-bold py-3 rounded-lg hover:bg-opacity-90">Create Account</button>
-                 <p class="text-sm text-center text-battleship-gray">Already have an account? <a href="#" id="show-login" class="font-bold text-lion hover:underline">Log In</a></p>
-            </form>
+            <div id="signup-view" class="hidden">
+                <form id="signup-form" class="space-y-4">
+                     <div>
+                        <label for="signup-name" class="block text-sm font-bold text-jet">Full Name</label>
+                        <input type="text" id="signup-name" name="name" autocomplete="name" required class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-lion focus:ring focus:ring-lion focus:ring-opacity-50">
+                    </div>
+                    <div>
+                        <label for="signup-email" class="block text-sm font-bold text-jet">Email</label>
+                        <input type="email" id="signup-email" name="email" autocomplete="email" required class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-lion focus:ring focus:ring-lion focus:ring-opacity-50">
+                    </div>
+                    <div>
+                        <label for="signup-password" class="block text-sm font-bold text-jet">Password (min. 6 characters)</label>
+                        <input type="password" id="signup-password" name="password" autocomplete="new-password" required class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-lion focus:ring focus:ring-lion focus:ring-opacity-50">
+                    </div>
+                    <div>
+                        <label for="admin-key" class="block text-sm font-bold text-jet">Admin Key</label>
+                        <input type="password" id="admin-key" required class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm focus:border-lion focus:ring focus:ring-lion focus:ring-opacity-50" placeholder="Enter the secret key">
+                    </div>
+                    <button type="submit" name="submit" class="w-full bg-lion text-white font-bold py-3 rounded-lg hover:bg-opacity-90">Create Account</button>
+                </form>
+                 <p class="mt-4 text-sm text-center text-battleship-gray">Already have an account? <a href="#" id="show-login" class="font-bold text-lion hover:underline">Log In</a></p>
+            </div>
             <div id="auth-feedback" class="mt-4"></div>
         </div>
     </div>
@@ -194,8 +197,8 @@
         // --- UI Element References ---
         const authContainer = document.getElementById('auth-container');
         const contentContainer = document.getElementById('content-container');
-        const loginForm = document.getElementById('login-form');
-        const signupForm = document.getElementById('signup-form');
+        const loginView = document.getElementById('login-view');
+        const signupView = document.getElementById('signup-view');
         const userEmailSpan = document.getElementById('user-email');
         const authFeedbackDiv = document.getElementById('auth-feedback');
         const formFeedbackDiv = document.getElementById('form-feedback');
@@ -235,16 +238,14 @@
         // --- Auth Form Toggling ---
         document.getElementById('show-signup').addEventListener('click', (e) => {
             e.preventDefault();
-            loginForm.classList.add('hidden');
-            loginForm.parentElement.querySelector('.mt-4').classList.add('hidden');
-            signupForm.classList.remove('hidden');
+            loginView.classList.add('hidden');
+            signupView.classList.remove('hidden');
             authFeedbackDiv.innerHTML = '';
         });
         document.getElementById('show-login').addEventListener('click', (e) => {
             e.preventDefault();
-            signupForm.classList.add('hidden');
-            loginForm.classList.remove('hidden');
-            loginForm.parentElement.querySelector('.mt-4').classList.remove('hidden');
+            signupView.classList.add('hidden');
+            loginView.classList.remove('hidden');
             authFeedbackDiv.innerHTML = '';
         });
 
@@ -262,7 +263,7 @@
         }
 
         // --- Auth Event Handlers ---
-        signupForm.addEventListener('submit', (e) => {
+        document.getElementById('signup-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const name = document.getElementById('signup-name').value;
             const email = document.getElementById('signup-email').value;
@@ -291,7 +292,7 @@
                 });
         });
 
-        loginForm.addEventListener('submit', (e) => {
+        document.getElementById('login-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
