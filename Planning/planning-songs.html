@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worship Planning | Songs</title>
+    <link rel="icon" href="../IMG_8426.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 'sans': ['Montserrat', 'sans-serif'] },
+                    colors: { 'battleship-gray': '#7b8a83', 'lion': '#b99769', 'alabaster': '#f5f1e9', 'jet': '#2f2f2f', 'delft-blue': '#40476d' }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-alabaster">
+
+    <main class="container mx-auto p-6">
+        <a href="planning-dashboard.html" class="text-delft-blue hover:underline mb-6 inline-block">&larr; Back to Dashboard</a>
+        <h1 class="text-4xl font-extrabold text-jet mb-6">Song Library</h1>
+
+        <section id="song-form-section" class="bg-white p-6 rounded-lg shadow-lg mb-8 hidden">
+            <h2 id="song-form-title" class="text-2xl font-bold text-delft-blue mb-4">Add New Song</h2>
+            <form id="song-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="hidden" id="song-id">
+                <div class="md:col-span-2"><label class="block font-bold">Title</label><input id="title" type="text" required class="w-full mt-1 p-2 border rounded"></div>
+                <div><label class="block font-bold">Key</label><input id="key" type="text" class="w-full mt-1 p-2 border rounded"></div>
+                <div><label class="block font-bold">Tempo (BPM)</label><input id="tempo" type="number" class="w-full mt-1 p-2 border rounded"></div>
+                <div class="md:col-span-2"><label class="block font-bold">Lyrics</label><textarea id="lyrics" rows="5" class="w-full mt-1 p-2 border rounded"></textarea></div>
+                <div><label class="block font-bold">Chord Chart (PDF)</label><input id="chartFile" type="file" accept=".pdf" class="w-full mt-1"><span id="chart-link" class="text-sm"></span></div>
+                <div><label class="block font-bold">MP3 Rehearsal Track</label><input id="mp3File" type="file" accept=".mp3" class="w-full mt-1"><span id="mp3-link" class="text-sm"></span></div>
+                <div class="md:col-span-2 flex items-center gap-4">
+                    <button type="submit" id="save-song-btn" class="bg-lion text-white font-bold py-2 px-5 rounded-lg">Save Song</button>
+                    <button type="button" id="cancel-song-edit" class="bg-gray-300 py-2 px-5 rounded-lg">Cancel</button>
+                    <div id="upload-progress" class="text-sm text-battleship-gray"></div>
+                </div>
+            </form>
+        </section>
+
+        <button id="add-song-btn" class="bg-delft-blue text-white font-bold py-2 px-5 rounded-lg mb-6">Add New Song</button>
+        <div id="songs-list" class="space-y-2"></div>
+    </main>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBomHYAHPdSq4K2YrngzOnPRv71r-Otvcw",
+            authDomain: "faith-church-website-fdbdf.firebaseapp.com",
+            projectId: "faith-church-website-fdbdf",
+            storageBucket: "faith-church-website-fdbdf.appspot.com"
+        };
+        const planningApp = firebase.initializeApp(firebaseConfig, "planning-tool");
+        const auth = firebase.auth(planningApp);
+        const db = firebase.firestore(planningApp);
+        const storage = firebase.storage(planningApp);
+
+        // --- UI ELEMENTS ---
+        const songFormSection = document.getElementById('song-form-section');
+        const songForm = document.getElementById('song-form');
+        const addSongBtn = document.getElementById('add-song-btn');
+        const cancelSongBtn = document.getElementById('cancel-song-edit');
+        const songsList = document.getElementById('songs-list');
+        
+        let isAdmin = false;
+        let currentEditId = null;
+
+        // --- AUTH & INITIALIZATION ---
+        auth.onAuthStateChanged(async user => {
+            if (user) {
+                const userDoc = await db.collection('planning_users').doc(user.uid).get();
+                isAdmin = userDoc.exists && userDoc.data().role === 'admin';
+                if (!isAdmin) {
+                    addSongBtn.classList.add('hidden');
+                    songFormSection.classList.add('hidden');
+                }
+                loadSongs();
+            } else {
+                window.location.href = 'planning-login.html';
+            }
+        });
+
+        // --- DATA & RENDERING ---
+        function loadSongs() {
+            db.collection('planning_songs').orderBy('title').onSnapshot(snapshot => {
+                songsList.innerHTML = '';
+                snapshot.forEach(doc => {
+                    const song = { id: doc.id, ...doc.data() };
+                    songsList.innerHTML += createSongRow(song);
+                });
+            });
+        }
+        
+        function createSongRow(song) {
+            const chartHtml = song.chartUrl ? `<a href="${song.chartUrl}" target="_blank" class="text-delft-blue hover:underline">Chart</a>` : 'No Chart';
+            const mp3Html = song.mp3Url ? `<a href="${song.mp3Url}" target="_blank" class="text-delft-blue hover:underline">MP3</a>` : 'No MP3';
+            const editBtn = isAdmin ? `<button data-id="${song.id}" class="edit-song-btn text-sm font-bold text-lion">Edit</button>` : '';
+
+            return `
+                <div class="bg-white p-4 rounded-lg shadow-sm flex justify-between items-center">
+                    <div>
+                        <p class="font-bold text-jet">${song.title}</p>
+                        <p class="text-sm text-battleship-gray">Key: ${song.key || 'N/A'} | Tempo: ${song.tempo || 'N/A'}</p>
+                    </div>
+                    <div class="flex items-center gap-4">${chartHtml} | ${mp3Html} ${editBtn}</div>
+                </div>`;
+        }
+
+        // --- FORM HANDLING ---
+        addSongBtn.addEventListener('click', () => {
+            currentEditId = null;
+            songForm.reset();
+            document.getElementById('song-form-title').textContent = 'Add New Song';
+            document.getElementById('chart-link').innerHTML = '';
+            document.getElementById('mp3-link').innerHTML = '';
+            songFormSection.classList.remove('hidden');
+        });
+
+        cancelSongBtn.addEventListener('click', () => {
+            songFormSection.classList.add('hidden');
+        });
+        
+        songsList.addEventListener('click', async e => {
+            if (e.target.classList.contains('edit-song-btn')) {
+                currentEditId = e.target.dataset.id;
+                const doc = await db.collection('planning_songs').doc(currentEditId).get();
+                const song = doc.data();
+                document.getElementById('song-id').value = currentEditId;
+                document.getElementById('title').value = song.title;
+                document.getElementById('key').value = song.key || '';
+                document.getElementById('tempo').value = song.tempo || '';
+                document.getElementById('lyrics').value = song.lyrics || '';
+                document.getElementById('chart-link').innerHTML = song.chartUrl ? `<a href="${song.chartUrl}" target="_blank">Current Chart</a>` : '';
+                document.getElementById('mp3-link').innerHTML = song.mp3Url ? `<a href="${song.mp3Url}" target="_blank">Current MP3</a>` : '';
+                document.getElementById('song-form-title').textContent = 'Edit Song';
+                songFormSection.classList.remove('hidden');
+            }
+        });
+
+        songForm.addEventListener('submit', async e => {
+            e.preventDefault();
+            const saveBtn = document.getElementById('save-song-btn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving...';
+            
+            const songData = {
+                title: document.getElementById('title').value,
+                key: document.getElementById('key').value,
+                tempo: document.getElementById('tempo').value,
+                lyrics: document.getElementById('lyrics').value,
+            };
+
+            try {
+                // Handle file uploads
+                const chartFile = document.getElementById('chartFile').files[0];
+                const mp3File = document.getElementById('mp3File').files[0];
+
+                if (chartFile) {
+                    songData.chartUrl = await uploadFile(chartFile, 'charts');
+                }
+                if (mp3File) {
+                    songData.mp3Url = await uploadFile(mp3File, 'mp3s');
+                }
+
+                if (currentEditId) {
+                    await db.collection('planning_songs').doc(currentEditId).update(songData);
+                } else {
+                    await db.collection('planning_songs').add(songData);
+                }
+                
+                songForm.reset();
+                songFormSection.classList.add('hidden');
+
+            } catch (error) {
+                console.error("Error saving song:", error);
+                alert("Could not save song. See console for details.");
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Save Song';
+            }
+        });
+
+        function uploadFile(file, folder) {
+            return new Promise((resolve, reject) => {
+                const filePath = `${folder}/${Date.now()}_${file.name}`;
+                const ref = storage.ref(filePath);
+                const task = ref.put(file);
+
+                task.on('state_changed', 
+                    snapshot => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        document.getElementById('upload-progress').textContent = `Uploading ${file.name}: ${progress.toFixed(0)}%`;
+                    }, 
+                    error => reject(error), 
+                    () => {
+                        task.snapshot.ref.getDownloadURL().then(url => {
+                            document.getElementById('upload-progress').textContent = '';
+                            resolve(url);
+                        });
+                    }
+                );
+            });
+        }
+    </script>
+</body>
+</html>

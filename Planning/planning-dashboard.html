@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worship Planning | Dashboard</title>
+    <link rel="icon" href="../IMG_8426.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 'sans': ['Montserrat', 'sans-serif'] },
+                    colors: { 'battleship-gray': '#7b8a83', 'lion': '#b99769', 'alabaster': '#f5f1e9', 'jet': '#2f2f2f', 'delft-blue': '#40476d' }
+                }
+            }
+        }
+    </script>
+    <style>
+        .tab-btn.active { border-color: #40476d; background-color: #40476d; color: white; }
+    </style>
+</head>
+<body class="bg-alabaster">
+
+    <main class="container mx-auto p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-4xl font-extrabold text-jet">Worship Planning</h1>
+            <div>
+                <span id="user-email" class="text-sm text-battleship-gray mr-4"></span>
+                <button id="logout-button" class="bg-delft-blue text-white font-bold py-2 px-4 rounded-lg">Log Out</button>
+            </div>
+        </div>
+        
+        <div class="mb-8 border-b border-gray-300">
+            <nav class="flex space-x-4" aria-label="Tabs">
+                <button class="tab-btn active font-bold py-2 px-4 border-b-2" data-tab="services">Services</button>
+                <button class="tab-btn font-bold py-2 px-4 border-b-2" data-tab="availability">My Availability</button>
+                <button id="users-tab-btn" class="tab-btn font-bold py-2 px-4 border-b-2 border-transparent hidden" data-tab="users">Manage Users</button>
+            </nav>
+        </div>
+
+        <div id="services-tab" class="tab-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold text-jet">Service Plans</h2>
+                <a href="planning-editor.html" id="add-service-btn" class="hidden bg-lion text-white font-bold py-2 px-5 rounded-lg">Add Service</a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="md:col-span-2">
+                    <h3 class="text-2xl font-bold text-delft-blue mb-4">Upcoming Services</h3>
+                    <div id="services-list" class="space-y-4">
+                        <p class="text-battleship-gray">Loading services...</p>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold text-delft-blue mb-4">My Schedule</h3>
+                    <div id="my-schedule" class="space-y-4">
+                        <p class="text-battleship-gray">Loading schedule...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="availability-tab" class="tab-content hidden">
+            <h2 class="text-3xl font-bold text-jet mb-6">My Availability</h2>
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-bold text-delft-blue mb-4">Blockout Dates</h3>
+                <div class="mb-4 flex gap-2">
+                    <input type="date" id="blockout-date-input" class="p-2 border rounded flex-grow">
+                    <button id="add-blockout-date-btn" class="bg-delft-blue text-white py-2 px-4 rounded-lg">Add Blockout Date</button>
+                </div>
+                <div id="blockout-dates-list" class="space-y-2">
+                    <p class="text-battleship-gray">No blockout dates set.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="users-tab" class="tab-content hidden">
+            <h2 class="text-3xl font-bold text-jet mb-6">User Management</h2>
+            <div id="users-list" class="bg-white p-4 rounded-lg shadow-lg">
+                <p class="text-battleship-gray">Loading users...</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBomHYAHPdSq4K2YrngzOnPRv71r-Otvcw",
+            authDomain: "faith-church-website-fdbdf.firebaseapp.com",
+            projectId: "faith-church-website-fdbdf"
+        };
+
+        const planningApp = firebase.initializeApp(firebaseConfig, "planning-tool");
+        const auth = firebase.auth(planningApp);
+        const db = firebase.firestore(planningApp);
+
+        const tabs = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const userEmailSpan = document.getElementById('user-email');
+        const logoutButton = document.getElementById('logout-button');
+        const usersTabBtn = document.getElementById('users-tab-btn');
+        const addServiceBtn = document.getElementById('add-service-btn');
+        const servicesList = document.getElementById('services-list');
+        const mySchedule = document.getElementById('my-schedule');
+        const usersList = document.getElementById('users-list');
+
+        // Availability elements
+        const blockoutDateInput = document.getElementById('blockout-date-input');
+        const addBlockoutDateBtn = document.getElementById('add-blockout-date-btn');
+        const blockoutDatesList = document.getElementById('blockout-dates-list');
+
+        let currentUserId = null;
+        let isAdmin = false;
+
+        auth.onAuthStateChanged(async user => {
+            if (user) {
+                currentUserId = user.uid;
+                userEmailSpan.textContent = user.email;
+                const userDocRef = db.collection('planning_users').doc(user.uid);
+                const userDoc = await userDocRef.get();
+                
+                if (!userDoc.exists) {
+                    // Auto-create admin profile if it doesn't exist for the logged-in user
+                    await userDocRef.set({ name: user.displayName || user.email, email: user.email, role: 'admin' });
+                    isAdmin = true;
+                } else {
+                    isAdmin = userDoc.data().role === 'admin';
+                }
+
+                if (isAdmin) {
+                    usersTabBtn.classList.remove('hidden');
+                    addServiceBtn.classList.remove('hidden');
+                    loadUsers(user.uid);
+                }
+                loadServices();
+                loadMySchedule(user.uid);
+                loadBlockoutDates(user.uid);
+            } else {
+                window.location.href = 'planning-login.html';
+            }
+        });
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(item => item.classList.remove('active'));
+                tab.classList.add('active');
+                const target = tab.getAttribute('data-tab');
+                tabContents.forEach(content => {
+                    content.id === `${target}-tab` ? content.classList.remove('hidden') : content.classList.add('hidden');
+                });
+            });
+        });
+        
+        logoutButton.addEventListener('click', () => auth.signOut());
+
+        async function loadUsers(currentAdminId) {
+            db.collection('planning_users').orderBy('name').onSnapshot(snapshot => {
+                usersList.innerHTML = `
+                    <div class="grid grid-cols-3 gap-4 font-bold border-b pb-2 mb-2">
+                        <p>Name</p>
+                        <p>Email</p>
+                        <p>Role</p>
+                    </div>`;
+                if(snapshot.empty) {
+                     usersList.innerHTML += '<p class="text-battleship-gray col-span-3">No users found.</p>';
+                     return;
+                }
+                snapshot.forEach(doc => {
+                    const user = { id: doc.id, ...doc.data() };
+                    const isCurrentUser = user.id === currentAdminId;
+                    const roleSelector = isCurrentUser
+                        ? `<p class="text-gray-500 italic">Admin (You)</p>`
+                        : `<select data-uid="${user.id}" class="role-select border rounded p-1 w-full">
+                                <option value="member" ${user.role === 'member' ? 'selected' : ''}>Member</option>
+                                <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Admin</option>
+                           </select>`;
+                    usersList.innerHTML += `
+                        <div class="grid grid-cols-3 gap-4 items-center border-t py-2">
+                            <p>${user.name}</p>
+                            <p class="truncate">${user.email}</p>
+                            <div>${roleSelector}</div>
+                        </div>`;
+                });
+            });
+        }
+        
+        usersList.addEventListener('change', e => {
+            if (e.target.classList.contains('role-select')) {
+                const userId = e.target.dataset.uid;
+                const newRole = e.target.value;
+                db.collection('planning_users').doc(userId).update({ role: newRole });
+            }
+        });
+
+        async function loadServices() {
+            db.collection('planning_services').orderBy('date', 'desc').onSnapshot(snapshot => {
+                if(snapshot.empty){
+                    servicesList.innerHTML = `<p class="text-battleship-gray">No services found. Click "Add Service" to create one.</p>`;
+                    return;
+                }
+                servicesList.innerHTML = '';
+                snapshot.forEach(doc => {
+                    const service = { id: doc.id, ...doc.data() };
+                    const date = new Date(service.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                    servicesList.innerHTML += `
+                        <a href="planning-editor.html?id=${service.id}" class="block bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                            <p class="font-bold text-jet">${service.title}</p>
+                            <p class="text-sm text-battleship-gray">${date}</p>
+                        </a>`;
+                });
+            });
+        }
+        
+        async function loadMySchedule(userId) {
+            db.collectionGroup('assignments').where('userId', '==', userId).onSnapshot(async snapshot => {
+                mySchedule.innerHTML = '';
+                if(snapshot.empty) {
+                    mySchedule.innerHTML = '<p class="text-sm text-battleship-gray">You are not scheduled for any upcoming services.</p>';
+                    return;
+                }
+                for (const doc of snapshot.docs) {
+                    const assignment = { id: doc.id, ...doc.data() };
+                    const serviceDoc = await doc.ref.parent.parent.get();
+                    if (serviceDoc.exists) {
+                        const service = { id: serviceDoc.id, ...serviceDoc.data() };
+                        const date = new Date(service.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                        
+                        let statusText = '';
+                        let statusColor = 'text-battleship-gray';
+                        let actionButtons = '';
+
+                        if (assignment.status === 'pending') {
+                            statusText = 'Pending';
+                            statusColor = 'text-orange-500';
+                            actionButtons = `
+                                <div class="flex gap-2 mt-2">
+                                    <button class="accept-assignment-btn bg-green-500 text-white text-xs py-1 px-2 rounded" data-assignment-id="${assignment.id}" data-service-id="${service.id}">Accept</button>
+                                    <button class="decline-assignment-btn bg-red-500 text-white text-xs py-1 px-2 rounded" data-assignment-id="${assignment.id}" data-service-id="${service.id}">Decline</button>
+                                </div>`;
+                        } else if (assignment.status === 'accepted') {
+                            statusText = 'Accepted';
+                            statusColor = 'text-green-600';
+                        } else if (assignment.status === 'declined') {
+                            statusText = 'Declined';
+                            statusColor = 'text-red-600';
+                        }
+
+                        mySchedule.innerHTML += `
+                            <div class="bg-white p-3 rounded-md shadow-sm">
+                                <p class="font-bold text-jet">${date}: ${service.title}</p>
+                                <p class="text-sm text-delft-blue">Position: ${assignment.role}</p>
+                                <p class="text-xs ${statusColor}">Status: ${statusText}</p>
+                                ${actionButtons}
+                            </div>`;
+                    }
+                }
+            });
+        }
+
+        mySchedule.addEventListener('click', async e => {
+            if (e.target.classList.contains('accept-assignment-btn')) {
+                const assignmentId = e.target.dataset.assignmentId;
+                const serviceId = e.target.dataset.serviceId;
+                await db.collection('planning_services').doc(serviceId).collection('assignments').doc(assignmentId).update({ status: 'accepted' });
+            } else if (e.target.classList.contains('decline-assignment-btn')) {
+                const assignmentId = e.target.dataset.assignmentId;
+                const serviceId = e.target.dataset.serviceId;
+                await db.collection('planning_services').doc(serviceId).collection('assignments').doc(assignmentId).update({ status: 'declined' });
+            }
+        });
+
+        // --- Blockout Dates Logic ---
+        addBlockoutDateBtn.addEventListener('click', async () => {
+            const date = blockoutDateInput.value;
+            if (date && currentUserId) {
+                try {
+                    // Check if date already exists to prevent duplicates
+                    const existingDoc = await db.collection('planning_users').doc(currentUserId).collection('blockoutDates').doc(date).get();
+                    if (!existingDoc.exists) {
+                        await db.collection('planning_users').doc(currentUserId).collection('blockoutDates').doc(date).set({ date: date });
+                        blockoutDateInput.value = ''; // Clear input
+                    } else {
+                        // Using a custom message box instead of alert()
+                        const messageBox = document.createElement('div');
+                        messageBox.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4';
+                        messageBox.innerHTML = `
+                            <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full text-center">
+                                <p class="text-lg font-bold mb-4">Date Already Added</p>
+                                <p class="text-battleship-gray mb-6">This blockout date has already been added.</p>
+                                <button class="bg-delft-blue text-white py-2 px-4 rounded-lg close-message-box">OK</button>
+                            </div>
+                        `;
+                        document.body.appendChild(messageBox);
+                        messageBox.querySelector('.close-message-box').addEventListener('click', () => {
+                            document.body.removeChild(messageBox);
+                        });
+                    }
+                } catch (error) {
+                    console.error("Error adding blockout date:", error);
+                    // Using a custom message box instead of alert()
+                    const messageBox = document.createElement('div');
+                    messageBox.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4';
+                    messageBox.innerHTML = `
+                        <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full text-center">
+                            <p class="text-lg font-bold mb-4">Error</p>
+                            <p class="text-battleship-gray mb-6">Could not add blockout date. See console for details.</p>
+                            <button class="bg-delft-blue text-white py-2 px-4 rounded-lg close-message-box">OK</button>
+                        </div>
+                    `;
+                    document.body.appendChild(messageBox);
+                    messageBox.querySelector('.close-message-box').addEventListener('click', () => {
+                        document.body.removeChild(messageBox);
+                    });
+                }
+            }
+        });
+
+        async function loadBlockoutDates(userId) {
+            db.collection('planning_users').doc(userId).collection('blockoutDates').orderBy('date').onSnapshot(snapshot => {
+                blockoutDatesList.innerHTML = '';
+                if (snapshot.empty) {
+                    blockoutDatesList.innerHTML = '<p class="text-battleship-gray">No blockout dates set.</p>';
+                } else {
+                    snapshot.forEach(doc => {
+                        const blockoutDate = doc.data().date;
+                        const formattedDate = new Date(blockoutDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                        blockoutDatesList.innerHTML += `
+                            <div class="flex justify-between items-center bg-gray-50 p-2 rounded">
+                                <span>${formattedDate}</span>
+                                <button class="remove-blockout-date-btn text-red-500 font-bold p-1" data-date-id="${doc.id}">&times;</button>
+                            </div>`;
+                    });
+                }
+            });
+        }
+
+        blockoutDatesList.addEventListener('click', async e => {
+            if (e.target.classList.contains('remove-blockout-date-btn')) {
+                const dateId = e.target.dataset.dateId;
+                if (currentUserId) {
+                    try {
+                        await db.collection('planning_users').doc(currentUserId).collection('blockoutDates').doc(dateId).delete();
+                    } catch (error) {
+                        console.error("Error removing blockout date:", error);
+                        // Using a custom message box instead of alert()
+                        const messageBox = document.createElement('div');
+                        messageBox.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4';
+                        messageBox.innerHTML = `
+                            <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full text-center">
+                                <p class="text-lg font-bold mb-4">Error</p>
+                                <p class="text-battleship-gray mb-6">Could not remove blockout date. See console for details.</p>
+                                <button class="bg-delft-blue text-white py-2 px-4 rounded-lg close-message-box">OK</button>
+                            </div>
+                        `;
+                        document.body.appendChild(messageBox);
+                        messageBox.querySelector('.close-message-box').addEventListener('click', () => {
+                            document.body.removeChild(messageBox);
+                        });
+                    }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>

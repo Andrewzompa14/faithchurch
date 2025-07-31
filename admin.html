@@ -3,23 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | Faith Church Blog</title>
+    <title>Admin | Faith Church</title>
     
-    <!-- Favicon -->
     <link rel="icon" href="IMG_8426.png" type="image/png">
 
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts: Montserrat -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
     
-    <!-- Quill Rich Text Editor CSS -->
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
-    <!-- Custom Styles & Color Configuration -->
     <script>
         tailwind.config = {
             theme: {
@@ -42,16 +37,13 @@
     <style>
         body { background-color: #f5f1e9; font-family: 'Montserrat', sans-serif; }
         .tab-btn.active { border-color: #40476d; background-color: #40476d; color: white; }
-        /* Prevent scrollbar from flashing during tab switching */
         .tab-content { min-height: 50vh; }
-        /* Custom scrollbar for tabs on mobile */
         .tabs-container::-webkit-scrollbar { display: none; }
         .tabs-container { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="bg-alabaster">
 
-    <!-- Auth Container -->
     <div id="auth-container" class="min-h-screen flex items-center justify-center py-12 px-4">
         <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
             <div class="text-center mb-8">
@@ -59,7 +51,6 @@
                 <h1 class="text-3xl font-extrabold text-jet mt-4">Admin Panel</h1>
             </div>
             
-            <!-- Login Form -->
             <div id="login-view">
                 <form id="login-form" class="space-y-4">
                     <div>
@@ -77,7 +68,6 @@
                 </div>
             </div>
 
-            <!-- Sign Up Form (hidden by default) -->
             <div id="signup-view" class="hidden">
                 <form id="signup-form" class="space-y-4">
                      <div>
@@ -104,7 +94,6 @@
         </div>
     </div>
 
-    <!-- Content Management Container (hidden by default) -->
     <div id="content-container" class="hidden">
         <header class="bg-white shadow-md">
             <div class="container mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row justify-between items-center">
@@ -117,20 +106,55 @@
         </header>
 
         <main class="container mx-auto p-4 sm:p-6">
-            <!-- Tabs -->
             <div class="mb-8 border-b border-gray-300">
                 <nav class="tabs-container flex space-x-1 sm:space-x-4 overflow-x-auto" aria-label="Tabs">
-                    <button class="tab-btn active flex-shrink-0 font-bold py-2 px-3 sm:px-4 border-b-2" data-tab="blog">Blog Posts</button>
+                    <button class="tab-btn active flex-shrink-0 font-bold py-2 px-3 sm:px-4 border-b-2" data-tab="people">People</button>
+                    <button class="tab-btn flex-shrink-0 font-bold py-2 px-3 sm:px-4 border-b-2 border-transparent" data-tab="blog">Blog Posts</button>
                     <button class="tab-btn flex-shrink-0 font-bold py-2 px-3 sm:px-4 border-b-2 border-transparent" data-tab="contact">Contact Messages</button>
                     <button class="tab-btn flex-shrink-0 font-bold py-2 px-3 sm:px-4 border-b-2 border-transparent" data-tab="prayer">Prayer Requests</button>
                 </nav>
             </div>
 
-            <!-- Tab Content -->
-            <div id="blog-tab" class="tab-content">
+            <div id="people-tab" class="tab-content">
                 <section class="bg-white p-6 md:p-8 rounded-lg shadow-lg mb-12">
-                    <h2 class="text-3xl font-extrabold text-jet mb-6">Create New Post</h2>
+                    <h2 id="person-form-heading" class="text-3xl font-extrabold text-jet mb-6">Add New Person</h2>
+                    <form id="person-form" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <input type="hidden" id="person-id">
+                        <div>
+                            <label for="person-name" class="block text-sm font-bold text-jet">Full Name</label>
+                            <input type="text" id="person-name" required class="mt-1 w-full px-4 py-2 rounded-md border-gray-300 shadow-sm">
+                        </div>
+                        <div>
+                            <label for="person-email" class="block text-sm font-bold text-jet">Email</label>
+                            <input type="email" id="person-email" class="mt-1 w-full px-4 py-2 rounded-md border-gray-300 shadow-sm">
+                        </div>
+                        <div>
+                            <label for="person-phone" class="block text-sm font-bold text-jet">Phone</label>
+                            <input type="tel" id="person-phone" class="mt-1 w-full px-4 py-2 rounded-md border-gray-300 shadow-sm">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="person-notes" class="block text-sm font-bold text-jet">Notes</label>
+                            <textarea id="person-notes" rows="3" class="mt-1 w-full px-4 py-2 rounded-md border-gray-300 shadow-sm"></textarea>
+                        </div>
+                        <div class="md:col-span-2 flex items-center gap-4">
+                            <button type="submit" id="save-person-button" class="bg-lion text-white font-bold py-3 px-8 rounded-lg hover:bg-opacity-90">Save Person</button>
+                            <button type="button" id="cancel-person-edit-button" class="hidden bg-gray-400 text-white font-bold py-3 px-8 rounded-lg hover:bg-gray-500">Cancel</button>
+                        </div>
+                    </form>
+                    <div id="person-form-feedback" class="mt-4"></div>
+                </section>
+                <section>
+                    <h2 class="text-3xl font-extrabold text-jet mb-6">People Directory</h2>
+                    <input type="text" id="search-people" placeholder="Search by name..." class="w-full px-4 py-2 rounded-md border-gray-300 shadow-sm mb-6">
+                    <div id="people-list-container" class="space-y-4"></div>
+                </section>
+            </div>
+
+            <div id="blog-tab" class="tab-content hidden">
+                <section id="post-editor-section" class="bg-white p-6 md:p-8 rounded-lg shadow-lg mb-12">
+                    <h2 id="editor-heading" class="text-3xl font-extrabold text-jet mb-6">Create New Post</h2>
                     <form id="post-form">
+                        <input type="hidden" id="post-id">
                         <div class="mb-4">
                             <label for="post-title" class="block text-lg font-bold text-jet mb-2">Post Title</label>
                             <input type="text" id="post-title" required class="w-full px-4 py-2 rounded-md border-gray-300 shadow-sm">
@@ -139,7 +163,10 @@
                             <label class="block text-lg font-bold text-jet mb-2">Post Content</label>
                             <div id="editor" class="bg-white"></div>
                         </div>
-                        <button type="submit" id="publish-button" class="bg-lion text-white font-bold py-3 px-8 rounded-lg hover:bg-opacity-90">Publish Post</button>
+                        <div id="form-buttons" class="flex items-center gap-4">
+                            <button type="submit" id="publish-button" class="bg-lion text-white font-bold py-3 px-8 rounded-lg hover:bg-opacity-90">Publish Post</button>
+                            <button type="button" id="cancel-edit-button" class="hidden bg-gray-400 text-white font-bold py-3 px-8 rounded-lg hover:bg-gray-500">Cancel</button>
+                        </div>
                     </form>
                     <div id="form-feedback" class="mt-4"></div>
                 </section>
@@ -161,12 +188,10 @@
         </main>
     </div>
 
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     
-    <!-- Quill Rich Text Editor JS -->
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 
     <script>
@@ -189,10 +214,7 @@
         const db = firebase.firestore();
 
         // --- Initialize Quill Editor ---
-        const quill = new Quill('#editor', {
-            theme: 'snow',
-            modules: { toolbar: [[{ 'header': [1, 2, false] }], ['bold', 'italic', 'underline'], [{'list': 'ordered'}, {'list': 'bullet'}], ['link'], ['clean']] }
-        });
+        let quill;
 
         // --- UI Element References ---
         const authContainer = document.getElementById('auth-container');
@@ -201,7 +223,6 @@
         const signupView = document.getElementById('signup-view');
         const userEmailSpan = document.getElementById('user-email');
         const authFeedbackDiv = document.getElementById('auth-feedback');
-        const formFeedbackDiv = document.getElementById('form-feedback');
         const tabs = document.querySelectorAll('.tab-btn');
         const tabContents = document.querySelectorAll('.tab-content');
 
@@ -232,34 +253,30 @@
                         content.classList.add('hidden');
                     }
                 });
+                
+                if (target === 'blog' && !quill) {
+                    quill = new Quill('#editor', {
+                        theme: 'snow',
+                        modules: { toolbar: [[{ 'header': [1, 2, false] }], ['bold', 'italic', 'underline'], [{'list': 'ordered'}, {'list': 'bullet'}], ['link'], ['clean']] }
+                    });
+                }
             });
         });
 
         // --- Auth Form Toggling ---
-        document.getElementById('show-signup').addEventListener('click', (e) => {
-            e.preventDefault();
-            loginView.classList.add('hidden');
-            signupView.classList.remove('hidden');
-            authFeedbackDiv.innerHTML = '';
-        });
-        document.getElementById('show-login').addEventListener('click', (e) => {
-            e.preventDefault();
-            signupView.classList.add('hidden');
-            loginView.classList.remove('hidden');
-            authFeedbackDiv.innerHTML = '';
-        });
+        document.getElementById('show-signup').addEventListener('click', (e) => { e.preventDefault(); loginView.classList.add('hidden'); signupView.classList.remove('hidden'); authFeedbackDiv.innerHTML = ''; });
+        document.getElementById('show-login').addEventListener('click', (e) => { e.preventDefault(); signupView.classList.add('hidden'); loginView.classList.remove('hidden'); authFeedbackDiv.innerHTML = ''; });
 
         // --- Error Handling ---
         function showAuthError(message) {
             authFeedbackDiv.innerHTML = `<div class="p-3 rounded-md bg-red-100 text-red-800 text-center">${message}</div>`;
         }
         
-        function showFormFeedback(message, type) {
+        function showFormFeedback(message, type, containerId) {
+            const feedbackDiv = document.getElementById(containerId);
             const color = type === 'success' ? 'green' : 'red';
-            formFeedbackDiv.innerHTML = `<div class="p-3 rounded-md bg-${color}-100 text-${color}-800">${message}</div>`;
-            setTimeout(() => {
-                formFeedbackDiv.innerHTML = '';
-            }, 4000);
+            feedbackDiv.innerHTML = `<div class="p-3 rounded-md bg-${color}-100 text-${color}-800">${message}</div>`;
+            setTimeout(() => { feedbackDiv.innerHTML = ''; }, 4000);
         }
 
         // --- Auth Event Handlers ---
@@ -277,17 +294,12 @@
 
             auth.createUserWithEmailAndPassword(email, password)
                 .then(userCredential => {
-                    return userCredential.user.updateProfile({
-                        displayName: name
-                    });
+                    return userCredential.user.updateProfile({ displayName: name });
                 })
                 .catch(error => {
                     let friendlyError = "An unknown error occurred.";
-                    if (error.code === 'auth/email-already-in-use') {
-                        friendlyError = 'An account with this email already exists.';
-                    } else if (error.code === 'auth/weak-password') {
-                        friendlyError = 'Password should be at least 6 characters.';
-                    }
+                    if (error.code === 'auth/email-already-in-use') friendlyError = 'An account with this email already exists.';
+                    else if (error.code === 'auth/weak-password') friendlyError = 'Password should be at least 6 characters.';
                     showAuthError(friendlyError);
                 });
         });
@@ -305,52 +317,152 @@
 
         // --- Data Loading ---
         function loadInitialData() {
+            fetchPeople();
             fetchPosts();
             fetchContactSubmissions();
             fetchPrayerRequests();
         }
 
-        // --- Firestore Handlers ---
-        document.getElementById('post-form').addEventListener('submit', e => {
+        // --- People Management ---
+        const personForm = document.getElementById('person-form');
+        const peopleListContainer = document.getElementById('people-list-container');
+        const searchPeopleInput = document.getElementById('search-people');
+        let allPeople = [];
+
+        async function fetchPeople() {
+            peopleListContainer.innerHTML = '<p class="text-battleship-gray">Loading directory...</p>';
+            const snapshot = await db.collection("people").orderBy("name").get();
+            allPeople = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderPeople(allPeople);
+        }
+
+        function renderPeople(people) {
+            if (people.length === 0) {
+                peopleListContainer.innerHTML = '<p class="text-battleship-gray">No people found in the directory.</p>';
+                return;
+            }
+            peopleListContainer.innerHTML = '';
+            people.forEach(person => {
+                const personEl = document.createElement('div');
+                personEl.className = 'bg-white p-4 rounded-lg shadow flex justify-between items-center';
+                personEl.innerHTML = `
+                    <div>
+                        <h4 class="font-bold text-jet">${person.name}</h4>
+                        <p class="text-sm text-battleship-gray">${person.email || ''}</p>
+                        <p class="text-sm text-battleship-gray">${person.phone || ''}</p>
+                    </div>
+                    <div>
+                        <button data-id="${person.id}" class="edit-person-btn bg-blue-500 text-white text-sm font-bold py-2 px-3 rounded-lg hover:bg-blue-600 mr-2">Edit</button>
+                        <button data-id="${person.id}" data-collection="people" class="delete-btn bg-red-600 text-white text-sm font-bold py-2 px-3 rounded-lg hover:bg-red-700">Delete</button>
+                    </div>
+                `;
+                peopleListContainer.appendChild(personEl);
+            });
+        }
+
+        searchPeopleInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredPeople = allPeople.filter(person => person.name.toLowerCase().includes(searchTerm));
+            renderPeople(filteredPeople);
+        });
+
+        personForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const personId = document.getElementById('person-id').value;
+            const personData = {
+                name: document.getElementById('person-name').value,
+                email: document.getElementById('person-email').value,
+                phone: document.getElementById('person-phone').value,
+                notes: document.getElementById('person-notes').value,
+            };
+            
+            if (personId) {
+                db.collection('people').doc(personId).update(personData).then(() => {
+                    fetchPeople();
+                    resetPersonForm();
+                });
+            } else {
+                db.collection('people').add(personData).then(() => {
+                    fetchPeople();
+                    personForm.reset();
+                });
+            }
+        });
+
+        document.getElementById('people-tab').addEventListener('click', (e) => {
+            if (e.target.classList.contains('edit-person-btn')) {
+                const id = e.target.dataset.id;
+                const person = allPeople.find(p => p.id === id);
+                if (person) {
+                    document.getElementById('person-id').value = person.id;
+                    document.getElementById('person-name').value = person.name;
+                    document.getElementById('person-email').value = person.email;
+                    document.getElementById('person-phone').value = person.phone;
+                    document.getElementById('person-notes').value = person.notes;
+                    document.getElementById('save-person-button').textContent = 'Save Changes';
+                    document.getElementById('person-form-heading').textContent = 'Edit Person';
+                    document.getElementById('cancel-person-edit-button').classList.remove('hidden');
+                    personForm.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+        
+        document.getElementById('cancel-person-edit-button').addEventListener('click', resetPersonForm);
+
+        function resetPersonForm() {
+            personForm.reset();
+            document.getElementById('person-id').value = '';
+            document.getElementById('save-person-button').textContent = 'Save Person';
+            document.getElementById('person-form-heading').textContent = 'Add New Person';
+            document.getElementById('cancel-person-edit-button').classList.add('hidden');
+        }
+
+        // --- Blog Post Functions ---
+        const postForm = document.getElementById('post-form');
+        const managePostsContainer = document.getElementById('manage-posts-container');
+        postForm.addEventListener('submit', e => {
             e.preventDefault();
             const title = document.getElementById('post-title').value;
             const content = quill.root.innerHTML;
             const user = auth.currentUser;
+            const postId = document.getElementById('post-id').value;
 
             if (!title || content === '<p><br></p>') {
-                showFormFeedback('Title and content cannot be empty.', 'error');
+                showFormFeedback('Title and content cannot be empty.', 'error', 'form-feedback');
                 return;
             }
 
-            db.collection('posts').add({
+            const postData = {
                 title: title,
                 content: content,
                 author: user.displayName || user.email,
                 authorId: user.uid,
                 date: firebase.firestore.FieldValue.serverTimestamp()
-            })
-            .then(() => {
-                showFormFeedback('Post published successfully!', 'success');
-                document.getElementById('post-form').reset();
-                quill.setText('');
-                fetchPosts();
-            })
-            .catch(error => {
-                showFormFeedback('Error publishing post: ' + error.message, 'error');
-            });
-        });
+            };
 
+            if (postId) {
+                db.collection('posts').doc(postId).update(postData).then(() => {
+                    showFormFeedback('Post updated successfully!', 'success', 'form-feedback');
+                    resetPostForm();
+                    fetchPosts();
+                });
+            } else {
+                db.collection('posts').add(postData).then(() => {
+                    showFormFeedback('Post published successfully!', 'success', 'form-feedback');
+                    resetPostForm();
+                    fetchPosts();
+                });
+            }
+        });
+        
         async function fetchPosts() {
-            const container = document.getElementById('manage-posts-container');
-            container.innerHTML = '<p class="text-battleship-gray">Loading posts...</p>';
+            managePostsContainer.innerHTML = '<p class="text-battleship-gray">Loading posts...</p>';
             const snapshot = await db.collection("posts").orderBy("date", "desc").get();
-            
             if (snapshot.empty) {
-                container.innerHTML = '<p class="text-battleship-gray">No posts found.</p>';
+                managePostsContainer.innerHTML = '<p class="text-battleship-gray">No posts found.</p>';
                 return;
             }
-            
-            container.innerHTML = '';
+            managePostsContainer.innerHTML = '';
             snapshot.forEach(doc => {
                 const post = doc.data();
                 const postEl = document.createElement('div');
@@ -361,12 +473,52 @@
                         <h4 class="font-bold text-jet">${post.title}</h4>
                         <p class="text-sm text-battleship-gray">By ${post.author} on ${postDate}</p>
                     </div>
-                    <button data-id="${doc.id}" data-collection="posts" class="delete-btn bg-red-600 text-white text-sm font-bold py-2 px-3 rounded-lg hover:bg-red-700">Delete</button>
+                    <div>
+                        <button data-id="${doc.id}" class="edit-post-btn bg-blue-500 text-white text-sm font-bold py-2 px-3 rounded-lg hover:bg-blue-600 mr-2">Edit</button>
+                        <button data-id="${doc.id}" data-collection="posts" class="delete-btn bg-red-600 text-white text-sm font-bold py-2 px-3 rounded-lg hover:bg-red-700">Delete</button>
+                    </div>
                 `;
-                container.appendChild(postEl);
+                managePostsContainer.appendChild(postEl);
             });
         }
         
+        document.getElementById('blog-tab').addEventListener('click', e => {
+            if (e.target.classList.contains('edit-post-btn')) {
+                const id = e.target.dataset.id;
+                loadPostForEditing(id);
+            }
+        });
+
+        document.getElementById('cancel-edit-button').addEventListener('click', resetPostForm);
+
+        function resetPostForm() {
+            postForm.reset();
+            quill.setText('');
+            document.getElementById('post-id').value = '';
+            document.getElementById('editor-heading').textContent = 'Create New Post';
+            document.getElementById('publish-button').textContent = 'Publish Post';
+            document.getElementById('cancel-edit-button').classList.add('hidden');
+        }
+
+        async function loadPostForEditing(id) {
+            try {
+                const doc = await db.collection('posts').doc(id).get();
+                if (doc.exists) {
+                    const post = doc.data();
+                    document.getElementById('post-id').value = id;
+                    document.getElementById('post-title').value = post.title;
+                    quill.root.innerHTML = post.content;
+                    document.getElementById('editor-heading').textContent = 'Edit Post';
+                    document.getElementById('publish-button').textContent = 'Save Changes';
+                    document.getElementById('cancel-edit-button').classList.remove('hidden');
+                    document.getElementById('post-editor-section').scrollIntoView({ behavior: 'smooth' });
+                }
+            } catch (error) {
+                showFormFeedback('Error loading post: ' + error.message, 'error', 'form-feedback');
+            }
+        }
+
+        // --- Form Submission Functions ---
         async function fetchContactSubmissions() {
             const container = document.getElementById('contact-submissions-container');
             container.innerHTML = '<p class="text-battleship-gray">Loading messages...</p>';
@@ -428,6 +580,7 @@
                         if (collection === 'posts') fetchPosts();
                         if (collection === 'contactSubmissions') fetchContactSubmissions();
                         if (collection === 'prayerRequests') fetchPrayerRequests();
+                        if (collection === 'people') fetchPeople();
                     });
                 }
             }

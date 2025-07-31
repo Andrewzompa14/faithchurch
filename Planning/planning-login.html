@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worship Planning | Login</title>
+    <link rel="icon" href="../IMG_8426.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 'sans': ['Montserrat', 'sans-serif'] },
+                    colors: { 'battleship-gray': '#7b8a83', 'lion': '#b99769', 'alabaster': '#f5f1e9', 'jet': '#2f2f2f', 'delft-blue': '#40476d' }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-alabaster">
+    <div id="auth-container" class="min-h-screen flex items-center justify-center py-12 px-4">
+        <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
+            <div class="text-center mb-8">
+                <img src="../IMG_8426.png" alt="Faith Church Logo" class="w-16 h-16 mx-auto">
+                <h1 class="text-3xl font-extrabold text-jet mt-4">Worship Planning</h1>
+            </div>
+            <div id="login-view">
+                <form id="login-form" class="space-y-4">
+                    <div><label for="login-email" class="block text-sm font-bold text-jet">Email</label><input type="email" id="login-email" required class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm"></div>
+                    <div><label for="login-password" class="block text-sm font-bold text-jet">Password</label><input type="password" id="login-password" required class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm"></div>
+                    <button type="submit" class="w-full bg-delft-blue text-white font-bold py-3 rounded-lg">Log In</button>
+                </form>
+                <div class="mt-4 text-center"><p class="text-sm text-battleship-gray">No account? <a href="#" id="show-signup" class="font-bold text-lion hover:underline">Create one</a></p></div>
+            </div>
+            <div id="signup-view" class="hidden">
+                <form id="signup-form" class="space-y-4">
+                    <div><label for="signup-name" class="block text-sm font-bold text-jet">Full Name</label><input type="text" id="signup-name" required class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm"></div>
+                    <div><label for="signup-email" class="block text-sm font-bold text-jet">Email</label><input type="email" id="signup-email" required class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm"></div>
+                    <div><label for="signup-password" class="block text-sm font-bold text-jet">Password</label><input type="password" id="signup-password" required class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm"></div>
+                    <button type="submit" class="w-full bg-lion text-white font-bold py-3 rounded-lg">Create Account</button>
+                </form>
+                <p class="mt-4 text-sm text-center text-battleship-gray">Already have an account? <a href="#" id="show-login" class="font-bold text-lion hover:underline">Log In</a></p>
+            </div>
+            <div id="auth-feedback" class="mt-4 text-center text-red-600"></div>
+        </div>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBomHYAHPdSq4K2YrngzOnPRv71r-Otvcw",
+            authDomain: "faith-church-website-fdbdf.firebaseapp.com",
+            projectId: "faith-church-website-fdbdf",
+            storageBucket: "faith-church-website-fdbdf.appspot.com",
+            messagingSenderId: "303139000318",
+            appId: "1:303139000318:web:68efb84508d6be04a5baaf"
+        };
+
+        const planningApp = firebase.initializeApp(firebaseConfig, "planning-tool");
+        const auth = firebase.auth(planningApp);
+        const db = firebase.firestore(planningApp);
+
+        const loginView = document.getElementById('login-view');
+        const signupView = document.getElementById('signup-view');
+        const authFeedback = document.getElementById('auth-feedback');
+
+        document.getElementById('show-signup').addEventListener('click', () => {
+            loginView.classList.add('hidden');
+            signupView.classList.remove('hidden');
+            authFeedback.textContent = '';
+        });
+        document.getElementById('show-login').addEventListener('click', () => {
+            signupView.classList.add('hidden');
+            loginView.classList.remove('hidden');
+            authFeedback.textContent = '';
+        });
+
+        document.getElementById('login-form').addEventListener('submit', e => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            auth.signInWithEmailAndPassword(email, password)
+                .then(() => window.location.href = 'planning-dashboard.html')
+                .catch(err => authFeedback.textContent = 'Invalid email or password.');
+        });
+
+        document.getElementById('signup-form').addEventListener('submit', e => {
+            e.preventDefault();
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .then(cred => {
+                    cred.user.updateProfile({ displayName: name });
+                    // Create a user profile document in Firestore
+                    return db.collection('planning_users').doc(cred.user.uid).set({
+                        name: name,
+                        email: email,
+                        role: 'member' // Default role
+                    });
+                })
+                .then(() => window.location.href = 'planning-dashboard.html')
+                .catch(err => authFeedback.textContent = err.message);
+        });
+    </script>
+</body>
+</html>
