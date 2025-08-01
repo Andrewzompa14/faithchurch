@@ -35,7 +35,7 @@
         <div class="mb-8 border-b border-gray-300">
             <nav class="flex space-x-4" aria-label="Tabs">
                 <button class="tab-btn active font-bold py-2 px-4 border-b-2" data-tab="services">Services</button>
-                <button class="tab-btn font-bold py-2 px-4 border-b-2" data-tab="availability">My Availability</button>
+                <button class="tab-btn font-bold py-2 px-4 border-b-2 border-transparent" data-tab="availability">My Availability</button>
                 <button id="users-tab-btn" class="tab-btn font-bold py-2 px-4 border-b-2 border-transparent hidden" data-tab="users">Manage Users</button>
             </nav>
         </div>
@@ -65,7 +65,8 @@
             <h2 class="text-3xl font-bold text-jet mb-6">My Availability</h2>
             <div class="bg-white p-6 rounded-lg shadow-lg">
                 <h3 class="text-2xl font-bold text-delft-blue mb-4">Blockout Dates</h3>
-                <div class="mb-4 flex gap-2">
+                <p class="text-sm text-battleship-gray mb-4">Add dates when you are unavailable to be scheduled. Admins will see a conflict warning if they try to schedule you on these dates.</p>
+                <div class="mb-4 flex flex-col sm:flex-row gap-2">
                     <input type="date" id="blockout-date-input" class="p-2 border rounded flex-grow">
                     <button id="add-blockout-date-btn" class="bg-delft-blue text-white py-2 px-4 rounded-lg">Add Blockout Date</button>
                 </div>
@@ -106,8 +107,6 @@
         const servicesList = document.getElementById('services-list');
         const mySchedule = document.getElementById('my-schedule');
         const usersList = document.getElementById('users-list');
-
-        // Availability elements
         const blockoutDateInput = document.getElementById('blockout-date-input');
         const addBlockoutDateBtn = document.getElementById('add-blockout-date-btn');
         const blockoutDatesList = document.getElementById('blockout-dates-list');
@@ -123,7 +122,6 @@
                 const userDoc = await userDocRef.get();
                 
                 if (!userDoc.exists) {
-                    // Auto-create admin profile if it doesn't exist for the logged-in user
                     await userDocRef.set({ name: user.displayName || user.email, email: user.email, role: 'admin' });
                     isAdmin = true;
                 } else {
@@ -135,7 +133,7 @@
                     addServiceBtn.classList.remove('hidden');
                     loadUsers(user.uid);
                 }
-                loadServices();
+                loadServices(isAdmin);
                 loadMySchedule(user.uid);
                 loadBlockoutDates(user.uid);
             } else {
@@ -156,7 +154,7 @@
         
         logoutButton.addEventListener('click', () => auth.signOut());
 
-        async function loadUsers(currentAdminId) {
+        function loadUsers(currentAdminId) {
             db.collection('planning_users').orderBy('name').onSnapshot(snapshot => {
                 usersList.innerHTML = `
                     <div class="grid grid-cols-3 gap-4 font-bold border-b pb-2 mb-2">
@@ -195,7 +193,7 @@
             }
         });
 
-        async function loadServices() {
+        function loadServices(isAdminFlag) {
             db.collection('planning_services').orderBy('date', 'desc').onSnapshot(snapshot => {
                 if(snapshot.empty){
                     servicesList.innerHTML = `<p class="text-battleship-gray">No services found. Click "Add Service" to create one.</p>`;
@@ -205,165 +203,123 @@
                 snapshot.forEach(doc => {
                     const service = { id: doc.id, ...doc.data() };
                     const date = new Date(service.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                    servicesList.innerHTML += `
-                        <a href="planning-editor.html?id=${service.id}" class="block bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                            <p class="font-bold text-jet">${service.title}</p>
-                            <p class="text-sm text-battleship-gray">${date}</p>
-                        </a>`;
+                    
+                    const viewerLink = `planning-viewer.html?id=${service.id}`;
+                    const editorLink = `planning-editor.html?id=${service.id}`;
+
+                    const editButtonHtml = isAdminFlag 
+                        ? `<a href="${editorLink}" class="edit-link text-sm font-bold text-lion hover:underline">Edit Plan &rarr;</a>` 
+                        : '';
+
+                    const serviceCard = document.createElement('div');
+                    serviceCard.className = 'block bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer';
+                    
+                    serviceCard.innerHTML = `
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="font-bold text-jet">${service.title}</p>
+                                <p class="text-sm text-battleship-gray">${date}</p>
+                            </div>
+                            ${!isAdminFlag ? `<span class="text-sm text-battleship-gray">View Plan &rarr;</span>` : ''}
+                        </div>
+                        ${isAdminFlag ? `<div class="mt-2 pt-2 border-t">${editButtonHtml}</div>` : ''}
+                    `;
+
+                    serviceCard.addEventListener('click', (e) => {
+                        if (e.target.classList.contains('edit-link')) {
+                            // Let the 'edit' link handle its own navigation
+                            return;
+                        }
+                        // Navigate to the viewer page for any other click on the card
+                        window.location.href = viewerLink;
+                    });
+
+                    servicesList.appendChild(serviceCard);
                 });
             });
         }
         
-        async function loadMySchedule(userId) {
+        function loadMySchedule(userId) {
             db.collectionGroup('assignments').where('userId', '==', userId).onSnapshot(async snapshot => {
                 mySchedule.innerHTML = '';
                 if(snapshot.empty) {
                     mySchedule.innerHTML = '<p class="text-sm text-battleship-gray">You are not scheduled for any upcoming services.</p>';
                     return;
                 }
+                
+                const assignments = [];
                 for (const doc of snapshot.docs) {
                     const assignment = { id: doc.id, ...doc.data() };
                     const serviceDoc = await doc.ref.parent.parent.get();
                     if (serviceDoc.exists) {
-                        const service = { id: serviceDoc.id, ...serviceDoc.data() };
-                        const date = new Date(service.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                        
-                        let statusText = '';
-                        let statusColor = 'text-battleship-gray';
-                        let actionButtons = '';
-
-                        if (assignment.status === 'pending') {
-                            statusText = 'Pending';
-                            statusColor = 'text-orange-500';
-                            actionButtons = `
-                                <div class="flex gap-2 mt-2">
-                                    <button class="accept-assignment-btn bg-green-500 text-white text-xs py-1 px-2 rounded" data-assignment-id="${assignment.id}" data-service-id="${service.id}">Accept</button>
-                                    <button class="decline-assignment-btn bg-red-500 text-white text-xs py-1 px-2 rounded" data-assignment-id="${assignment.id}" data-service-id="${service.id}">Decline</button>
-                                </div>`;
-                        } else if (assignment.status === 'accepted') {
-                            statusText = 'Accepted';
-                            statusColor = 'text-green-600';
-                        } else if (assignment.status === 'declined') {
-                            statusText = 'Declined';
-                            statusColor = 'text-red-600';
-                        }
-
-                        mySchedule.innerHTML += `
-                            <div class="bg-white p-3 rounded-md shadow-sm">
-                                <p class="font-bold text-jet">${date}: ${service.title}</p>
-                                <p class="text-sm text-delft-blue">Position: ${assignment.role}</p>
-                                <p class="text-xs ${statusColor}">Status: ${statusText}</p>
-                                ${actionButtons}
-                            </div>`;
+                        assignments.push({ assignment, service: { id: serviceDoc.id, ...serviceDoc.data() } });
                     }
                 }
+
+                assignments.sort((a, b) => new Date(a.service.date) - new Date(b.service.date));
+
+                assignments.forEach(({ assignment, service }) => {
+                    const date = new Date(service.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                    let statusText = '', statusColor = '', actionButtons = '';
+
+                    if (assignment.status === 'pending') {
+                        statusText = 'Pending'; statusColor = 'text-orange-500';
+                        actionButtons = `<div class="flex gap-2 mt-2"><button class="accept-btn bg-green-500 text-white text-xs py-1 px-2 rounded" data-service-id="${service.id}" data-assignment-id="${assignment.id}">Accept</button><button class="decline-btn bg-red-500 text-white text-xs py-1 px-2 rounded" data-service-id="${service.id}" data-assignment-id="${assignment.id}">Decline</button></div>`;
+                    } else if (assignment.status === 'accepted') {
+                        statusText = 'Accepted'; statusColor = 'text-green-600';
+                    } else if (assignment.status === 'declined') {
+                        statusText = 'Declined'; statusColor = 'text-red-600';
+                    }
+
+                    mySchedule.innerHTML += `<div class="bg-white p-3 rounded-lg shadow-sm"><div><p class="text-sm text-battleship-gray">${date}</p><p class="font-bold text-jet">${service.title}</p><p class="text-delft-blue">${assignment.role}</p><p class="text-xs font-bold ${statusColor}">${statusText}</p></div>${actionButtons}</div>`;
+                });
             });
         }
 
-        mySchedule.addEventListener('click', async e => {
-            if (e.target.classList.contains('accept-assignment-btn')) {
-                const assignmentId = e.target.dataset.assignmentId;
-                const serviceId = e.target.dataset.serviceId;
-                await db.collection('planning_services').doc(serviceId).collection('assignments').doc(assignmentId).update({ status: 'accepted' });
-            } else if (e.target.classList.contains('decline-assignment-btn')) {
-                const assignmentId = e.target.dataset.assignmentId;
-                const serviceId = e.target.dataset.serviceId;
-                await db.collection('planning_services').doc(serviceId).collection('assignments').doc(assignmentId).update({ status: 'declined' });
+        mySchedule.addEventListener('click', e => {
+            const button = e.target;
+            const serviceId = button.dataset.serviceId;
+            const assignmentId = button.dataset.assignmentId;
+            if(!serviceId || !assignmentId) return;
+
+            const assignmentRef = db.collection('planning_services').doc(serviceId).collection('assignments').doc(assignmentId);
+            if (button.classList.contains('accept-btn')) {
+                assignmentRef.update({ status: 'accepted' });
+            } else if (button.classList.contains('decline-btn')) {
+                assignmentRef.update({ status: 'declined' });
             }
         });
 
-        // --- Blockout Dates Logic ---
         addBlockoutDateBtn.addEventListener('click', async () => {
             const date = blockoutDateInput.value;
             if (date && currentUserId) {
-                try {
-                    // Check if date already exists to prevent duplicates
-                    const existingDoc = await db.collection('planning_users').doc(currentUserId).collection('blockoutDates').doc(date).get();
-                    if (!existingDoc.exists) {
-                        await db.collection('planning_users').doc(currentUserId).collection('blockoutDates').doc(date).set({ date: date });
-                        blockoutDateInput.value = ''; // Clear input
-                    } else {
-                        // Using a custom message box instead of alert()
-                        const messageBox = document.createElement('div');
-                        messageBox.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4';
-                        messageBox.innerHTML = `
-                            <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full text-center">
-                                <p class="text-lg font-bold mb-4">Date Already Added</p>
-                                <p class="text-battleship-gray mb-6">This blockout date has already been added.</p>
-                                <button class="bg-delft-blue text-white py-2 px-4 rounded-lg close-message-box">OK</button>
-                            </div>
-                        `;
-                        document.body.appendChild(messageBox);
-                        messageBox.querySelector('.close-message-box').addEventListener('click', () => {
-                            document.body.removeChild(messageBox);
-                        });
-                    }
-                } catch (error) {
-                    console.error("Error adding blockout date:", error);
-                    // Using a custom message box instead of alert()
-                    const messageBox = document.createElement('div');
-                    messageBox.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4';
-                    messageBox.innerHTML = `
-                        <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full text-center">
-                            <p class="text-lg font-bold mb-4">Error</p>
-                            <p class="text-battleship-gray mb-6">Could not add blockout date. See console for details.</p>
-                            <button class="bg-delft-blue text-white py-2 px-4 rounded-lg close-message-box">OK</button>
-                        </div>
-                    `;
-                    document.body.appendChild(messageBox);
-                    messageBox.querySelector('.close-message-box').addEventListener('click', () => {
-                        document.body.removeChild(messageBox);
-                    });
-                }
+                await db.collection('planning_users').doc(currentUserId).collection('blockoutDates').doc(date).set({ date });
+                blockoutDateInput.value = '';
             }
         });
 
-        async function loadBlockoutDates(userId) {
+        function loadBlockoutDates(userId) {
             db.collection('planning_users').doc(userId).collection('blockoutDates').orderBy('date').onSnapshot(snapshot => {
                 blockoutDatesList.innerHTML = '';
                 if (snapshot.empty) {
                     blockoutDatesList.innerHTML = '<p class="text-battleship-gray">No blockout dates set.</p>';
                 } else {
                     snapshot.forEach(doc => {
-                        const blockoutDate = doc.data().date;
-                        const formattedDate = new Date(blockoutDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                        blockoutDatesList.innerHTML += `
-                            <div class="flex justify-between items-center bg-gray-50 p-2 rounded">
-                                <span>${formattedDate}</span>
-                                <button class="remove-blockout-date-btn text-red-500 font-bold p-1" data-date-id="${doc.id}">&times;</button>
-                            </div>`;
+                        const formattedDate = new Date(doc.id + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                        blockoutDatesList.innerHTML += `<div class="flex justify-between items-center bg-gray-50 p-2 rounded"><span>${formattedDate}</span><button class="remove-blockout-btn text-red-500 font-bold p-1" data-date-id="${doc.id}">&times;</button></div>`;
                     });
                 }
             });
         }
 
         blockoutDatesList.addEventListener('click', async e => {
-            if (e.target.classList.contains('remove-blockout-date-btn')) {
+            if (e.target.classList.contains('remove-blockout-btn')) {
                 const dateId = e.target.dataset.dateId;
                 if (currentUserId) {
-                    try {
-                        await db.collection('planning_users').doc(currentUserId).collection('blockoutDates').doc(dateId).delete();
-                    } catch (error) {
-                        console.error("Error removing blockout date:", error);
-                        // Using a custom message box instead of alert()
-                        const messageBox = document.createElement('div');
-                        messageBox.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4';
-                        messageBox.innerHTML = `
-                            <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full text-center">
-                                <p class="text-lg font-bold mb-4">Error</p>
-                                <p class="text-battleship-gray mb-6">Could not remove blockout date. See console for details.</p>
-                                <button class="bg-delft-blue text-white py-2 px-4 rounded-lg close-message-box">OK</button>
-                            </div>
-                        `;
-                        document.body.appendChild(messageBox);
-                        messageBox.querySelector('.close-message-box').addEventListener('click', () => {
-                            document.body.removeChild(messageBox);
-                        });
-                    }
+                    await db.collection('planning_users').doc(currentUserId).collection('blockoutDates').doc(dateId).delete();
                 }
             }
         });
-
     </script>
 </body>
 </html>

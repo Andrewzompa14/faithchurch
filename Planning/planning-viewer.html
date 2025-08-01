@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worship Planning | Service Plan</title>
+    <link rel="icon" href="../IMG_8426.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 'sans': ['Montserrat', 'sans-serif'] },
+                    colors: { 'battleship-gray': '#7b8a83', 'lion': '#b99769', 'alabaster': '#f5f1e9', 'jet': '#2f2f2f', 'delft-blue': '#40476d' }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-alabaster">
+
+    <main class="container mx-auto p-4 sm:p-6">
+        <div class="mb-6">
+            <a href="planning-dashboard.html" class="text-delft-blue hover:underline">&larr; Back to Dashboard</a>
+            <div class="mt-2 bg-white p-4 rounded-lg shadow">
+                <h1 id="service-title" class="text-3xl md:text-4xl font-extrabold text-jet">Loading Service...</h1>
+                <p id="service-date" class="text-lg text-battleship-gray"></p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-delft-blue mb-4">Order of Service</h2>
+                <div id="service-elements" class="space-y-4"></div>
+            </div>
+            <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-delft-blue mb-4">Team</h2>
+                <div id="team-assignments" class="space-y-4"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBomHYAHPdSq4K2YrngzOnPRv71r-Otvcw",
+            authDomain: "faith-church-website-fdbdf.firebaseapp.com",
+            projectId: "faith-church-website-fdbdf",
+        };
+        const planningApp = firebase.initializeApp(firebaseConfig, "planning-tool");
+        const auth = firebase.auth(planningApp);
+        const db = firebase.firestore(planningApp);
+
+        const serviceTitleEl = document.getElementById('service-title');
+        const serviceDateEl = document.getElementById('service-date');
+        const elementsContainer = document.getElementById('service-elements');
+        const assignmentsContainer = document.getElementById('team-assignments');
+        
+        let serviceId = new URLSearchParams(window.location.search).get('id');
+
+        auth.onAuthStateChanged(async user => {
+            if (user) {
+                if (serviceId) {
+                    await loadServiceData();
+                } else {
+                    window.location.href = 'planning-dashboard.html';
+                }
+            } else {
+                window.location.href = 'planning-login.html';
+            }
+        });
+
+        async function loadServiceData() {
+            const serviceRef = db.collection('planning_services').doc(serviceId);
+            const serviceDoc = await serviceRef.get();
+            if (!serviceDoc.exists) { 
+                serviceTitleEl.textContent = 'Service Not Found';
+                return; 
+            }
+
+            const data = serviceDoc.data();
+            serviceTitleEl.textContent = data.title || 'Untitled Service';
+            serviceDateEl.textContent = new Date(data.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            
+            renderElements(data.elements || []);
+            
+            const assignmentsSnapshot = await serviceRef.collection('assignments').get();
+            const teamAssignments = assignmentsSnapshot.docs.map(doc => doc.data());
+            renderAssignments(teamAssignments);
+        }
+
+        function renderElements(elements) {
+            elementsContainer.innerHTML = !elements.length ? '<p class="text-battleship-gray">No items in this service plan.</p>' : '';
+            elements.forEach(el => {
+                const keyInfo = el.type === 'Song' ? `<span class="text-sm text-delft-blue font-semibold"> (Key: ${el.key || 'N/A'})</span>` : '';
+                const notes = el.notes ? `<p class="text-sm text-battleship-gray pl-4 border-l-2 border-gray-300 ml-2 mt-1">${el.notes}</p>` : '';
+
+                elementsContainer.innerHTML += `
+                    <div class="pb-2 border-b">
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-jet text-lg">${el.title}${keyInfo}</h3>
+                            <p class="text-sm text-battleship-gray whitespace-nowrap pl-4">${el.duration || 0} min</p>
+                        </div>
+                        ${notes}
+                    </div>`;
+            });
+        }
+        
+        function renderAssignments(teamAssignments) {
+            assignmentsContainer.innerHTML = !teamAssignments.length ? '<p class="text-battleship-gray">No team members assigned.</p>' : '';
+            const roles = {};
+            teamAssignments.forEach(assign => {
+                if (!roles[assign.role]) roles[assign.role] = [];
+                roles[assign.role].push(assign.userName);
+            });
+
+            for (const role in roles) {
+                assignmentsContainer.innerHTML += `
+                    <div>
+                        <h4 class="font-bold text-delft-blue">${role}</h4>
+                        <div class="pl-2">
+                            ${roles[role].map(name => `<p class="text-battleship-gray">${name}</p>`).join('')}
+                        </div>
+                    </div>`;
+            }
+        }
+    </script>
+</body>
+</html>
