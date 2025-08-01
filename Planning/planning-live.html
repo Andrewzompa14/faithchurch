@@ -17,23 +17,31 @@
             }
         }
     </script>
-    <style> body { background-color: #111; color: #fff; } </style>
+    <style>
+        body { background-color: #111; color: #fff; }
+    </style>
 </head>
 <body class="flex flex-col h-screen font-sans">
 
-    <main class="flex-grow flex flex-col items-center justify-center p-8 text-center">
-        <div class="mb-8">
-            <p class="text-2xl uppercase tracking-widest text-gray-400">NOW</p>
-            <h1 id="current-item-title" class="text-6xl md:text-8xl font-extrabold text-white">Waiting to Start Service...</h1>
+    <main class="flex-grow flex flex-col items-center justify-center p-4 text-center">
+        <div class="mb-4">
+            <p class="text-xl md:text-2xl uppercase tracking-widest text-gray-400">NOW</p>
+            <h1 id="current-item-title" class="text-5xl sm:text-6xl md:text-8xl font-extrabold text-white leading-tight">Waiting to Start...</h1>
         </div>
-        <div id="countdown-timer" class="text-8xl md:text-9xl font-bold text-lion my-8">00:00</div>
+
+        <div id="countdown-timer" class="text-7xl sm:text-8xl md:text-9xl font-bold text-lion my-4">
+            00:00
+        </div>
+
         <div>
-            <p class="text-xl uppercase tracking-widest text-gray-500">NEXT</p>
-            <h2 id="next-item-title" class="text-4xl md:text-5xl font-bold text-gray-300"></h2>
+            <p class="text-lg md:text-xl uppercase tracking-widest text-gray-500">NEXT</p>
+            <h2 id="next-item-title" class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-300"></h2>
         </div>
     </main>
     
-    <footer class="p-4 text-center text-xs text-gray-600"><p>Services LIVE</p></footer>
+    <footer class="p-4 text-center text-xs text-gray-600">
+        <p>Services LIVE</p>
+    </footer>
 
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
@@ -98,7 +106,6 @@
                 const remainingSeconds = itemDurationSeconds - elapsedSeconds;
 
                 if (remainingSeconds < 0) {
-                    // This is the updated line
                     countdownEl.textContent = `-${formatTime(-remainingSeconds)}`;
                     countdownEl.classList.add('text-red-500');
                 } else {
