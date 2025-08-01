@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worship Planning | LIVE</title>
+    <link rel="icon" href="../IMG_8426.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 'sans': ['Montserrat', 'sans-serif'] },
+                    colors: { 'battleship-gray': '#7b8a83', 'lion': '#b99769', 'alabaster': '#f5f1e9', 'jet': '#2f2f2f', 'delft-blue': '#40476d' }
+                }
+            }
+        }
+    </script>
+    <style> body { background-color: #111; color: #fff; } </style>
+</head>
+<body class="flex flex-col h-screen font-sans">
+
+    <main class="flex-grow flex flex-col items-center justify-center p-8 text-center">
+        <div class="mb-8">
+            <p class="text-2xl uppercase tracking-widest text-gray-400">NOW</p>
+            <h1 id="current-item-title" class="text-6xl md:text-8xl font-extrabold text-white">Waiting to Start Service...</h1>
+        </div>
+        <div id="countdown-timer" class="text-8xl md:text-9xl font-bold text-lion my-8">00:00</div>
+        <div>
+            <p class="text-xl uppercase tracking-widest text-gray-500">NEXT</p>
+            <h2 id="next-item-title" class="text-4xl md:text-5xl font-bold text-gray-300"></h2>
+        </div>
+    </main>
+    
+    <footer class="p-4 text-center text-xs text-gray-600"><p>Services LIVE</p></footer>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBomHYAHPdSq4K2YrngzOnPRv71r-Otvcw",
+            authDomain: "faith-church-website-fdbdf.firebaseapp.com",
+            projectId: "faith-church-website-fdbdf",
+        };
+        const planningApp = firebase.initializeApp(firebaseConfig, "planning-tool");
+        const auth = firebase.auth(planningApp);
+        const db = firebase.firestore(planningApp);
+
+        let serviceId = new URLSearchParams(window.location.search).get('id');
+        let isAdmin = false;
+        let itemTimerInterval;
+
+        auth.onAuthStateChanged(async user => {
+            if (user && serviceId) {
+                const userDoc = await db.collection('planning_users').doc(user.uid).get();
+                isAdmin = userDoc.exists && userDoc.data().role === 'admin';
+                listenForLiveUpdates();
+            } else {
+                document.getElementById('current-item-title').textContent = "Not Authorized";
+            }
+        });
+
+        function listenForLiveUpdates() {
+            db.collection('planning_services').doc(serviceId).onSnapshot(doc => {
+                if (!doc.exists) return;
+                const data = doc.data();
+                const liveState = data.liveState || {};
+                const elements = data.elements || [];
+                const currentIndex = liveState.currentItemIndex >= 0 ? liveState.currentItemIndex : 0;
+
+                const currentItem = elements[currentIndex];
+                const nextItem = elements[currentIndex + 1];
+
+                document.getElementById('current-item-title').textContent = currentItem ? currentItem.title : "End of Service";
+                document.getElementById('next-item-title').textContent = nextItem ? nextItem.title : "";
+
+                updateTimer(liveState, currentItem);
+            });
+        }
+
+        function updateTimer(liveState, currentItem) {
+            clearInterval(itemTimerInterval);
+            const countdownEl = document.getElementById('countdown-timer');
+
+            if (!liveState.isLive || !currentItem) {
+                countdownEl.textContent = "00:00";
+                countdownEl.classList.remove('text-red-500');
+                return;
+            }
+
+            const itemDurationSeconds = (currentItem.duration || 0) * 60;
+            const itemStartTime = liveState.itemStartTime ? liveState.itemStartTime.toDate() : new Date();
+
+            itemTimerInterval = setInterval(() => {
+                const elapsedSeconds = Math.floor((new Date() - itemStartTime) / 1000);
+                const remainingSeconds = itemDurationSeconds - elapsedSeconds;
+
+                if (remainingSeconds < 0) {
+                    // This is the updated line
+                    countdownEl.textContent = `-${formatTime(-remainingSeconds)}`;
+                    countdownEl.classList.add('text-red-500');
+                } else {
+                    countdownEl.textContent = formatTime(remainingSeconds);
+                    countdownEl.classList.remove('text-red-500');
+                }
+            }, 1000);
+        }
+
+        function formatTime(totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+        
+        document.addEventListener('keydown', (e) => {
+            if (!isAdmin || !serviceId) return;
+            const serviceRef = db.collection('planning_services').doc(serviceId);
+            const updateCommand = { 'liveState.itemStartTime': firebase.firestore.FieldValue.serverTimestamp() };
+
+            if (e.key === 'ArrowRight') {
+                updateCommand['liveState.currentItemIndex'] = firebase.firestore.FieldValue.increment(1);
+                serviceRef.update(updateCommand);
+            } else if (e.key === 'ArrowLeft') {
+                 updateCommand['liveState.currentItemIndex'] = firebase.firestore.FieldValue.increment(-1);
+                 serviceRef.update(updateCommand);
+            }
+        });
+    </script>
+</body>
+</html>
