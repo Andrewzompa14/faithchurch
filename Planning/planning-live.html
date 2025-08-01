@@ -72,7 +72,10 @@
 
         function listenForLiveUpdates() {
             db.collection('planning_services').doc(serviceId).onSnapshot(doc => {
-                if (!doc.exists) return;
+                if (!doc.exists) {
+                    document.getElementById('current-item-title').textContent = "Service Not Found";
+                    return;
+                }
                 const data = doc.data();
                 const liveState = data.liveState || {};
                 const elements = data.elements || [];
@@ -95,10 +98,11 @@
             if (!liveState.isLive || !currentItem) {
                 countdownEl.textContent = "00:00";
                 countdownEl.classList.remove('text-red-500');
+                countdownEl.classList.add('text-lion');
                 return;
             }
 
-            const itemDurationSeconds = (currentItem.duration || 0) * 60;
+            const itemDurationSeconds = currentItem.duration || 0;
             const itemStartTime = liveState.itemStartTime ? liveState.itemStartTime.toDate() : new Date();
 
             itemTimerInterval = setInterval(() => {
@@ -107,9 +111,11 @@
 
                 if (remainingSeconds < 0) {
                     countdownEl.textContent = `-${formatTime(-remainingSeconds)}`;
+                    countdownEl.classList.remove('text-lion');
                     countdownEl.classList.add('text-red-500');
                 } else {
                     countdownEl.textContent = formatTime(remainingSeconds);
+                    countdownEl.classList.add('text-lion');
                     countdownEl.classList.remove('text-red-500');
                 }
             }, 1000);
