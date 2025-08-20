@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worship Planning | My Profile</title>
+    <link rel="icon" href="../IMG_8426.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 'sans': ['Montserrat', 'sans-serif'] },
+                    colors: { 'battleship-gray': '#7b8a83', 'lion': '#b99769', 'alabaster': '#f5f1e9', 'jet': '#2f2f2f', 'delft-blue': '#40476d' }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-alabaster">
+
+    <main class="container mx-auto p-6 max-w-lg">
+        <a href="planning-dashboard.html" class="text-delft-blue hover:underline mb-6 inline-block">&larr; Back to Dashboard</a>
+        <div class="bg-white p-8 rounded-lg shadow-lg">
+            <h1 class="text-3xl font-extrabold text-jet mb-6">My Profile</h1>
+            
+            <div class="flex flex-col items-center mb-6">
+                <img id="profile-picture-preview" src="https://placehold.co/128x128/f5f1e9/7b8a83?text=User" class="w-32 h-32 rounded-full object-cover mb-4">
+                <input type="file" id="profile-picture-input" class="text-sm">
+                <div id="upload-progress" class="text-sm text-battleship-gray mt-2"></div>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label for="profile-name" class="block text-sm font-bold text-jet">Display Name</label>
+                    <input type="text" id="profile-name" class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm">
+                </div>
+                <div>
+                    <label for="profile-email" class="block text-sm font-bold text-jet">Email</label>
+                    <input type="email" id="profile-email" class="mt-1 block w-full px-4 py-3 rounded-md border-gray-300 shadow-sm bg-gray-100" disabled>
+                </div>
+                <button id="save-profile-btn" class="w-full bg-lion text-white font-bold py-3 rounded-lg">Save Changes</button>
+            </div>
+            <div id="save-feedback" class="mt-4 text-center"></div>
+        </div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.

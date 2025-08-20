@@ -19,6 +19,10 @@
     </script>
     <style>
         .current-item { background-color: #f5f1e9; border-left: 4px solid #b99769; }
+        .chat-container { display: flex; flex-direction: column; }
+        .chat-message { max-width: 80%; padding: 8px 12px; border-radius: 12px; margin-bottom: 8px; }
+        .chat-message.self { align-self: flex-end; background-color: #40476d; color: white; }
+        .chat-message.other { align-self: flex-start; background-color: #e5e7eb; }
     </style>
 </head>
 <body class="bg-alabaster">
@@ -26,7 +30,13 @@
     <main class="container mx-auto p-4 sm:p-6">
         <div class="flex justify-between items-center mb-6">
             <a href="planning-dashboard.html" class="text-delft-blue hover:underline">&larr; Back to Dashboard</a>
-            <a id="go-live-btn" href="#" target="_blank" class="bg-red-600 text-white font-bold py-2 px-4 rounded-lg">Go Live &rarr;</a>
+            <div class="flex items-center gap-4">
+                 <button id="open-chat-btn" class="relative bg-delft-blue text-white font-bold py-2 px-4 rounded-lg">
+                    <span>Open Chat</span>
+                    <span id="chat-unread-badge" class="hidden absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center"></span>
+                </button>
+                <a id="go-live-btn" href="#" target="_blank" class="bg-red-600 text-white font-bold py-2 px-4 rounded-lg">Go Live &rarr;</a>
+            </div>
         </div>
 
         <div id="live-view-panel" class="hidden bg-white p-4 rounded-lg shadow-lg mb-6 sticky top-4 z-10">
@@ -63,6 +73,22 @@
         </div>
     </main>
 
+    <div id="chat-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50 p-4">
+        <div class="bg-white rounded-lg shadow-lg max-w-lg w-full h-[70vh] flex flex-col">
+            <div class="flex justify-between items-center p-4 border-b">
+                <h2 class="text-2xl font-bold">Service Chat</h2>
+                <button id="close-chat-modal" class="font-bold text-2xl">&times;</button>
+            </div>
+            <div id="chat-container" class="flex-grow p-4 overflow-y-auto"></div>
+            <div class="p-4 border-t">
+                <form id="chat-form" class="flex gap-2">
+                    <input type="text" id="chat-input" placeholder="Type a message..." class="flex-grow p-2 border rounded-lg">
+                    <button type="submit" class="bg-delft-blue text-white py-2 px-4 rounded-lg">Send</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
@@ -80,17 +106,29 @@
         const serviceDateEl = document.getElementById('service-date');
         const elementsContainer = document.getElementById('service-elements');
         const assignmentsContainer = document.getElementById('team-assignments');
+        const openChatBtn = document.getElementById('open-chat-btn');
+        const closeChatModalBtn = document.getElementById('close-chat-modal');
+        const chatModal = document.getElementById('chat-modal');
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
         
         let serviceId = new URLSearchParams(window.location.search).get('id');
         document.getElementById('go-live-btn').href = `planning-live.html?id=${serviceId}`;
         
+        let currentUserId = null;
+        let currentUserName = '';
         let totalTimerInterval;
         let itemTimerInterval;
 
         auth.onAuthStateChanged(async user => {
             if (user && serviceId) {
+                currentUserId = user.uid;
+                const userDoc = await db.collection('planning_users').doc(user.uid).get();
+                currentUserName = userDoc.exists ? userDoc.data().name : user.displayName;
+                
                 await loadServiceData();
                 listenForLiveUpdates();
+                listenForChatMessages();
             } else {
                 window.location.href = 'planning-login.html';
             }
@@ -107,6 +145,8 @@
             const data = serviceDoc.data();
             serviceTitleEl.textContent = data.title || 'Untitled Service';
             serviceDateEl.textContent = new Date(data.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            
+            renderElements(data.elements || [], 0); 
             
             const assignmentsSnapshot = await serviceRef.collection('assignments').get();
             renderAssignments(assignmentsSnapshot.docs.map(doc => doc.data()));
@@ -145,7 +185,7 @@
                     <div class="pb-2 border-b transition-all duration-300 ${isCurrent ? 'current-item p-4' : 'p-2'}">
                         <div class="flex justify-between items-start">
                             <h3 class="font-bold text-jet text-lg">${el.title}${keyInfo}</h3>
-                            <p class="text-sm text-battleship-gray whitespace-nowrap pl-4">${el.duration || 0} min</p>
+                            <p class="text-sm text-battleship-gray whitespace-nowrap pl-4">${formatDuration(el.duration || 0)}</p>
                         </div>
                         ${notes}
                     </div>`;
@@ -159,16 +199,11 @@
                 if (!roles[assign.role]) roles[assign.role] = [];
                 roles[assign.role].push(assign.userName);
             });
-
+            let html = '';
             for (const role in roles) {
-                assignmentsContainer.innerHTML += `
-                    <div>
-                        <h4 class="font-bold text-delft-blue">${role}</h4>
-                        <div class="pl-2">
-                            ${roles[role].map(name => `<p class="text-battleship-gray">${name}</p>`).join('')}
-                        </div>
-                    </div>`;
+                html += `<div><h4 class="font-bold text-delft-blue">${role}</h4><div class="pl-2">${roles[role].map(name => `<p class="text-battleship-gray">${name}</p>`).join('')}</div></div>`;
             }
+            assignmentsContainer.innerHTML = html;
         }
         
         function updateTimers(liveState, currentItem) {
@@ -189,7 +224,7 @@
                 totalTimeEl.textContent = new Date(elapsed * 1000).toISOString().substr(11, 8);
             }, 1000);
 
-            const itemDurationSeconds = (currentItem?.duration || 0) * 60;
+            const itemDurationSeconds = currentItem?.duration || 0;
             const itemStartTime = liveState.itemStartTime ? liveState.itemStartTime.toDate() : new Date();
             itemTimerInterval = setInterval(() => {
                 const elapsedSeconds = Math.floor((new Date() - itemStartTime) / 1000);
@@ -209,6 +244,84 @@
             const seconds = totalSeconds % 60;
             return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
+        
+        function formatDuration(totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            if (minutes > 0) {
+                return `${minutes}m ${seconds > 0 ? `${seconds}s` : ''}`.trim();
+            }
+            return `${seconds}s`;
+        }
+
+        function listenForChatMessages() {
+            if (!serviceId || !currentUserId) return;
+            const messagesRef = db.collection('planning_services').doc(serviceId).collection('messages');
+            
+            messagesRef.orderBy('timestamp', 'asc').onSnapshot(snapshot => {
+                const chatContainer = document.getElementById('chat-container');
+                let unreadCount = 0;
+                let messagesHtml = '';
+                
+                snapshot.forEach(doc => {
+                    const msg = doc.data();
+                    if (Array.isArray(msg.readBy) && !msg.readBy.includes(currentUserId)) {
+                        unreadCount++;
+                    }
+                    const msgClass = msg.senderId === currentUserId ? 'self' : 'other';
+                    messagesHtml += `<div class="chat-message ${msgClass}"><p class="text-xs font-bold">${msg.senderName}</p><p>${msg.text}</p></div>`;
+                });
+                
+                chatContainer.innerHTML = messagesHtml || '<p class="text-center text-battleship-gray text-sm">No messages yet.</p>';
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+
+                const badge = document.getElementById('chat-unread-badge');
+                if (unreadCount > 0) {
+                    badge.textContent = unreadCount;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            });
+        }
+        
+        async function markMessagesAsRead() {
+            if (!serviceId || !currentUserId) return;
+            const messagesRef = db.collection('planning_services').doc(serviceId).collection('messages');
+            
+            const batch = db.batch();
+            const unreadSnapshot = await messagesRef.where('readBy', 'not-in', [currentUserId]).get();
+            
+            unreadSnapshot.forEach(doc => {
+                 batch.update(doc.ref, { readBy: firebase.firestore.FieldValue.arrayUnion(currentUserId) });
+            });
+            await batch.commit().catch(err => console.error("Error marking messages as read:", err));
+        }
+
+        openChatBtn.addEventListener('click', () => {
+            chatModal.classList.remove('hidden');
+            chatModal.classList.add('flex');
+            markMessagesAsRead();
+        });
+        closeChatModalBtn.addEventListener('click', () => {
+            chatModal.classList.add('hidden');
+            chatModal.classList.remove('flex');
+        });
+
+        chatForm.addEventListener('submit', async e => {
+            e.preventDefault();
+            const text = chatInput.value.trim();
+            if (text && serviceId && currentUserId) {
+                chatInput.value = '';
+                await db.collection('planning_services').doc(serviceId).collection('messages').add({
+                    text: text,
+                    senderId: currentUserId,
+                    senderName: currentUserName,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    readBy: [currentUserId]
+                });
+            }
+        });
     </script>
 </body>
 </html>

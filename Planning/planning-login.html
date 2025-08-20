@@ -94,16 +94,22 @@
 
             auth.createUserWithEmailAndPassword(email, password)
                 .then(cred => {
-                    cred.user.updateProfile({ displayName: name });
-                    // Create a user profile document in Firestore
-                    return db.collection('planning_users').doc(cred.user.uid).set({
+                    const user = cred.user;
+                    return db.collection('planning_users').doc(user.uid).set({
                         name: name,
                         email: email,
-                        role: 'member' // Default role
+                        role: 'member'
+                    }).then(() => {
+                        return user.updateProfile({ displayName: name });
                     });
                 })
-                .then(() => window.location.href = 'planning-dashboard.html')
-                .catch(err => authFeedback.textContent = err.message);
+                .then(() => {
+                    window.location.href = 'planning-dashboard.html';
+                })
+                .catch(err => {
+                    console.error("Signup Error:", err);
+                    authFeedback.textContent = err.message;
+                });
         });
     </script>
 </body>

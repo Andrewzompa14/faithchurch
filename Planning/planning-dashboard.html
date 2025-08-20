@@ -24,10 +24,23 @@
 <body class="bg-alabaster">
 
     <main class="container mx-auto p-6">
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-4xl font-extrabold text-jet">Worship Planning</h1>
-            <div>
-                <span id="user-email" class="text-sm text-battleship-gray mr-4"></span>
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6">
+            <h1 class="text-4xl font-extrabold text-jet mb-4 sm:mb-0">Worship Planning</h1>
+            <div class="flex items-center self-end sm:self-center">
+                <a href="planning-profile.html" id="profile-link" class="flex items-center gap-3 mr-4">
+                    <img id="profile-picture" src="https://placehold.co/32x32/f5f1e9/7b8a83?text=?" class="w-8 h-8 rounded-full object-cover">
+                    <span id="user-name" class="text-sm font-bold text-jet"></span>
+                </a>
+                <div class="relative mr-4">
+                    <button id="notifications-btn" class="relative text-gray-600 hover:text-delft-blue">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                        <span id="notifications-badge" class="hidden absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center"></span>
+                    </button>
+                    <div id="notifications-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl z-20">
+                        <div class="p-4 font-bold border-b">Pending Invitations</div>
+                        <div id="invitations-list" class="p-2 max-h-96 overflow-y-auto"></div>
+                    </div>
+                </div>
                 <button id="logout-button" class="bg-delft-blue text-white font-bold py-2 px-4 rounded-lg">Log Out</button>
             </div>
         </div>
@@ -43,21 +56,13 @@
         <div id="services-tab" class="tab-content">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-3xl font-bold text-jet">Service Plans</h2>
-                <a href="planning-editor.html" id="add-service-btn" class="hidden bg-lion text-white font-bold py-2 px-5 rounded-lg">Add Service</a>
+                <div id="admin-service-controls" class="hidden flex items-center gap-2">
+                    <button id="add-from-template-btn" class="bg-delft-blue text-white font-bold py-2 px-5 rounded-lg">New from Template</button>
+                    <a href="planning-editor.html" class="bg-lion text-white font-bold py-2 px-5 rounded-lg">Add Blank Service</a>
+                </div>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="md:col-span-2">
-                    <h3 class="text-2xl font-bold text-delft-blue mb-4">Upcoming Services</h3>
-                    <div id="services-list" class="space-y-4">
-                        <p class="text-battleship-gray">Loading services...</p>
-                    </div>
-                </div>
-                <div>
-                    <h3 class="text-2xl font-bold text-delft-blue mb-4">My Schedule</h3>
-                    <div id="my-schedule" class="space-y-4">
-                        <p class="text-battleship-gray">Loading schedule...</p>
-                    </div>
-                </div>
+            <div id="services-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <p class="text-battleship-gray">Loading services...</p>
             </div>
         </div>
 
@@ -65,24 +70,36 @@
             <h2 class="text-3xl font-bold text-jet mb-6">My Availability</h2>
             <div class="bg-white p-6 rounded-lg shadow-lg">
                 <h3 class="text-2xl font-bold text-delft-blue mb-4">Blockout Dates</h3>
-                <p class="text-sm text-battleship-gray mb-4">Add dates when you are unavailable to be scheduled. Admins will see a conflict warning if they try to schedule you on these dates.</p>
+                <p class="text-sm text-battleship-gray mb-4">Add dates when you are unavailable to be scheduled.</p>
                 <div class="mb-4 flex flex-col sm:flex-row gap-2">
                     <input type="date" id="blockout-date-input" class="p-2 border rounded flex-grow">
-                    <button id="add-blockout-date-btn" class="bg-delft-blue text-white py-2 px-4 rounded-lg">Add Blockout Date</button>
+                    <button id="add-blockout-date-btn" class="bg-delft-blue text-white py-2 px-4 rounded-lg">Add Date</button>
                 </div>
-                <div id="blockout-dates-list" class="space-y-2">
-                    <p class="text-battleship-gray">No blockout dates set.</p>
-                </div>
+                <div id="blockout-dates-list" class="space-y-2"></div>
             </div>
         </div>
 
         <div id="users-tab" class="tab-content hidden">
             <h2 class="text-3xl font-bold text-jet mb-6">User Management</h2>
-            <div id="users-list" class="bg-white p-4 rounded-lg shadow-lg">
-                <p class="text-battleship-gray">Loading users...</p>
-            </div>
+            <div id="users-list" class="bg-white p-4 rounded-lg shadow-lg"></div>
         </div>
     </main>
+
+    <div id="template-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50 p-4">
+        <div class="bg-white rounded-lg shadow-lg max-w-lg w-full">
+            <h2 class="text-2xl font-bold p-4 border-b">Create from Template</h2>
+            <div class="p-4">
+                <div class="mb-4">
+                    <label class="block mb-2">Select a Template:</label>
+                    <select id="template-select" class="w-full p-2 border rounded"></select>
+                </div>
+                <div class="flex justify-end gap-4">
+                    <button type="button" id="close-template-modal" class="bg-gray-300 py-2 px-4 rounded-lg">Cancel</button>
+                    <button type="button" id="create-from-template-btn" class="bg-delft-blue text-white py-2 px-4 rounded-lg">Create Service</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
@@ -100,16 +117,25 @@
 
         const tabs = document.querySelectorAll('.tab-btn');
         const tabContents = document.querySelectorAll('.tab-content');
-        const userEmailSpan = document.getElementById('user-email');
+        const userNameEl = document.getElementById('user-name');
+        const profilePictureEl = document.getElementById('profile-picture');
         const logoutButton = document.getElementById('logout-button');
         const usersTabBtn = document.getElementById('users-tab-btn');
-        const addServiceBtn = document.getElementById('add-service-btn');
+        const addServiceControls = document.getElementById('admin-service-controls');
         const servicesList = document.getElementById('services-list');
-        const mySchedule = document.getElementById('my-schedule');
         const usersList = document.getElementById('users-list');
         const blockoutDateInput = document.getElementById('blockout-date-input');
         const addBlockoutDateBtn = document.getElementById('add-blockout-date-btn');
         const blockoutDatesList = document.getElementById('blockout-dates-list');
+        const notificationsBtn = document.getElementById('notifications-btn');
+        const notificationsDropdown = document.getElementById('notifications-dropdown');
+        const invitationsList = document.getElementById('invitations-list');
+        const notificationsBadge = document.getElementById('notifications-badge');
+        const addFromTemplateBtn = document.getElementById('add-from-template-btn');
+        const templateModal = document.getElementById('template-modal');
+        const closeTemplateModalBtn = document.getElementById('close-template-modal');
+        const createFromTemplateBtn = document.getElementById('create-from-template-btn');
+        const templateSelect = document.getElementById('template-select');
 
         let currentUserId = null;
         let isAdmin = false;
@@ -117,10 +143,21 @@
         auth.onAuthStateChanged(async user => {
             if (user) {
                 currentUserId = user.uid;
-                userEmailSpan.textContent = user.email;
                 const userDocRef = db.collection('planning_users').doc(user.uid);
-                const userDoc = await userDocRef.get();
                 
+                userDocRef.onSnapshot(doc => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        userNameEl.textContent = data.name || user.displayName || user.email;
+                        if (data.photoURL) {
+                            profilePictureEl.src = data.photoURL;
+                        }
+                    } else {
+                        userNameEl.textContent = user.displayName || user.email;
+                    }
+                });
+
+                const userDoc = await userDocRef.get();
                 if (!userDoc.exists) {
                     await userDocRef.set({ name: user.displayName || user.email, email: user.email, role: 'admin' });
                     isAdmin = true;
@@ -130,11 +167,11 @@
 
                 if (isAdmin) {
                     usersTabBtn.classList.remove('hidden');
-                    addServiceBtn.classList.remove('hidden');
+                    addServiceControls.classList.remove('hidden');
                     loadUsers(user.uid);
                 }
-                loadServices(isAdmin);
-                loadMySchedule(user.uid);
+                loadServices(isAdmin, user.uid);
+                loadPendingInvitations(user.uid);
                 loadBlockoutDates(user.uid);
             } else {
                 window.location.href = 'planning-login.html';
@@ -156,57 +193,36 @@
 
         function loadUsers(currentAdminId) {
             db.collection('planning_users').orderBy('name').onSnapshot(snapshot => {
-                usersList.innerHTML = `
-                    <div class="grid grid-cols-3 gap-4 font-bold border-b pb-2 mb-2">
-                        <p>Name</p>
-                        <p>Email</p>
-                        <p>Role</p>
-                    </div>`;
-                if(snapshot.empty) {
-                     usersList.innerHTML += '<p class="text-battleship-gray col-span-3">No users found.</p>';
-                     return;
-                }
+                usersList.innerHTML = `<div class="grid grid-cols-3 gap-4 font-bold border-b pb-2 mb-2"><p>Name</p><p>Email</p><p>Role</p></div>`;
                 snapshot.forEach(doc => {
                     const user = { id: doc.id, ...doc.data() };
                     const isCurrentUser = user.id === currentAdminId;
-                    const roleSelector = isCurrentUser
-                        ? `<p class="text-gray-500 italic">Admin (You)</p>`
-                        : `<select data-uid="${user.id}" class="role-select border rounded p-1 w-full">
-                                <option value="member" ${user.role === 'member' ? 'selected' : ''}>Member</option>
-                                <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Admin</option>
-                           </select>`;
-                    usersList.innerHTML += `
-                        <div class="grid grid-cols-3 gap-4 items-center border-t py-2">
-                            <p>${user.name}</p>
-                            <p class="truncate">${user.email}</p>
-                            <div>${roleSelector}</div>
-                        </div>`;
+                    const roleSelector = isCurrentUser ? `<p class="text-gray-500 italic">Admin (You)</p>` : `<select data-uid="${user.id}" class="role-select border rounded p-1 w-full"><option value="member" ${user.role === 'member' ? 'selected' : ''}>Member</option><option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Admin</option></select>`;
+                    usersList.innerHTML += `<div class="grid grid-cols-3 gap-4 items-center border-t py-2"><p>${user.name}</p><p class="truncate">${user.email}</p><div>${roleSelector}</div></div>`;
                 });
             });
         }
         
         usersList.addEventListener('change', e => {
             if (e.target.classList.contains('role-select')) {
-                const userId = e.target.dataset.uid;
-                const newRole = e.target.value;
-                db.collection('planning_users').doc(userId).update({ role: newRole });
+                db.collection('planning_users').doc(e.target.dataset.uid).update({ role: e.target.value });
             }
         });
 
-        function loadServices(isAdminFlag) {
-            db.collection('planning_services').orderBy('date', 'desc').onSnapshot(snapshot => {
-                if(snapshot.empty){
-                    servicesList.innerHTML = `<p class="text-battleship-gray">No services found. Click "Add Service" to create one.</p>`;
-                    return;
-                }
-                servicesList.innerHTML = '';
+        function loadServices(isAdminFlag, userId) {
+            let query = db.collection('planning_services');
+            if (!isAdminFlag) {
+                query = query.where('acceptedMembers', 'array-contains', userId);
+            }
+
+            query.orderBy('date', 'desc').onSnapshot(snapshot => {
+                servicesList.innerHTML = snapshot.empty ? '<p class="text-battleship-gray col-span-full">No upcoming services.</p>' : '';
                 snapshot.forEach(doc => {
                     const service = { id: doc.id, ...doc.data() };
                     const date = new Date(service.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
                     
                     const viewerLink = `planning-viewer.html?id=${service.id}`;
                     const editorLink = `planning-editor.html?id=${service.id}`;
-
                     const editButtonHtml = isAdminFlag 
                         ? `<a href="${editorLink}" class="edit-link text-sm font-bold text-lion hover:underline">Edit Plan &rarr;</a>` 
                         : '';
@@ -227,98 +243,132 @@
 
                     serviceCard.addEventListener('click', (e) => {
                         if (e.target.classList.contains('edit-link')) {
-                            // Let the 'edit' link handle its own navigation
                             return;
                         }
-                        // Navigate to the viewer page for any other click on the card
                         window.location.href = viewerLink;
                     });
-
                     servicesList.appendChild(serviceCard);
                 });
             });
         }
         
-        function loadMySchedule(userId) {
-            db.collectionGroup('assignments').where('userId', '==', userId).onSnapshot(async snapshot => {
-                mySchedule.innerHTML = '';
-                if(snapshot.empty) {
-                    mySchedule.innerHTML = '<p class="text-sm text-battleship-gray">You are not scheduled for any upcoming services.</p>';
-                    return;
-                }
-                
-                const assignments = [];
-                for (const doc of snapshot.docs) {
-                    const assignment = { id: doc.id, ...doc.data() };
-                    const serviceDoc = await doc.ref.parent.parent.get();
-                    if (serviceDoc.exists) {
-                        assignments.push({ assignment, service: { id: serviceDoc.id, ...serviceDoc.data() } });
-                    }
-                }
-
-                assignments.sort((a, b) => new Date(a.service.date) - new Date(b.service.date));
-
-                assignments.forEach(({ assignment, service }) => {
-                    const date = new Date(service.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                    let statusText = '', statusColor = '', actionButtons = '';
-
-                    if (assignment.status === 'pending') {
-                        statusText = 'Pending'; statusColor = 'text-orange-500';
-                        actionButtons = `<div class="flex gap-2 mt-2"><button class="accept-btn bg-green-500 text-white text-xs py-1 px-2 rounded" data-service-id="${service.id}" data-assignment-id="${assignment.id}">Accept</button><button class="decline-btn bg-red-500 text-white text-xs py-1 px-2 rounded" data-service-id="${service.id}" data-assignment-id="${assignment.id}">Decline</button></div>`;
-                    } else if (assignment.status === 'accepted') {
-                        statusText = 'Accepted'; statusColor = 'text-green-600';
-                    } else if (assignment.status === 'declined') {
-                        statusText = 'Declined'; statusColor = 'text-red-600';
+        function loadPendingInvitations(userId) {
+            db.collectionGroup('assignments').where('userId', '==', userId).where('status', '==', 'pending')
+                .onSnapshot(async snapshot => {
+                    if (snapshot.empty) {
+                        invitationsList.innerHTML = '<p class="p-4 text-sm text-battleship-gray">No pending invitations.</p>';
+                        notificationsBadge.classList.add('hidden');
+                        return;
                     }
 
-                    mySchedule.innerHTML += `<div class="bg-white p-3 rounded-lg shadow-sm"><div><p class="text-sm text-battleship-gray">${date}</p><p class="font-bold text-jet">${service.title}</p><p class="text-delft-blue">${assignment.role}</p><p class="text-xs font-bold ${statusColor}">${statusText}</p></div>${actionButtons}</div>`;
+                    notificationsBadge.textContent = snapshot.size;
+                    notificationsBadge.classList.remove('hidden');
+                    
+                    let invitationsHtml = '';
+                    for (const doc of snapshot.docs) {
+                        const assignment = { id: doc.id, ...doc.data() };
+                        const serviceDoc = await doc.ref.parent.parent.get();
+                        if (serviceDoc.exists) {
+                            const service = { id: serviceDoc.id, ...serviceDoc.data() };
+                            const date = new Date(service.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                            invitationsHtml += `<div class="p-2 border-b"><p class="font-bold">${date}: ${service.title}</p><p class="text-sm text-delft-blue">${assignment.role}</p><div class="flex gap-2 mt-2"><button class="accept-btn bg-green-500 text-white text-xs py-1 px-2 rounded" data-service-id="${service.id}" data-assignment-id="${assignment.id}">Accept</button><button class="decline-btn bg-red-500 text-white text-xs py-1 px-2 rounded" data-service-id="${service.id}" data-assignment-id="${assignment.id}">Decline</button></div></div>`;
+                        }
+                    }
+                    invitationsList.innerHTML = invitationsHtml;
                 });
-            });
         }
+        
+        notificationsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            notificationsDropdown.classList.toggle('hidden');
+        });
+        document.addEventListener('click', () => {
+            if (!notificationsDropdown.classList.contains('hidden')) {
+                notificationsDropdown.classList.add('hidden');
+            }
+        });
 
-        mySchedule.addEventListener('click', e => {
+        invitationsList.addEventListener('click', async e => {
+            e.stopPropagation();
             const button = e.target;
             const serviceId = button.dataset.serviceId;
             const assignmentId = button.dataset.assignmentId;
             if(!serviceId || !assignmentId) return;
 
             const assignmentRef = db.collection('planning_services').doc(serviceId).collection('assignments').doc(assignmentId);
+            const serviceRef = db.collection('planning_services').doc(serviceId);
+            
             if (button.classList.contains('accept-btn')) {
-                assignmentRef.update({ status: 'accepted' });
+                await assignmentRef.update({ status: 'accepted' });
+                await serviceRef.update({ acceptedMembers: firebase.firestore.FieldValue.arrayUnion(currentUserId) });
             } else if (button.classList.contains('decline-btn')) {
-                assignmentRef.update({ status: 'declined' });
+                await assignmentRef.update({ status: 'declined' });
+                await serviceRef.update({ acceptedMembers: firebase.firestore.FieldValue.arrayRemove(currentUserId) });
             }
         });
 
         addBlockoutDateBtn.addEventListener('click', async () => {
-            const date = blockoutDateInput.value;
-            if (date && currentUserId) {
-                await db.collection('planning_users').doc(currentUserId).collection('blockoutDates').doc(date).set({ date });
+            if (blockoutDateInput.value && currentUserId) {
+                await db.collection('planning_users').doc(currentUserId).collection('blockoutDates').doc(blockoutDateInput.value).set({ date: blockoutDateInput.value });
                 blockoutDateInput.value = '';
             }
         });
 
         function loadBlockoutDates(userId) {
             db.collection('planning_users').doc(userId).collection('blockoutDates').orderBy('date').onSnapshot(snapshot => {
-                blockoutDatesList.innerHTML = '';
-                if (snapshot.empty) {
-                    blockoutDatesList.innerHTML = '<p class="text-battleship-gray">No blockout dates set.</p>';
-                } else {
-                    snapshot.forEach(doc => {
-                        const formattedDate = new Date(doc.id + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                        blockoutDatesList.innerHTML += `<div class="flex justify-between items-center bg-gray-50 p-2 rounded"><span>${formattedDate}</span><button class="remove-blockout-btn text-red-500 font-bold p-1" data-date-id="${doc.id}">&times;</button></div>`;
-                    });
-                }
+                blockoutDatesList.innerHTML = snapshot.empty ? '<p class="text-battleship-gray">No blockout dates set.</p>' : '';
+                snapshot.forEach(doc => {
+                    const formattedDate = new Date(doc.id + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                    blockoutDatesList.innerHTML += `<div class="flex justify-between items-center bg-gray-50 p-2 rounded"><span>${formattedDate}</span><button class="remove-blockout-btn text-red-500 font-bold p-1" data-date-id="${doc.id}">&times;</button></div>`;
+                });
             });
         }
 
         blockoutDatesList.addEventListener('click', async e => {
-            if (e.target.classList.contains('remove-blockout-btn')) {
-                const dateId = e.target.dataset.dateId;
-                if (currentUserId) {
-                    await db.collection('planning_users').doc(currentUserId).collection('blockoutDates').doc(dateId).delete();
-                }
+            if (e.target.classList.contains('remove-blockout-btn') && currentUserId) {
+                await db.collection('planning_users').doc(currentUserId).collection('blockoutDates').doc(e.target.dataset.dateId).delete();
             }
+        });
+        
+        addFromTemplateBtn.addEventListener('click', async () => {
+            templateSelect.innerHTML = '<option>Loading templates...</option>';
+            const snapshot = await db.collection('planning_templates').orderBy('title').get();
+            templateSelect.innerHTML = '';
+            if(snapshot.empty) {
+                 templateSelect.innerHTML = '<option>No templates found</option>';
+                 return;
+            }
+            snapshot.forEach(doc => {
+                templateSelect.innerHTML += `<option value="${doc.id}">${doc.data().title}</option>`;
+            });
+            templateModal.classList.remove('hidden');
+            templateModal.classList.add('flex');
+        });
+
+        closeTemplateModalBtn.addEventListener('click', () => {
+            templateModal.classList.add('hidden');
+            templateModal.classList.remove('flex');
+        });
+
+        createFromTemplateBtn.addEventListener('click', async () => {
+            const templateId = templateSelect.value;
+            if (!templateId) return;
+
+            const templateDoc = await db.collection('planning_templates').doc(templateId).get();
+            if (!templateDoc.exists) {
+                alert('Template not found.');
+                return;
+            }
+
+            const templateData = templateDoc.data();
+            const newService = {
+                title: templateData.title + ' (Copy)',
+                date: new Date().toISOString().split('T')[0],
+                elements: templateData.elements || [],
+            };
+
+            const newServiceRef = await db.collection('planning_services').add(newService);
+            window.location.href = `planning-editor.html?id=${newServiceRef.id}`;
         });
     </script>
 </body>

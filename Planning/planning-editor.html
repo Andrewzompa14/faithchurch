@@ -23,7 +23,7 @@
         .handle { cursor: grab; }
         .editable-input { background: transparent; border: none; outline: none; width: 100%; padding: 2px; }
         .editable-input:focus { background: #e5e7eb; box-shadow: 0 0 0 1px #40476d; border-radius: 2px; }
-        .chat-container { display: flex; flex-direction: column-reverse; }
+        .chat-container { display: flex; flex-direction: column; }
         .chat-message { max-width: 80%; padding: 8px 12px; border-radius: 12px; margin-bottom: 8px; }
         .chat-message.self { align-self: flex-end; background-color: #40476d; color: white; }
         .chat-message.other { align-self: flex-start; background-color: #e5e7eb; }
@@ -55,7 +55,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
             <div class="bg-white p-6 rounded-lg shadow-lg">
                 <h2 class="text-2xl font-bold text-delft-blue mb-4">Service Flow</h2>
-                <div id="service-elements" class="space-y-3"></div>
+                <div id="service-elements" class="space-y-1"></div>
                 <div class="mt-4 border-t pt-4">
                     <button id="add-item-btn" class="bg-gray-200 text-jet py-2 px-4 rounded-lg text-sm">Add Generic Item</button>
                     <button id="add-song-btn" class="bg-gray-200 text-jet py-2 px-4 rounded-lg text-sm">Add Song from Library</button>
@@ -63,7 +63,7 @@
             </div>
             <div class="bg-white p-6 rounded-lg shadow-lg">
                 <h2 class="text-2xl font-bold text-delft-blue mb-4">Team</h2>
-                <div id="team-assignments" class="space-y-4"></div>
+                <div id="team-assignments" class="space-y-1"></div>
                 <button id="add-team-member-btn" class="mt-4 bg-gray-200 text-jet py-2 px-4 rounded-lg text-sm">Assign Team Member</button>
             </div>
         </div>
@@ -217,25 +217,20 @@
         function renderElements() {
             elementsContainer.innerHTML = !serviceElements.length ? '<p class="text-center text-battleship-gray">Add items to the service plan.</p>' : '';
             serviceElements.forEach((el, index) => {
-                const keyInfo = el.type === 'Song' ? `<p class="text-sm text-delft-blue">Key: ${el.key || 'N/A'}</p>` : '';
-                const handle = isAdmin ? '<div class="handle p-2 cursor-grab text-gray-400">☰</div>' : '';
-                
-                const minutes = Math.floor((el.duration || 0) / 60);
-                const seconds = (el.duration || 0) % 60;
-                const durationString = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                const handle = isAdmin ? '<div class="handle p-3 text-gray-400 cursor-grab">☰</div>' : '';
+                const durationString = formatDuration(el.duration || 0);
 
                 elementsContainer.innerHTML += `
-                    <div class="bg-gray-50 p-3 rounded-lg flex items-start gap-4" data-index="${index}">
+                    <div class="border border-gray-200 rounded-lg flex items-center" data-index="${index}">
                         ${handle}
-                        <div class="flex-grow">
-                            <input value="${el.title || ''}" data-key="title" class="font-bold text-jet editable-input text-lg">
-                            ${keyInfo}
-                            <textarea data-key="notes" class="editable-input text-sm text-battleship-gray mt-1" placeholder="Add notes...">${el.notes || ''}</textarea>
+                        <div class="flex-grow p-3">
+                            <div class="flex justify-between items-start">
+                                <input value="${el.title || ''}" data-key="title" class="font-bold text-jet editable-input text-base leading-tight">
+                                <input value="${durationString}" data-key="duration" type="text" class="duration-input w-20 text-right editable-input text-base text-battleship-gray" placeholder="mm:ss">
+                            </div>
+                            <textarea data-key="notes" class="editable-input text-sm text-battleship-gray w-full mt-1" placeholder="Add notes...">${el.notes || ''}</textarea>
                         </div>
-                        <div class="flex items-center gap-2">
-                           <input value="${durationString}" data-key="duration" type="text" class="duration-input w-20 text-center editable-input text-lg text-battleship-gray" placeholder="mm:ss">
-                        </div>
-                        ${isAdmin ? `<button class="remove-item-btn text-red-500 font-bold p-2" data-index="${index}">&times;</button>` : ''}
+                        ${isAdmin ? `<button class="remove-item-btn text-red-500 font-bold p-3" data-index="${index}">&times;</button>` : ''}
                     </div>`;
             });
         }
@@ -243,9 +238,22 @@
         function renderAssignments(teamAssignments) {
             assignmentsContainer.innerHTML = !teamAssignments.length ? '<p class="text-center text-sm text-battleship-gray">No team members assigned.</p>' : '';
             teamAssignments.forEach(assign => {
-                const removeBtn = isAdmin ? `<button class="remove-assignment-btn text-red-500 font-bold p-1" data-assignment-id="${assign.id}">&times;</button>` : '';
-                assignmentsContainer.innerHTML += `<div class="bg-gray-50 p-3 rounded flex justify-between items-center"><div><p class="font-bold text-jet">${assign.role}</p><p class="text-sm text-battleship-gray">${assign.userName}</p></div>${removeBtn}</div>`;
+                const removeBtn = isAdmin ? `<button class="remove-assignment-btn text-red-500 font-bold p-3" data-assignment-id="${assign.id}">&times;</button>` : '';
+                assignmentsContainer.innerHTML += `
+                    <div class="border border-gray-200 rounded-lg flex justify-between items-center p-3">
+                        <div>
+                            <p class="font-bold text-jet">${assign.role}</p>
+                            <p class="text-sm text-battleship-gray">${assign.userName}</p>
+                        </div>
+                        ${removeBtn}
+                    </div>`;
             });
+        }
+
+        function formatDuration(totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
         
         elementsContainer.addEventListener('input', e => {
@@ -266,17 +274,16 @@
                     }
                     value = seconds;
                 }
-                
                 serviceElements[index][key] = value;
             }
         });
-        
+
         elementsContainer.addEventListener('blur', e => {
             if (e.target.classList.contains('duration-input')) {
                 renderElements();
             }
         }, true);
-
+        
         function updateElementsOrder(evt) {
             const movedItem = serviceElements.splice(evt.oldIndex, 1)[0];
             serviceElements.splice(evt.newIndex, 0, movedItem);
